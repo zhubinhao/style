@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />	
+		<link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+	</head>     
+	<body id="read">
+		<header class="mui-bar mui-bar-nav">
+	        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	        <h1 class="mui-title">{{title}}</h1>
+        </header>
+         <div class="top">
+    		<div v-on:tap='seach()'><i class="mui-icon mui-icon-search"></i>搜索</div>
+    		<div v-on:tap='filre()'><i class="iconfont icon-shaixuan"></i>筛选</div>       		  
+    	</div>
+        <div class="mui-content" id="refreshContainer" v-cloak>       	     		
+        	<ul  class="mui-table-view" style='margin-top:45px;padding: 0;'>
+        		<div class="postions" v-if='mWhere'>筛选条件：{{mWhere}} <i class="mui-icon mui-icon-close postions-x" v-on:tap='close()'></i></div>
+			    <div style="height: 30px;"v-if='mWhere'></div>
+				<li class="mui-table-view-cell" v-for="i in itm" >
+					<div class="mui-slider-right mui-disabled" v-if='isread==1'>						
+						<a class="mui-btn mui-btn-yellow " v-on:tap="reading(i.wfdata_list_sid,$index)">查阅</a>						
+					</div>
+					<div class="mui-slider-handle"  v-on:tap="list(i.wfdata_list_sid,i.mod_name,i.bill_title,i.arrive_date,i.start_human,i.start_mbsdept_name,i.start_date,i.bill_sid)">
+						<div class="mui-table-cell">
+							<div class="mui-table-cell mui-col-xs-11 "> 
+				                    <p class="mui-ellipsis" style="color: black;overflow: hidden;">业务名称：{{i.mod_name}}</p>
+				                     <h5><span style="color: black;">业务说明：</span>{{i.bill_title}}</h5>	
+				                    <h5><span style="color: black;">到达时间：</span>{{i.arrive_date}}</h5>
+				                    
+				                    <h5><span style="color: black;">发&nbsp;&nbsp;起&nbsp;&nbsp;人：</span>{{i.start_human}}</h5>
+				                    <h5><span style="color: black;">发起部门：</span>{{i.start_mbsdept_name}}</h5>				                    
+				                    <h5><span style="color: black;">发起时间：</span>{{i.start_date}}</h5>			                    
+				                </div>
+						</div>
+					</div>
+				</li>
+			</ul>		  		    
+        </div>
+		<script src="../../js/mui.min1.js"></script>
+        
+        <script src="../../js/jquery-3.1.0.min .js"></script>
+		<script src="../../js/api.js"></script>
+		<script src="../../js/vue.js"></script>
+
+		<script type="text/javascript">
+		var deceleration = mui.os.ios?44.003:0.0009;
+			
+			var read = new Vue({
+				el:"#read",
+				data:{
+					title:'',
+					type:'',
+					human_sid:'',
+					human_sign_sid:'',
+					i:0,
+					itm:[],
+					sWhere:'',
+					zWhere:'',
+					mWhere:'',
+					arr:[]
+				},
+				ready:function(){			
+					var serf = this;
+					mui.init({
+						swipeBack:true,
+						  pullRefresh : {
+						      container:"#refreshContainer",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+						       down : {
+							      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+							      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+							      height:'50px',//可选,默认50px.下拉刷新控件的高度,
+							      range:'100px', //可选 默认100px,控件可下拉拖拽的范围
+							      offset:'44px', //可选 默认0px,下拉刷新控件的起始位置
+							      auto: true,//可选,默认false.首次加载自动上拉刷新一次							      
+							      callback :serf.cont
+							    },
+						      up : { 
+							      height:'50px', 					       
+								  contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+			                      contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；	
+							      callback :serf.up //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						    }
+						  }
+				    });												
+//							
+										     	   			
+					mui.plusReady(function(){
+				
+						var selfff = plus.webview.currentWebview();
+						serf.mWhere = plus.storage.getItem("mWhere")
+
+						if(serf.mWhere==null){
+							serf.mWhere=''
+						}
+						serf.title=selfff.title;
+						serf.type=selfff.ID;						
+						serf.human_sid=plus.storage.getItem("human_sid");
+						serf.human_sign_sid=plus.storage.getItem("human_sign_sid");
+						serf.isread=plus.storage.getItem("ECMobile_approve");
+						mui.back=function(){
+						 	plus.storage.removeItem('mWhere');
+						 	var ii =  plus.webview.getWebviewById('flire');
+						 	if(ii!=null){
+						 	ii.close("none")
+						 		
+						 	}
+						 	var jj =  plus.webview.getWebviewById('seachs');
+						 	if(jj!=null){
+						 	jj.close("none")
+						 		
+						 	}
+
+				    	    selfff.close()
+				       }
+						api.getDataMod(serf.human_sid,serf.type,function(res){
+							
+							console.log(res) 
+							serf.arr=JSON.parse(JSON.parse(res).result).records;
+							
+						})
+						styles={
+					     	top:'45px',
+							bottom:'0px',
+							zindex: 2222,
+						}
+					})
+				},
+				methods:{
+//					加载更多
+					up:function(){	  					
+						this.i++;	
+						this.countlist('up')				     								        					
+					},					
+					//刷新
+					cont:function(){						
+						this.i=1;
+						this.countlist('down')						
+					},
+					 //搜索
+					seach:function(){	
+						var that = this;
+						seachView=plus.webview.create('seach.html','seachs',styles,{ids:'reading',name:'read',human_sid:that.human_sid,type:that.type,to:'readingxq'})
+						seachView.show()
+					},
+                   //过滤
+					filre:function(){
+						var that=this;
+						var itms = {
+							 
+					         types:that.arr
+					         }
+						flireView=plus.webview.create('flire.html','flire',styles,{types:that.arr,ids:'reading',name:'read'})
+						flireView.show()												
+					},
+					//关闭帅选条件
+					close:function(){
+						plus.storage.removeItem('mWhere');
+						plus.webview.currentWebview().reload(true)
+							
+					},
+					countlist:function(type){
+						var serf =this;					
+					     api.countlist(serf.human_sid,serf.type,serf.i,serf.sWhere,serf.zWhere,serf.mWhere,function(data,tp){
+							mui('#refreshContainer').pullRefresh().endPulldown();										
+					     		if(tp=='err'){
+			                      	mui.toast("请检查您的网络")
+			                      	return;
+			                   } 	
+					            var datas =JSON.parse(data).result[0];					
+								if(datas==''){
+					                mui('#refreshContainer').pullRefresh().endPullup(true); 						           
+						            return;											
+								}										
+							    var datajson =JSON.parse(datas).records
+							    if(type=='up'){
+	                         	   serf.itm.push.apply(serf.itm,datajson);			        				          
+							    	
+							    }else{
+							    	serf.itm=datajson
+							    }
+
+    				             var istrue=false ;									            
+					            if(datajson.length!=10){
+					            	console.log("1")
+					            	istrue=true;
+					            }								     
+					            mui('#refreshContainer').pullRefresh().endPullup(istrue); 
+					            
+					      })
+						
+					},
+					reading:function(list_sid,index){
+						 this.itm.splice(index, 1); 					 
+						 api.readings(list_sid,this.human_sid,this.human_sign_sid,'',function(data,tp){							
+		                      if(tp=='err'){
+		                      	mui.toast("请检查您的网络")
+		                      	return;
+		                      }
+				            var datas =JSON.parse(data).result[0];
+				           
+				           if(datas==true){
+
+					          		mui.toast("操作成功")
+					          	}else{
+					          		mui.toast("操作失败")
+					          	}
+						})						 
+						 var i = plus.webview.getWebviewById("index.html");						        						         
+						 i.evalJS("index.fn()");						        						       
+					},				
+					list:function(list_sid,mod_name,bill_title,arrive_date,start_human,start_mbsdept_name,start_date,bill_sid){
+						var sef =this;
+					 mui.openWindow({
+					 	url:'readingxq.html',
+					 	id:'readingxq',
+					 	extras: {
+								list_sids:list_sid,
+								mod_names:mod_name,
+								bill_titles:bill_title,
+								arrive_dates:arrive_date,
+								start_humans:start_human,
+								start_mbsdept_names:start_mbsdept_name,
+								start_dates:start_date,
+								bill_sids:bill_sid
+							},
+					 	show: {
+									aniShow: 'slide-in-right'
+								},
+						waiting:{
+					      autoShow:false,//自动显示等待框，默认为true					      
+					      
+					            }
+					 })
+						
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

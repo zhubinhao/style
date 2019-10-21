@@ -1,0 +1,270 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style>
+			input{		
+				background-color: white !important;				
+			}
+			.box{
+				width: 80%;				
+				margin-left: 15px !important;
+				
+			}			
+			.inputs {
+				border-top:10px solid gainsboro;
+				/*padding-top: 10px;*/
+				width: 100%; 
+				height: 53px;
+				position: relative;
+				
+			
+			}
+			.divs{
+				float: left;
+			}
+			.list{
+				margin-right: 20px;
+			}
+			.righ{
+				position: absolute;
+				right: -10px;
+				z-index: 999;
+				background-color: red;
+			}
+			.listbox{
+				background-color: white;
+			    z-index: 999999999;
+				padding: 0 10px;
+
+			}
+			.seachbox{
+				height: 45px;
+				width: 100%;
+				border-bottom: 1px solid gainsboro;
+				
+			}
+			.seachbox div{
+				height: 45px;
+				line-height: 46px;
+			}
+			.seachbox div:first-child{
+				float: left;
+				width: 80%;
+				overflow: hidden;
+				text-overflow:ellipsis;
+				/*background-color: red;*/
+			}
+			.seachbox div:last-child{
+				float: right;
+				width: 28px;
+				height: 28px;
+				background-color: gainsboro;
+				margin-top: 8px;
+				line-height: 29px;
+				border-radius: 50%;
+				font-size: 28px;
+				color: white;
+				font-weight: 700;
+			}
+			 [v-cloak] { display: none } 
+		</style>
+	</head>       
+	<body  id='seachs' style="background-color: white;">
+		<div class="mui-content" id="refreshContainer"  v-cloak style="background-color: white;">
+       	  <div class="mui-scroll"  >	
+       	   
+       	   <div class="inputs" style="background-color: gainsboro;">     	   	       
+	       	    <div class="mui-input-row mui-search box divs" >
+				    <input  type="search" class="mui-input-clear" placeholder="搜索标题、模块名称" v-model="name"  @focus="clic">
+				</div>			 
+			 <div class="divs" style="margin-top: 7px;margin-left: 15px;color:#37ACFE ;" v-on:tap='quxiao()' v-if='!jilu'>取消</div>
+			 <div class="divs"  style="margin-top: 7px;margin-left: 15px;color:#37ACFE ;" v-on:tap='cont(name)' v-if='jilu'>确认</div>
+			 
+       	  </div>
+       	  
+       	 <div class="listbox" v-if='jilu'> 
+       	 	<div class="seachbox" v-for="i in seach" v-if='i!==""'>
+       	 	   <div v-on:tap='cont(i)'>{{i}}</div>
+       	 	   <div class="mui-icon mui-icon-closeempty" v-on:tap='del($index)'></div>       	 		
+       	 	</div>                 	 	
+       	 </div>      	 
+
+				<ul class="mui-table-view" style='margin-top: 10px;padding: 0; border-top: none;' v-if='!jilu'> 					
+			        <li class="mui-table-view-cell" v-for='i in itm' 
+			        	v-on:tap="list(i.wfdata_list_sid,i.mod_name,i.bill_title,i.arrive_date,i.start_human,i.start_mbsdept_name,i.start_date,i.bill_sid)">
+			            <div class="mui-table">
+			                <div class="mui-table-cell mui-col-xs-11 "> 
+			                    <p class="mui-ellipsis" style="color: black;overflow: hidden;">业务名称：{{i.mod_name}}</p>
+			                     <h5><span style="color: black;">业务说明：</span>{{i.bill_title}}</h5>	
+			                    <h5><span style="color: black;">到达时间：</span>{{i.arrive_date}}</h5>				                    
+			                    <h5><span style="color: black;">发&nbsp;&nbsp;起&nbsp;&nbsp;人：</span>{{i.start_human}}</h5>
+			                    <h5><span style="color: black;">发起部门：</span>{{i.start_mbsdept_name}}</h5>				                    
+			                    <h5><span style="color: black;">发起时间：</span>{{i.start_date}}</h5>	
+			                </div>				                
+			            </div>
+			        </li>		
+				</ul>		    					 
+		    </div>	      	        
+       </div>
+		<script src="../../js/vue.js"></script>      
+		<script src="../../js/mui.min1.js"></script>       
+		<script type="text/javascript" src="../../js/jquery-3.1.0.min .js" ></script>
+		<script type="text/javascript" src="../../js/api.js" ></script>
+		<script type="text/javascript">
+			var thisView=null;
+			var seachs=new Vue({
+				el:'#seachs',
+				data:{
+					name:'',
+					seach:[],
+					jilu:false,
+					ID:'',	
+					i:0,
+					sWhere:'',
+					itm:[],
+					
+				},
+				ready:function(){
+					var that = this;					
+					mui.init({
+						  pullRefresh : {
+					      container:"#refreshContainer",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等						   
+					       down : {
+							      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+							      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+							      height:'100px',//可选,默认50px.下拉刷新控件的高度,
+							      range:'0px', //可选 默认100px,控件可下拉拖拽的范围						    						      
+							      callback :function(){
+							      	 mui('#refreshContainer').pullRefresh().endPulldown(true);
+							      }
+							    },
+					      up : {
+						      height:'50px', 
+						      contentdown:'正在加载...',  
+							  contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+		                      contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；	
+						      callback :that.countlist //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					       }
+					   }				
+				    });
+				    setTimeout(function(){				    	
+						mui('#refreshContainer').pullRefresh().disablePullupToRefresh(); //禁止上拉加载										    							
+				    },200)
+
+					mui.plusReady(function(){
+						thisView=plus.webview.currentWebview();						                        					  
+					    that.seach = plus.storage.getItem('seach').split("*"); 	
+					    console.log(that.seach)					   
+					})					
+				},
+				methods:{
+					quxiao:function(){				
+						thisView.close('none')						
+					},
+					clic:function(){ 
+						this.jilu=true
+						 mui('#refreshContainer').pullRefresh().disablePullupToRefresh();//禁止上拉加载	
+					},
+					del:function(index){
+						var arr = this.seach;
+						arr.splice(index,1);
+						this.seach = arr;
+					    var	a = arr.join('*')  
+						plus.storage.setItem('seach',a)
+					},
+					cont:function(i){
+						document.activeElement.blur(); 
+						this.itm=[]
+						this.sWhere=i;
+					    this.i=0;
+					    var a;
+					    console.log(a=this.name)
+					 console.log(this.seach)
+					    if(this.seach==""){				    	
+					    	a=this.name
+					    }else{
+					          var is = $.inArray(this.name, this.seach);
+					          if(is>=0){
+					          	 a = this.seach.join('*') 
+					          }else{
+					          	 a = this.name+'*'+this.seach.join('*');					          	 
+					          }				    	
+					    }	
+					    plus.storage.setItem('seach',a)	
+					    this.seach= plus.storage.getItem('seach').split("*"); 
+					    mui('#refreshContainer').pullRefresh().enablePullupToRefresh()  //开启上拉加载	
+					    this.countlist();							
+					    this.jilu=false;											    					 
+					},
+					countlist:function(){
+						var serf =this;	
+						serf.i++;
+						console.log(serf.i)
+					     api.countlist(thisView.human_sid,thisView.type,serf.i,serf.sWhere,"","",function(data,tp){	
+					     	console.log(data)
+					     		if(tp=='err'){
+			                      	mui.toast("请检查您的网络")
+			                      	return;
+			                   } 	
+					            var datas =JSON.parse(data).result[0];	
+									serf.isTTrue=false;																						            
+								if(datas==''){																		                                  																		
+					                mui('#refreshContainer').pullRefresh().endPullup(true); 						           
+						            return;											
+								}										
+							    var datajson =JSON.parse(datas).records							   
+	                         	serf.itm.push.apply(serf.itm,datajson);			        				          						    								    
+    				            var istrue=false ;									            
+					            if(datajson.length!=10){
+					            	istrue=true;
+					            }								     
+					            mui('#refreshContainer').pullRefresh().endPullup(istrue); 					            
+					     })						
+					},
+					list:function(list_sid,mod_name,bill_title,arrive_date,start_human,start_mbsdept_name,start_date,bill_sid){
+						var sef =this;
+						 mui.openWindow({
+						 	url:thisView.to+'.html',
+						 	id:thisView,					 
+						 	extras: {
+									list_sids:list_sid,
+									mod_names:mod_name,
+									bill_titles:bill_title,
+									arrive_dates:arrive_date,
+									start_humans:start_human,
+									start_mbsdept_names:start_mbsdept_name,
+									start_dates:start_date,
+									bill_sids:bill_sid,
+									title:thisView.title
+								},
+						 	show: {
+										aniShow: 'slide-in-right'
+									},
+							waiting:{
+						      autoShow:false,//自动显示等待框，默认为true					      
+						      
+						            }
+						 })
+						 if(mui.os.ios){
+						 	 setTimeout(function(){
+							    thisView.hide('none')	
+							 	
+							 },250) 
+						 }
+					
+
+						
+					}
+					
+				}																
+			})
+			mui.init()
+		</script>
+	</body>
+
+</html>

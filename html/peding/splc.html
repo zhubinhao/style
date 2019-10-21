@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+	</head>     
+	<body id="list">
+		<header class="mui-bar mui-bar-nav">
+	        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	        <h1 class="mui-title">审批流程</h1>
+        </header>
+        <div id="pullrefresh"  class="mui-content "  >
+
+			<div class="mui-scroll" >
+				<div class="mui-loading" >
+					<div class="mui-spinner" v-if='isfalse'  >
+						
+					</div>
+                     <div  v-for="x in itm" style="border: 1px solid gainsboro;padding: 10px;">
+						<div><span style="color: red;">序号：{{x.iorder}}</span></div>
+						<div><span>节点：{{x.step_name}}</span></div>
+						<div><span>步骤：{{x.step_typeName}}</span></div>
+						<!--<div><span>审批人：</span>{{::x.human_name}}</div>-->
+						<div style="color: blue;"><span>审批状态：</span>{{x.apprStatus}}</div>	
+						
+					</div>
+																			 		
+				</div>														
+			</div>					    	
+	    </div>
+		<script src="../../js/mui.min.js"></script>
+               
+        <script src="../../js/jquery-3.1.0.min .js"></script>
+		<script src="../../js/api.js"></script>		
+		<script src="../../js/vue.js"></script>
+
+		<script type="text/javascript">
+			var list = new Vue({
+				el:"#list",
+				data:{
+					isfalse:true,
+					
+					bill_sid:'',
+					i:1,
+					itm:[]
+				},
+				ready:function(){
+					var serf = this;
+					mui.init({swipeBack:true });
+					mui.plusReady(function(){
+						var con = plus.webview.currentWebview()
+						serf.bill_sid=con.bill_sids;						
+						
+						
+						api.splc(serf.bill_sid,function(data,tp){
+						    serf.isfalse=false;
+							if(tp=='err'){
+		                      	mui.toast("请检查您的网络")
+		                      	return;
+		                     } 
+
+							 var datas =JSON.parse(data).result[0];
+		                     console.log(datas )
+							 
+	                           if(datas !=""){
+	                           	console.log(1)
+					        	 	var datajson =JSON.parse(datas).records;
+					        	 	console.log(datajson)
+					        	   serf.itm=datajson;	
+					        	 }							 
+	
+						
+						})
+					})
+				
+				},
+				methods:{
+				
+				}
+			})
+		</script>
+	</body>
+
+</html>

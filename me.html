@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js"></script>
+		<link rel="stylesheet" href="css/style.css" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/me.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		
+	</head>
+
+	<body id='me'>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">我的</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-scroll">
+				<ul class="mui-table-view mui-table-view-chevron" >
+					<li class="mui-table-view-cell mui-media headDiv" v-on:tap="Tab('html/people.html','me')">
+						<a class="mui-navigate-right" href="#account">
+							<img class="mui-media-object mui-pull-left img" v-bind:src="img" >
+							<div class="mui-media-body" style="line-height: 40px;">
+								{{obj.human_name}}
+							</div>
+						</a>
+					</li>
+				</ul>
+				
+				<ul class="mui-table-view mui-table-view-chevron mt15" >
+					<li class="mui-table-view-cell" v-on:tap="Tab('html/aqset.html',aqset)">
+						<a href="#account" class="mui-navigate-right">账号与安全</a>
+					</li>
+				</ul>
+
+				<ul class="mui-table-view mui-table-view-chevron mt15">
+
+					<li class="mui-table-view-cell" v-on:tap="Tab('html/feed.html','feed')">
+						<a href="#privacy" class="mui-navigate-right">问题反馈</a>
+					</li>
+					<li class="mui-table-view-cell" v-on:tap="Tab('html/about.html',about)">
+						<a href="#privacy" class="mui-navigate-right">关于软件</a>
+					</li>
+					<li class="mui-table-view-cell" style="position: relative;" v-on:tap='ban()'>
+						<span>版本更新</span><span style="position: absolute;right: 13px;color: gray;font-size: 14px;">当前版本号：{{bb}}</span>
+					</li>
+				</ul>
+				<ul class="mui-table-view" style="margin-top: 20px;">
+					<li class="mui-table-view-cell" style="text-align: center;" v-on:tap='tuichu()'>
+						<a>退出登录</a>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+		<script src="js/jquery-3.1.0.min .js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/vue.js"></script>
+		<script src="js/serve.js"></script>
+
+		<script type="text/javascript" charset="utf-8">
+			var me = new Vue({
+				el: '#me',
+				data: {
+					obj: {},
+					human_name: '',
+					itm: [],
+					img: '',
+					title: '',
+					bb: '',
+					people:{},
+				},
+				created: function() {
+					var _this = this;
+					mui.init();
+					mui.plusReady(function() {
+						this.obj = JSON.parse(plus.storage.getItem("loginData"));
+						this.headimg();
+
+						plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+							_this.bb = inf.version;
+						});
+					}.bind(this))
+				},
+				methods: {
+					
+					headimg: function() {
+						this.img = plus.storage.getItem("img");
+						if(this.img == undefined || this.img == '') {
+							this.img = 'img/1.jpg'
+						}
+					},
+					Tab: function(url1, id) {
+						TB.open(url1, id)
+					},
+					ban: function() {
+						TB.udate(this.bb)
+					},
+					//  退出
+					tuichu: function() {
+						plus.nativeUI.actionSheet({
+							cancel: "取消",
+							buttons: [{
+								title: '退出登录'
+							}]
+						}, function(b) {
+							switch(b.index) {
+								case 1:
+									var storage = window.localStorage;
+									for(var i in storage) {
+										if(i == 'zhanghao' || i == 'wenjian' || i == 'fuwu' || i == 'xiang') {} else {
+											localStorage.removeItem(i);
+										}
+									}
+									plus.runtime.restart();
+									break;
+								case 2:
+									plus.runtime.quit();
+									break;
+							}
+						})
+					},
+				}
+
+			})
+		</script>
+
+	</body>
+
+</html>

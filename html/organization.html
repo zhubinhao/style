@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/zTreeStyle.css" />
+	</head>
+	  
+	<body id="organization">
+		<header class="mui-bar mui-bar-nav">
+	      <a class="mui-action-back mui-icon  mui-icon-closeempty mui-pull-right" style="font-size: 40px;margin-top: -7px;"></a>
+	      <h1 class="mui-title">组织架构</h1>
+	      
+	 </header> 
+	  <div class="mui-content">
+	  	<div class="mui-indexed-list-search mui-input-row mui-search" style="">
+	  	<input type="search" style="background-color:#EFEFF4 ;border-bottom: 1px solid gainsboro;" class=" mui-indexed-list-search-input" name="" id="text" value=""  placeholder="搜索" v-model="needreceipt"/>
+       </div>
+       <p style="text-align: center;" v-if="istrue">加载中...</p>
+        <ul id="treeDemo" class="ztree" ></ul>
+        <div  id="ttt">
+
+        	 <div v-for='i in itm | filterBy needreceipt in 'name'' >
+	        	<p style="color: black;margin-left: 20px;margin-right: 10px;" v-on:tap='cilc(i.id,i.name)'>
+	        	<img src="../img/987.png" style="position: relative;top: 6px;"/>{{i.name}}</p>
+            </div>
+        </div>
+       
+        
+	  </div>
+		<script src="../js/mui.min.js"></script>
+	  
+		<script src="../js/vue.js"></script>
+	  
+		<script src="../js/jquery-3.1.0.min .js"></script>
+		<script src="../js/api.js"></script>
+		<script src="../js/jquery.ztree.core.js"></script>
+
+
+		<script type="text/javascript">
+			var organization = new Vue({
+				el:"#organization", 
+				data:{
+					user_sid:'',
+					iem:[],
+					needreceipt:'',
+					istrue:true
+				},
+				ready:function(){
+					mui.init({swipeBack:true })	
+					var isthis=this;
+					mui.plusReady(function(){
+						isthis.user_sid=plus.storage.getItem("user_sid")
+					    isthis.TreeShu();
+					 
+					})
+					
+
+				},
+				watch:{
+			        'needreceipt':function (val) {
+			            if(val!=''){
+			            	document.getElementById('treeDemo').style.display='none';
+			            	document.getElementById('ttt').style.display='block';			            	
+			            }else{
+			            	document.getElementById('ttt').style.display='none';			            	
+			            	document.getElementById('treeDemo').style.display='block';			            				            	
+			            }
+			        }
+			    },
+				methods:{					
+					TreeShu:function(){
+						console.log("1")
+						var isthis= this;
+					    var datajsons;
+				    	api.zzjg(isthis.user_sid,function(data,tp){	
+				    		isthis.istrue=false
+		                      if(tp=='err'){
+		                      	mui.toast("请检查您的网络")
+		                      	return;
+		                      }
+		                       console.log(data)
+		                      var datas=JSON.parse(data).result[0];
+						    	console.log(datas)
+						    	datajsons =JSON.parse(datas).records;    		    		       		
+						     for(var i = 0 ; i < datajsons.length ; i++){						     	    
+						     	    datajsons[i] = {'id':datajsons[i].dept_sid,'pId':datajsons[i].parent_sid,'name':datajsons[i].dept_codename,'open':true};					
+						        }
+						       isthis.itm=datajsons;
+						       isthis.tree()
+					    })			           																    	
+					},
+					tree:function(){
+						var isthis=this;
+						var setting = {
+							view: {
+								dblClickExpand: false,
+								showLine: false
+							},
+							data: {
+								simpleData: {
+									enable: true
+								}
+							},
+							callback: {
+								onClick: onClick
+							}
+						};
+						var zNodes =isthis.itm;
+						console.log(zNodes)
+						function onClick(e,treeId, treeNode) {                               
+						    plus.storage.setItem("dept_sid",treeNode.id);
+						    plus.storage.setItem("dept_name",treeNode.name);
+							var i = plus.webview.getWebviewById("project.html");
+						        i.reload('project.tit()');   														
+						    var ii = plus.webview.getWebviewById("html/DZ.html");
+						    if(ii!=null){
+						        ii.reload(true); 
+						       	
+						      }						          
+						    var jj = plus.webview.getWebviewById("jdfk.html");
+						       if(jj!=null){
+						          jj.reload(true); 						       	
+						       }
+							    mui.back();  							    
+						}				
+						$(document).ready(function(){
+							$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+						});
+					},
+				}
+			})
+		</script>
+	</body>
+
+</html>

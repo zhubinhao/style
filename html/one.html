@@ -1,0 +1,332 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>add</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" type="text/css" href=" ../css/iconfont.css"/>
+	</head>
+   <style>
+   	
+   	img{ 
+   		width: 100%;margin-bottom: 20px;
+   	}	
+   	.i{
+   		font-size: 45px !important;
+   		margin-top: -9px;
+   	}
+   	.timep{
+   		padding: 10px;
+   	}
+   	#txt{
+   		padding: 10px;
+   		/*background-color: red;*/
+   	}
+   	.ont-foot{
+   		width: 40px;
+   		height: 40px;
+   		/*background-color: gainsboro;*/
+   		position: fixed;
+   		bottom: 10px;
+   		right: 10px;
+   		border-radius: 50%;
+   		border: 1px solid gainsboro;
+   		box-shadow: 2px 2px 21px gainsboro;
+   		
+   	}
+   	.ont-foot i{
+   		font-size: 40px;
+   		color: white;
+   	}
+   	#container {
+	width: 50px;
+	border: 1px solid gainsboro;
+	height: 50px;
+	border-radius: 50%;
+	background-color: white;
+	box-shadow: 1px 1px 1px black; 
+	text-align: center;
+	line-height: 51px  !important;
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+	text-align: center;
+	line-height: 100%;
+	overflow: hidden;
+}
+.bg {
+	width: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	z-index: -1;
+}
+#bubble {
+	width: 100%;
+	vertical-align: middle;
+	-webkit-transition: all 0.1s linear;
+}
+input{
+	border: none !important;
+	background-color: #EFEFF4 !important;
+	border-bottom: 1px solid gainsboro !important;
+	border-radius: 0px !important;
+}
+   </style>
+	<body id="one">
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon  mui-icon-closeempty mui-pull-left i" ></a>
+		    <h1 class="mui-title">编辑动态</h1>
+		    <a class=" mui-icon mui-icon-checkmarkempty mui-pull-right i" v-on:tap='submits()' v-if='isfalse' ></a>	    
+		</header>
+		<div class="mui-content" >
+			
+			<p class="timep">{{DATAS}}&nbsp;&nbsp;{{name}}</p> 
+			<span style="margin-left: 10px;">标题：<input type="text"  id='title'/></span>
+			<span style="margin-left: 10px;">
+				内容：
+			</span>
+			<div contentEditable="true" id='txt' style="-webkit-user-select:text"></div>	   
+		</div>	
+		<div id="container" v-on:tap='galleryImg()'>
+			<i class="mui-icon mui-icon-image"></i>
+		</div> 
+		<script src="../js/mui.min.js"></script>
+		
+        <script src="../js/jquery-3.1.0.min .js"></script>
+		<script type="text/javascript" src="../js/api.js" ></script>
+		<script src="../js/vue.js"></script>
+
+		<script type="text/javascript">
+var a=false
+mui("#container")[0].addEventListener("longtap",function(e){a=true;})			
+mui("#container")[0].addEventListener("touchmove",function(event){
+	if(a){this.style.left=event.changedTouches[0].clientX-20+'px';
+		this.style.top=event.changedTouches[0].clientY-20+'px';}
+})			
+
+		var one = new Vue({
+			el:"#one",
+			data:{				
+				DATAS:'' ,				
+				imgdata:'',
+				name:'',
+				human_sid :'',
+				dept_sid :'',
+				isfalse:true,
+				times:'',
+				base:'',
+				Url:'',
+                HttpUrl:''
+			},
+			ready:function(){
+
+				mui.init({
+				  gestureConfig:{
+				   tap: true, //默认为true
+				   longtap: true, //默认为false					   
+				  }
+				});
+				var isthis = this;
+				
+			mui('.mui-scroll-wrapper').scroll();				
+				var myDate= new Date();
+				this.times=myDate
+				var mot= myDate.getMonth()+1;
+				var fen=myDate.getMinutes()
+				var miao=myDate.getSeconds()
+//				console.log(myDate.getMinutes())
+				if(fen<10){
+					fen='0'+fen;
+				}
+				if(miao<10){
+					miao='0'+miao; 
+				}
+				this.DATAS = myDate.getFullYear()+'/'+mot+'/'+myDate.getDate()+' '+myDate.getHours()+':'+fen+':'+miao;
+				this.times = myDate.getFullYear()+'-'+mot+'-'+myDate.getDate()+' '+myDate.getHours()+':'+fen+':'+miao;
+				
+				mui.plusReady(function(){
+					 isthis.name = plus.storage.getItem("human_name");
+					 isthis.human_sid = plus.storage.getItem("human_sid");
+					 isthis.dept_sid = plus.storage.getItem("dept_sid");
+				     isthis.HttpUrl=plus.storage.getItem("URLS")
+				     isthis.Url=plus.storage.getItem("httpS")				   					 
+					var heights=plus.display.resolutionHeight-120; 
+					mui("#txt")[0].style.minHeight=heights-80+"px"
+					plus.screen.lockOrientation( "portrait-primary" );													       
+				})				
+			},
+			methods:{				
+				submits:function(){
+					var isthis =this;
+					var txt=document.getElementById("txt")					                                                                
+                      var htmls=txt.innerHTML;
+                 
+                      var times=isthis.times;
+                      var title=mui("#title")[0].value;
+                      if(title==""){
+                      	mui.toast('标题不能为空');
+                      	return;
+                      }
+                      if(htmls==""){
+                      	mui.toast('内容不能为空');
+                      	return;
+                      }
+                      isthis.isfalse=false;  
+						plus.nativeUI.showWaiting(); 					
+						var base = new api.Base64();  
+						var ht = base.encode(htmls);  
+                     api.fabiao(title,isthis.human_sid,isthis.dept_sid,times,ht,function(data,tp){
+                        plus.nativeUI.closeWaiting();
+                            if(tp=='err'){
+	                      	mui.toast("请检查您的网络")
+	                      	console.log("请检查您的网络")
+	                      	
+                     	     isthis.isfalse=true;	                      	
+	                      	return;
+	                       }
+                            var datas =JSON.parse(data).result[0];
+                            if(datas==true){
+                            	console.log("1");
+                            	var i = plus.webview.getWebviewById("html/DZ.html");		
+									 i.evalJS("DZ.pulldown()");
+									 setTimeout(function(){
+                                         mui.back(); 
+									 	
+									 },600)
+                            	
+                            }else{
+                     	     isthis.isfalse=true;	                      	
+                            	
+                            	mui.toast("发表失败，请稍后再试")                            
+                            }
+					     })
+                      
+								
+				},
+				//拍照
+			     getImage:function(){
+			     	var getI=this;
+			        var mobileCamera=plus.camera.getCamera();
+			        mobileCamera.captureImage(function(e){
+			            plus.io.resolveLocalFileSystemURL(e,function(entry){
+			                var path=entry.toLocalURL()+'?version='+new Date().getTime();
+			                getI.uploadHeadImg(path);
+			            },function(err){
+			                mui.toast("读取拍照文件错误");
+			            });
+			        },function(e){
+			            mui.toast("错误：",err);
+			        },function(){
+			            filename:'_doc/head.png';
+			        });
+			    },			
+			    //从本地相册选择
+			     galleryImg:function(){
+			     	var gall=this;
+			        plus.gallery.pick(function(a){
+			            plus.io.resolveLocalFileSystemURL(a,function(entry){
+			                plus.io.resolveLocalFileSystemURL('_doc/',function(root){
+			                    root.getFile('head.png',{},function(file){
+			                        //文件已经存在
+			                        file.remove(function(){
+//			                            console.log("文件移除成功");
+			                            entry.copyTo(root,'head.png',function(e){
+			                                var path=e.fullPath+'?version='+new Date().getTime();
+			                                gall.uploadHeadImg(path);
+			                            },function(err){
+			                                console.log("copy image fail: ",err);
+			                            });
+			                        },function(err){
+			                            console.log("删除图片失败：（"+JSON.stringify(err)+")");
+			                        });
+			                    },function(err){
+			                        //打开文件失败
+			                        entry.copyTo(root,'head.png',function(e){
+			                            var path=e.fullPath+'?version='+new Date().getTime();
+			                            gall.uploadHeadImg(path);
+			                        },function(err){
+			
+			                            mui.alert("上传图片失败：（"+JSON.stringify(err)+")");
+			                        });
+			                    });
+			                },function(e){
+			                });
+			            });
+			        },function(err){
+			        },{
+			            filter:'image'
+			        });
+			    },
+			    //上传图片
+			     uploadHeadImg:function(imgPath){
+			       var upl=this;		     				
+			       var image = new Image();
+			        var name = imgPath.split("=")[1];console.log(name);
+			        var SuffixName = '.png';
+			        console.log(SuffixName)
+				    image.src = imgPath;
+				    console.log(imgPath)
+				    image.onload = function() {
+				    	plus.nativeUI.showWaiting();	
+				    var imgD=upl.getBase64Image(image);
+				    api.UPimg(imgD,name,SuffixName,upl.Url,upl.HttpUrl,function(data,tp){
+				    	plus.nativeUI.closeWaiting();
+                            if(tp=='err'){
+	                      	mui.toast("请检查您的网络")	                      	                      	
+	                      	return;
+	                       }
+                            console.log(data)
+                            console.log(data.split("url:")[1].split("\r\n")[0]);
+                            var imgurl = data.split("url:")[1].split("\r\n")[0];                           
+                              var txt=document.getElementById("txt")
+								o=document.createElement("IMG");
+								o.setAttribute("data-preview-src", ''); 
+								o.setAttribute("data-preview-group", '1'); 						                     
+								o.src=imgurl;					
+								txt.appendChild(o);
+					})			    
+				    }
+			    },			
+			    //压缩图片转成base64
+			     getBase64Image:function(img){
+//			     	console.log(img)
+					var isthis=this;
+			     	 var canvas = document.createElement("canvas");
+				    var width = img.width;
+				    var height = img.height;
+				    if(width > height) {
+				    if(width > 900) { 
+				        height = Math.round(height *= 900 / width);
+				        width = 900;
+				    }
+				    } else {
+				    if(height > 900) {
+				        width = Math.round(width *= 900 / height);
+				        height = 900;
+				    }
+				    }
+				    canvas.width = width; /*设置新的图片的宽度*/
+				    canvas.height = height; /*设置新的图片的长度*/ 
+				    var ctx = canvas.getContext("2d");
+				    ctx.drawImage(img, 0, 0, width, height); /*绘图*/
+				    var dataURL = canvas.toDataURL("image/png",0.8);
+				    isthis.base=dataURL
+				    return dataURL.replace('data:image/png;base64,', '');
+				},
+				// 是否为空
+					isEmpty:function(value){
+						var validateReg = /^\S+$/;
+						return validateReg.test(value);
+					}
+					
+			}
+		})
+			
+		</script>
+	</body>
+
+</html>

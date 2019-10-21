@@ -1,0 +1,301 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style>
+			p{
+				font-size: 16px;
+			}
+			span{
+				color: black;
+			}
+			.bar-p{
+                text-align:  center;
+				color: black;
+			}
+			.bar-div{
+				border-top: 1px solid gold;
+				
+			}
+			button{
+				float: right;
+				margin-right:5px;
+				margin-top: -8px;
+				border-radius: 5px;
+				background:none;
+				border-color:gold ;
+			}
+			.splc{
+				border: 1px solid black;
+				width: 50%;
+				height: 40px;
+				text-align: center;
+				line-height: 40px;
+				display: block;
+				margin: 0 auto;
+				border-radius: 8px;
+				margin-top: 30px;
+				border-color: darkslategray;
+				
+			}
+			.biaoqian{
+				position: absolute;
+				padding: 8px 20px;
+				background-color: #F4F3F3;
+				top: 80px;
+				right: 10px;
+				font-size:19px;
+				font-weight: 700;
+				z-index: 999;
+				background: none;
+				color: #3CCBA7;
+				border: 1px dotted #3CCBA7;
+				transform:rotate(35deg)
+			}
+		</style>
+	</head>     
+	<body id="checked">
+		<header class="mui-bar mui-bar-nav">
+	        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	        <a class="mui-btn  mui-pull-right   mui-btn-danger  mui-btn-outlined" v-on:tap="read()" >审批</a>
+	        
+	        <h1 class="mui-title" style="margin-right: 30px;">{{title}}</h1>
+        </header>
+        <div  class="mui-content mui-content-padded"  >
+        	        <div class="biaoqian" v-if="qianzhang">
+						待审批
+					</div>
+			<!--<div class="mui-scroll" style="padding: 10px;" >-->
+					<p class="mui-ellipsis" style="margin-top: 10px;font-size: 18px;color: black;">业务名称：{{mod_name}}</p>
+					
+                   <p ><span>业务说明：{{title}}</span></p>	
+                    <p><span>到达时间：{{arrive_date}}</span></p>
+                    
+                    <p><span>发起人：{{start_human}}</span></p>
+                    <p><span>发起部门：{{start_mbsdept_name}}</span></p>				                    
+                    <p><span>发起时间：{{start_date}}</span></p>											
+						<!----------------------------------------业务详情--------->
+		<div class="item item-text-wrap" style="border: none;">
+		    <p class="bar-p" style="font-size: 18px; font-weight: 700;">业务详情   <button @click="mx()">明细</button> <button style="border-color: red;" @click="fujian()">附件</button></p>
+		    <hr class="bar-div"/>
+		    <div v-for="i in itm">		    		   
+				   <div class="padding-span"><p style="color: red;">{{$index+1}}:<span style="color: black;">{{i}}</span></p></div>					
+				    					
+            </div>
+		</div>
+		<!---------------------------------------审批历史-->
+		<div  style="border: none; margin-top: 20px;">
+		     <p class="bar-p" style="font-size: 18px; font-weight: 700;">审批历史</p>
+		     <hr class="bar-div"/>
+		     <div style="border-bottom: 1px solid gainsboro;padding:5px ;" v-for="i in itms" >
+			     	<div><span>操作：{{i.check_value}}</span></div>
+						<div><span>审批人：{{i.human_name}}</span></div>
+						<div><span>到达时间：{{i.arrive_date}}</span></div>
+						<div><span>审批时间：{{i.check_date}}</span></div>
+						<div><span>审批意见：{{i.check_text}} </span><span></span></div>
+					
+		     </div>
+		     
+		</div>
+		
+		  <div class="splc" v-if="isfalse" v-on:tap="splc()">查看审批流程图</div>
+			<!--</div>-->					    	
+	    </div>
+		<script src="../../js/mui.min.js"></script>
+               
+        <script src="../../js/jquery-3.1.0.min .js"></script>
+		<script src="../../js/api.js"></script>		
+		<script src="../../js/vue.js"></script>
+
+		<script type="text/javascript">
+			var checked = new Vue({
+				el:"#checked",
+				data:{					
+					title:'',					
+					mod_name:'',
+					list_sid:'',
+					bill_sid:'',
+					start_date:'',					
+					arrive_date:'',
+					start_human:'',
+					human_sid:'',
+					human_sign_sid:'',
+					start_mbsdept_name:'',
+					itm:[],
+					itms:[],
+					isfalse:false,
+					istrue:true,
+					wfdata_list_sid:'',
+					rec_sids:'',
+					workflow_step_sids:'',
+					wfdata_sid:'',
+					isread:'',
+					qianzhang:false
+				},
+				ready:function(){
+					var serf = this;
+					mui.init({swipeBack:true });
+					mui.plusReady(function(){
+						serf.human_sid=plus.storage.getItem("human_sid");
+						serf.human_sign_sid=plus.storage.getItem("human_sign_sid");
+						serf.isread=plus.storage.getItem("ECMobile_approve");
+						
+						var cont = plus.webview.currentWebview()
+						serf.list_sid=cont.list_sids;
+						serf.mod_name=cont.mod_names;
+						serf.title=cont.bill_titles;
+						serf.arrive_date=cont.arrive_dates;
+						serf.start_human=cont.start_humans;
+						serf.start_mbsdept_name=cont.start_mbsdept_names;
+						serf.start_date=cont.start_dates;
+						serf.bill_sid=cont.bill_sids;
+						
+						serf.wfdata_sid=cont.wfdata_sids;
+						serf.rec_sids=cont.rec_sids;
+						serf.workflow_step_sids=cont.workflow_step_sids;
+						console.log(serf.rec_sids)
+						api.ywxq(serf.list_sid,function(data,tp){
+							serf.qianzhang=true;
+							if(tp=='err'){
+		                      	mui.toast("请检查您的网络")
+		                      	return;
+		                     } 
+							 var datas =JSON.parse(data).result[0].split("\r\n\r\n");
+
+							 serf.itm=datas;	
+
+							 fn();
+						})
+						function fn(){
+							api.spli(serf.bill_sid,function(data,tp){
+							
+							if(tp=='err'){
+		                      	mui.toast("请检查您的网络")
+		                      	return;
+		                     } 
+							 var datas =JSON.parse(data).result[0];
+							 var datass =JSON.parse(datas).records;
+							 serf.itms=datass;
+//							 console.log(datass) 
+							 serf.isfalse=true;
+							
+//							console.log(datas)
+						})
+							
+						}
+					})
+					
+				},
+				methods:{
+					read:function(){
+						if(this.isread==0){
+							mui.toast("抱歉，您没有审批的权限");
+							return;
+						}
+						var serlf = this;
+						 plus.nativeUI.actionSheet({
+						title:'请选择',
+						cancel:'取消',
+						buttons:[{title:'同意'},{title:'不同意'},{title:'退回'},{title:'终止'}]
+					},function(b){
+						switch(b.index){
+							case 0: 
+							      break;
+							case 1: serlf.to("ty.html","ty")
+							      break;
+							case 2: serlf.to("bty.html","bty")
+							      break;
+							case 3: serlf.to("th.html","th")
+							      break;
+							case 4: serlf.to("zz.html","zz")
+							      break;
+							
+						}
+					})
+						
+					},
+					splc:function(){
+						var serf=this;
+//						serf.bill_sid
+                        mui.openWindow({
+						 	url:'splc.html',
+						 	id:'splc',
+						 	extras: {
+									
+									bill_sids:serf.bill_sid
+								},
+						 	show: {
+										aniShow: 'slide-in-right'
+									},
+							waiting:{
+						      autoShow:false,//自动显示等待框，默认为true					      
+						      
+						            }
+						 })
+					},
+					mx:function(){
+						var serf = this;
+					mui.openWindow({
+						url:"mx.html",
+						id:"mx",
+						extras:{
+							list_sid:serf.list_sid,
+						},
+						show:{
+							aniShow:"slide-in-right"
+						},
+						waiting:{
+							 autoShow:false,
+						}
+					})
+					},
+					to:function(x,y){
+					     var serf = this;
+							
+					mui.openWindow({
+						url:x,
+						id:y,
+						extras:{
+							list_sids:serf.list_sid,
+							rec_sids:serf.rec_sids,
+						    workflow_step_sids:serf.workflow_step_sids,
+						    bill_sids:serf.bill_sid,
+							wfdata_sids:serf.wfdata_sid
+						   
+						},
+						show:{
+							aniShow:"slide-in-right"
+						},
+						waiting:{
+							 autoShow:false,
+						}
+					})
+					},
+					fujian:function(){
+						var serf =this;
+						mui.openWindow({
+							url:"fujian.html",
+							id:"fujian",
+						    extras: {									
+								bill_sids:serf.bill_sid
+							},
+							show:{
+								aniShow:"slide-in-right"
+							},
+							waiting:{
+								 autoShow:false,
+							}
+						})
+					}
+						
+				}
+				
+			})
+		</script>
+	</body>
+
+</html>

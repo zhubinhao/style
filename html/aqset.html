@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body id='aqset'>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">安全设置</h1>
+		    
+		</header>
+		<div class="mui-content">
+		    	<ul class="mui-table-view">
+		    	        <li class="mui-table-view-cell" @click='listrt("lpass.html")'>
+		    	            <a class="mui-navigate-right">
+		    	               登录密码修改
+		    	            </a>
+		    	        </li>
+		    	       
+		    	        
+		    	    </ul>
+		    	<ul class="mui-table-view" style="margin-top: 10px;">
+		    	       
+		    	        <li class="mui-table-view-cell" @click='listrt("qpass.html")'>
+		    	            <a class="mui-navigate-right">
+		    	                签章密码修改
+		    	            </a>
+		    	        </li> 
+		    	        
+		    	    </ul>
+		    	    <ul class="mui-table-view" style="margin-top: 10px;">
+		    	       
+		    	        <li class="mui-table-view-cell" @click='listrt("tp.html")'>
+		    	            <a class="mui-navigate-right">
+		    	                签章图片修改
+		    	            </a>
+		    	        </li> 
+		    	        
+		    	    </ul>
+		    </div>
+		
+	    <script src="../js/jquery-3.1.0.min .js"></script>	  
+	    <script src="../js/mui.min.js"></script>
+	    <script src="../js/vue.js"></script>
+	    <script src="../js/api.js"></script>
+		<script type="text/javascript">
+			
+		var index = new Vue({
+			el:'#aqset',
+			data:{				
+			}, 
+			ready:function(){
+				var rel = this;
+      	        mui.init({swipeBack:true });    	       
+			},
+			methods:{
+               listrt:function(datd){
+               	api.open(datd,datd)            
+               }				
+			}
+			
+		})
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="../js/rem.js"></script>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<style type="text/css">
+			img{
+				width: 100%;
+			}
+			.i{
+		   		font-size: 45px !important;
+		   		margin-top: -11px;
+		   		
+		   		position: relative;
+		   		left: -5px;
+		   	}
+		   	.btn{
+		   		position: absolute;
+		   		right: 10px;
+		   		top:0px
+		   	}
+		</style>
+	</head>   
+	<body id='DZlist'>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title" style="margin-left: 10px;">{{title}}</h1>
+		    
+		</header>
+		
+			
+	   	<div class="mui-content" >
+	   		<div class="mui-loading" style="margin-top: 10px;">
+				<div class="mui-spinner" v-if='isfalse'></div>	
+			</div>
+			<div class="mui-scroll" style="padding: 10px;" v-if="!htmlss">							 					
+					<p>{{name}}&nbsp;&nbsp;&nbsp;{{time}} <button class="btn" v-if='!isfalse' v-on:tap='open()'>查看附件</button></p>					
+	   		        <pre>{{content}}</pre>			 		
+					<img v-bind:src="url1" data-preview-src="" data-preview-group="1" v-if='url1'/>
+					<img v-bind:src="url2" data-preview-src="" data-preview-group="1" v-if='url2'/>
+					<img v-bind:src="url3" data-preview-src="" data-preview-group="1" v-if='url3'/>					
+			</div>							
+			<div class="mui-scroll" style="padding: 10px;" v-if="htmlss">			
+				<p>{{name}}&nbsp;&nbsp;&nbsp;{{time}}</p>
+				<div  v-html='Html'  ></div>				
+			</div>		
+	    </div>		
+		<script src="../js/mui.min.js"></script>		
+		<script src="../js/api.js"></script>
+		<script src="../js/jquery-3.1.0.min .js"></script>
+        <script src="../js/mui.zoom.js"></script>
+	    <script src="../js/mui.previewimage.js"></script>
+		<script src="../js/vue.js"></script>
+		<script type="text/javascript">
+		  mui.previewImage();
+			
+		var DZlist=new Vue({
+			el:'#DZlist',
+			data:{
+				isfalse:true,
+				title:'',
+				id:'',
+				content:'',
+				time:'',
+				name:'',
+				url1:'',
+				url2:'',
+				url3:'',
+				htmlss:'',
+				Html:''
+			},
+			ready:function(){
+				mui.init({swipeBack:true });	
+				var self = this;
+				mui.plusReady(function() {
+					var selfff = plus.webview.currentWebview();				
+					self.title=selfff.title;
+					self.id=selfff.ID;
+					self.list(selfff.ID);					
+				});				
+			},
+			methods:{
+				open:function(){
+					api.open("peding/fujian.html","fujian",{bill_sids:this.id})
+						
+				},
+				list:function(ids){				
+					var self=this;
+					api.newsxq(ids,function(data,tp){ 
+						self.isfalse=false;
+						if(tp=='err'){
+                      	mui.toast("请检查您的网络")
+                      	return;
+                      }
+						console.log(data)
+						var datas =JSON.parse(data).result[0];						
+			            var a = datas.split('[{"')[1].split('"}]')[0].split('","')
+					    var b=[];			
+					    for(var i = 0 ; i < a.length;i++){
+					    	var c= a[i].split('":"');			
+					    	  b[c[0]]=c[1];					    	   			
+					    }
+					  self.htmlss=b['html'],					  
+					       console.log(b['html'])
+					       if(b['html']!=""){  
+								var base = new api.Base64();  																  							
+								 self.Html = base.decode(b['html']);  
+//								 console.log(self.Html)													       	
+					       }
+					    self.content=b['CMS_Info'];
+					    self.time=b['Publisher_time'];
+					    self.name=b['Publisher']                        
+					    var a = /^.*\.(jpg|gif|png|bmp)$/i;	
+					    console.log(b['url3'])
+					    if(!a.test(b['url1'])){self.url1='';}else{self.url1=b['url1'];}
+					    if(!a.test(b['url2'])){self.url2='';}else{self.url2=b['url2'];}
+					    if(!a.test(b['url3'])){self.url3='';}else{self.url3=b['url3'];}			            
+					})
+				}				
+			}
+		})
+			
+		</script>
+	</body>
+
+</html>

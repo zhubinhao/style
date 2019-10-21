@@ -1,0 +1,37 @@
+.mui-grid-view.mui-grid-9 .mui-table-view-cell {
+	border: none;
+}
+
+p {
+	margin-top: 10px;
+	padding-left: 10px;
+	font-size: 17px;
+}
+
+.mui-table-view-cell>a:not(.mui-btn) {
+	margin: 0;
+}
+
+.mui-table-view-cell li {
+	border: none;
+}
+
+.cthead1 {
+	width: 30px;
+	height: 30px;
+	float: right;
+	margin-right: 20px;
+	margin-top: 30px;
+}
+
+.mui-table-view-cell>a {
+	text-align: left;
+}
+
+.network {
+	height: 30px;
+	background-color: #DD4E42;
+	color: white;
+	line-height: 30px;
+	text-align: center;
+}

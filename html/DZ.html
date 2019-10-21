@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="../js/rem.js"></script>
+		<link href="../css/mui.min.css" rel="stylesheet" />	
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<style>						
+			.mui-ellipsis {
+			    overflow: hidden;
+			    white-space: pre-wrap;
+			    text-overflow: ellipsis;
+			}
+			.mui-table-view .mui-media-object {
+			    line-height: 52px;
+			    max-width: 62px;
+			    height: 52px;
+			}
+			.bott{
+				position: absolute;bottom: 10px;right: 10px;width: 50px;height: 50px;z-index: 99;
+				border: 1px solid gainsboro;border-radius: 50%;text-align: center;line-height: 51px;
+			}
+			.bott i{
+				font-size: 30px !important; color: gainsboro;
+			}
+			.mui-p{
+				color: black;
+				height: 40px;
+				line-height: 20px;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+			}
+			.smalls{
+				color:#A2A2A6 ;
+				margin-top: 10px;
+				top: 3px;
+			}
+		</style>
+	</head>    
+	<body id='DZ'>
+		
+		<header class="mui-bar mui-bar-nav" >
+		    <h1 class="mui-title" v-on:tap="publish('organization.html','organization','slide-in-bottom')">{{title}}</h1>
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>	        
+	        <a class=" mui-icon mui-icon-plusempty mui-pull-right" style="font-size: 40px;margin-top: -8px;" v-on:tap='publish("one.html","one","slide-in-bottom")'></a> 		    
+		</header>	   
+	   <div class=" mui-content" id="refreshContainer">	 
+	   	<div class="mui-loading" v-if='isfalse'>
+	   		<div class="mui-spinner">	   			
+	   		</div>	   		
+	   	</div>
+	   	     <p id="wu" style="text-align: center;margin-top: 10px;"></p>
+			<ul class="mui-table-view" v-for='i in itm' style="margin: 0 ;padding: 0;">
+			    <li class="mui-table-view-cell mui-media" v-on:tap="publish('DZlist.html','DZlist','pop-in',i.Publish_sid,i.Publish_Title)" style="border-bottom: 1px solid gainsboro;">
+			      
+			            <img class="mui-media-object mui-pull-left" :src="i.img"> 
+			            <div class="mui-media-body">
+			                <p class='mui-ellipsis mui-p'>{{i.Publish_Title}}</p>
+			                <small class="smalls">{{i.Publisher_time}}&nbsp;&nbsp;&nbsp;{{i.Publisher}}</small>				                
+			            </div>
+			        
+			    </li>					    
+			</ul>												  
+	   	</div>	   	  
+		<script src="../js/mui.min1.js"></script>
+		<script src="../js/jquery-3.1.0.min .js"></script> 		
+		<script src="../js/api.js"></script>
+		<script src="../js/vue.js"></script>
+		<script type="text/javascript">
+		var deceleration = mui.os.ios?44.003:0.0009;	
+
+		var DZ=new Vue({
+			el:'#DZ',
+			data:{
+				isfalse:true,
+				i:0,
+				itm:[],
+				dept_sid:'',
+				title:''
+			},
+			ready:function(){						
+				var isthis = this;
+				var sef = this;				
+				mui.init(
+					{					
+					  pullRefresh : {
+					    container:"#refreshContainer",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+					    down : {
+					      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+					      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+					      height:'50px',//可选,默认50px.下拉刷新控件的高度,
+					      range:'100px', //可选 默认100px,控件可下拉拖拽的范围
+					      offset:'44px', //可选 默认0px,下拉刷新控件的起始位置
+					      callback :isthis.pulldown
+					    },
+					    up : {
+		                   height:'50px', 					       
+					      contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+                          contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；					       
+					       callback :isthis.pullup					      							     
+					    }
+		             }
+				});  
+				mui.plusReady(function(){
+				    isthis.dept_sid = plus.storage.getItem("dept_sid"); 
+				    console.log(isthis.dept_sid)
+				    if( plus.storage.getItem("dept_name").split("-")[1]==undefined){
+				    	isthis.title = plus.storage.getItem("dept_name").split("-")[0];
+				    }else{
+				    isthis.title = plus.storage.getItem("dept_name").split("-")[1];				    	
+				    }
+				    console.log(plus.storage.getItem("dept_name"))
+					plus.webview.currentWebview().setStyle({scrollIndicator:'none'});  
+					isthis.pullup()					
+													
+					
+				})													  				
+			},
+			methods:{
+				//上拉加载更多
+				pullup:function(){
+				var sef = this;									
+						sef.i++;
+				     api.news(sef.i,sef.dept_sid,function(data,tp){ 
+                         sef.isfalse=false; 				     	
+				     	if(tp=='err'){
+		                      	mui.toast("请检查您的网络")
+		                      	return;
+		                    }	
+		                    console.log(data)
+				            var datas =JSON.parse(data).result[0];  
+				            console.log(datas)
+				            if(datas==''){
+				            	console.log(sef.itm)
+				            	if(sef.itm==''){
+				            	document.getElementById('wu').innerHTML='暂无数据...'				            		
+				            	}                           
+		                          mui('#refreshContainer').pullRefresh().endPullup(true); 				            
+					            return;											
+						      }           
+							    datajson =JSON.parse(datas).records
+	                         	sef.itm.push.apply(sef.itm,datajson);
+					          var istrue=false ;					            
+					            if(datajson.length!=10){
+					            	istrue=true;
+					            }								     
+				            mui('#refreshContainer').pullRefresh().endPullup(istrue); 
+				     })	
+				},
+				//下拉刷新
+				pulldown:function(){
+					 var sef = this;
+					 api.news(1,sef.dept_sid,function(data,tp){									
+		                      if(tp=='err'){
+		                      	mui.toast("请检查您的网络")
+		                      	return;
+		                      }
+				            var datas =JSON.parse(data).result[0];
+				            var datajson =JSON.parse(datas).records;
+				            sef.itm=datajson;
+				            sef.i=1;
+							mui('#refreshContainer').pullRefresh().endPulldown();					            
+						})
+				},
+				top:function(){		
+					 console.log("121")					
+					 window.scroll(0,0);						
+				},	
+				//组织架构、发表、详情页面
+				publish:function(URLs,IDs,type,id,titles){
+					console.log(id)
+					api.open(URLs,IDs,{ID: id,title:titles},type)                  
+				},				
+                
+					
+			}
+        })
+		</script>
+	</body>
+</html>
