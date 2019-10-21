@@ -1,0 +1,60 @@
+html,
+body {
+	height: 100%;
+	overflow: hidden;
+}
+
+.mui-indexed-list-bar a {
+	color: gray;
+	padding: 3px 0;
+}
+
+.mui-indexed-list-bar a:hover {
+	color: red;
+}
+
+.mui-table-view .a1 {
+	position: absolute;
+	margin-left: 20px;
+	top: 10PX;
+	right: 40px;
+	color: black;
+}
+
+.mui-table-view .a2 {
+	position: absolute;
+	margin-left: 20px;
+	top: 10PX;
+	right: 80px;
+	color: black;
+}
+
+a {
+	color: black;
+}
+
+.bgg {
+	background-color: #F0F0F0;
+}
+
+.po {
+	position: absolute;
+	left: 48%;
+
+	margin-top: 10px;
+}
+.mui-table-view li div{
+	min-height: 50px;
+	border-bottom: 1px solid #F0F0F0;
+	line-height: 50px;
+	padding-left: 15px;
+}
+.mui-table-view li a{
+	display: block;
+	height: 30px;
+	background: #F0F0F0;
+	line-height: 30px;
+	padding-left: 15px;
+	border-bottom: none;
+	
+}

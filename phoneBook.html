@@ -5,260 +5,150 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
-		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
-		<link href="../css/mui.min.css" rel="stylesheet" />
-		<link href="../css/mui.indexedlist.css" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
-		
-		<style>
-			html,
-			body {
-				height: 100%;
-				overflow: hidden;
-			}
-			.mui-bar {
-				-webkit-box-shadow: none;
-				box-shadow: none;
-			}
-			.mui-table-view-cell>a:not(.mui-btn){
-				padding: 0;margin: 0;
-			} 
-			.mui-table-view li a{
-				float: right;
-				z-index: 999;
-				font-size: 25px;
-						
-			}
-			.mui-indexed-list-bar a{
-				color: gray ;	
-			}
-			.mui-indexed-list-bar a:hover{
-				color: red ;	
-			}
-			.mui-table-view .a1{
-				position: absolute; 
-				margin-left: 20px;
-				top:10PX;right: 40px;
-				color: black;
-			}.mui-table-view .a2{
-				position: absolute; 
-				margin-left: 20px;
-				top:10PX;right: 80px;
-				color: black;				
-			}
-			a{
-				color: black;
-			}
-			.bgg{
-				background-color: #F0F0F0;
-			}
-			.po{
-				position: absolute;
-				left: 48%;
-				/*top:-10px;*/
-				margin-top: 10px;
-			}
-		</style>
+		<link href="./css/mui.min.css" rel="stylesheet" />
+		<link href="./css/mui.indexedlist.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="./css/iconfont.css" />
+		<link href="./css/phone.css" rel="stylesheet" />
 	</head>
 
-	<body id='HYID'>						
-		<header class="mui-bar mui-bar-nav" style="box-shadow: 1px 1px 1px gainsboro;">
-		    <a class=" mui-icon mui-icon-search mui-pull-right"  v-on:tap='list()' ></a>
-		    <h1 class="mui-title">通讯录</h1>
+	<body id='HYID'>
+		<header class="mui-bar mui-bar-nav">
+			<a class=" mui-icon mui-icon-search mui-pull-right" @tap='tolist()'></a>
+			<h1 class="mui-title">通讯录</h1>
 		</header>
-		<div class="mui-content" >
-			<div class="mui-loading po" >
-					<div class="mui-spinner" v-if='isfalse'></div>
-			   </div> 
-			<div class="mui-scroll">				
-		<ul class="mui-table-view" >													
-		   <a  name={{i.py}} v-for='i in itm' >
-		    <li id={{i.py}} data-value='{{i.name}}' style="border-bottom: 1px solid gainsboro; " class="{{i.py !=''? 'bgg': '' }} mui-table-view-cell mui-indexed-list-item" v-on:tap='phos(i.phone,i.name)'>{{i.py}}{{i.name}}{{i.phone}}
-            </li>
-			</a>								
-		</ul>
-				
-		</div>			
-		</div>		
+		<div class="mui-content">
+
+			<div class="mui-scroll">
+				<ul class="mui-table-view">
+					<li v-for='i in list'>
+						<a id={{i.py}} v-if="i.py">{{i.py}}</a>
+						<div v-else @tap="phos(i.phone,i.name)">{{i.name.split("-")[0]}}</div>
+					</li>
+				</ul>
+
+			</div>
+		</div>
 		<div class="mui-indexed-list-bar" style="position: fixed;right: 0;z-index: 99;top: 44px;">
-					<a href="#A" v-on:tap='to("A")' id='A1'>A</a>
-					<a href="#B" v-on:tap='to("B")' id='B1'>B</a>
-					<a href="#C" v-on:tap='to("C")' id='C1'>C</a>
-					<a href="#D" v-on:tap='to("D")'id='D1'>D</a> 
-					<a v-on:tap='to("E")' href="#E"id='E1'>E</a>
-					<a v-on:tap='to("F")' href="#F"id='F1'>F</a>              
-					<a v-on:tap='to("G")' href="#G"id='G1'>G</a>
-					<a v-on:tap='to("H")' href="#H"id='H1'>H</a>
-					<a v-on:tap='to("I")' href="#I"id='I1'>I</a>
-					<a v-on:tap='to("J")' href="#J"id='J1'>J</a>
-					<a v-on:tap='to("K")' href="#K"id='K1'>K</a>
-					<a v-on:tap='to("L")' href="#L"id='L1'>L</a>
-					<a v-on:tap='to("M")' href="#M"id='M1'>M</a>
-					<a v-on:tap='to("N")'href="#N"id='N1'>N</a>
-					<a v-on:tap='to("O")'href="#O"id='O1'>O</a>
-					<a v-on:tap='to("P")'href="#P"id='P1'>P</a>
-					<a v-on:tap='to("Q")'href="#Q"id='Q1'>Q</a>
-					<a v-on:tap='to("R")'href="#R"id='R1'>R</a>
-					<a v-on:tap='to("S")'href="#S"id='S1'>S</a>
-					<a v-on:tap='to("T")'href="#T"id='T1'>T</a>
-					<a v-on:tap='to("U")'href="#U"id='U1'>U</a>
-					<a v-on:tap='to("V")'href="#V"id='V1'>V</a>
-					<a v-on:tap='to("W")'href="#W"id='W1'>W</a>
-					<a v-on:tap='to("X")'href="#X"id='X1'>X</a>
-					<a v-on:tap='to("Y")'href="#Y"id='Y1'>Y</a>
-					<a v-on:tap='to("Z")'href="#Z"id='Z1'>Z</a>
-				</div>
+			<a v-on:tap='to(item)' id="item+'1'" v-for="item in keys">{{item}}</a>
 
-		<script src="../js/mui.min.js"></script>
-		<script src="../js/api.js"></script>		
-		
-		 <script src="../js/jquery-1.11.0.js"></script>
-		<script src="../js/vue.js"></script>
+		</div>
+
+		<script src="./js/mui.min.js"></script>
+		<script src="./js/vue.js"></script>
+		<script src="./js/serve.js"></script>
+
 		<script type="text/javascript" charset="utf-8">
-		$('a[href*=#]').click(function() {  
-                console.log(this.pathname)  
-                if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {  
-                    var $target = $(this.hash);  
-                    $target = $target.length && $target || $('[name=' + this.hash.slice(1) + ']');  
-                    if ($target.length) {  
-                        var targetOffset = $target.offset().top-44;  
-                        $('html,body').animate({  
-                                    scrollTop: targetOffset  
-                               },1000);  
-                        return false;  
-                    }  
-                }  
-            }); 
-            
-           
-		var HY = new Vue({
-			el:'#HYID', 
-			data:{
-				isfalse:true,
-				itm:[]
-			},
-			ready:function(){
-  
-				mui.init({swipeBack:true});
-							
-				var sef =this;
-				mui.plusReady(function(){
-                         plus.webview.currentWebview().setStyle({scrollIndicator:'none'});           
-
-				 onNetChange()
-				    document.addEventListener("netchange",onNetChange,false);
-					 function onNetChange(){
-					　　//获取当前网络类型
-					　　var nt = plus.networkinfo.getCurrentType();
-					　　switch(nt){					　　　　
-					　          case plus.networkinfo.CONNECTION_ETHERNET:
-					　　　　case plus.networkinfo.CONNECTION_WIFI:
-					　　　　case plus.networkinfo.CONNECTION_CELL2G:
-					　　　　case plus.networkinfo.CONNECTION_CELL3G:
-					　　　　case plus.networkinfo.CONNECTION_CELL4G:					         					           
-						        sef.getdata()					
-					　　　　　　break;
-					　　　　default:
-                               sef.isfalse=false;
-                             	console.log("当前没有网络")
-					　　　　　　break;
-					　　}
-					}
-				 
-				})	
-					
-				
-			},
-			methods:{
-				getdata:function(){
-					var sef = this
-					api.txl(function(data,tp){
-						sef.isfalse=false
-	                      if(tp=='err'){
-	                      	mui.toast("请检查您的网络")
-	                      	return;
-	                      }
-			            var datas =JSON.parse(data).result[0];
-			            var datajson =JSON.parse(datas).records;			          							            
-			            sef.itm=datajson;			           	
-					})
+			var HY = new Vue({
+				el: '#HYID',
+				data: {
+					isfalse: true,
+					list: [],
+					keys: [],
+					obj: {},
 				},
-				to:function(i){
-					mui.toast(i)
-					document.getElementById(i+"1").style.color='red';
-					setTimeout(function(){
-					    document.getElementById(i+"1").style.color='gray';
-						
-					},1000)
-				},
-				phos:function(phone,name){
-                     var sre=this;
-					if(phone==""){
-					   return;	
-					}
-					a=[{
-						title: "打电话"
-					}, {
-						title: "发短信"
-					},{
-						title: "分享给好友"
-					}
-					];
-					plus.nativeUI.actionSheet({
-					    title:'-'+name,
-						cancel: "取消",
-						buttons: a
-					},function(b){
-						switch(b.index){
-							case 0:
-							    break;
-							case 1:
-								sre.phon(phone);
-								break;
-							case 2:
-								sre.sms(phone);
-								break;
-							case 3:
-								sre.share(name,phone);
-								break;
-							default:
-								break
-						}
-					})
-					
-				},
-				//打电话
-				phon:function(i){
-					console.log(i)
-					plus.device.dial( i , confirm ) 
-					
-				},
-				//发短信
-				sms:function(i){
-					console.log(i)
-					var msg = plus.messaging.createMessage(plus.messaging.TYPE_SMS);
-					msg.to = [i];
-					msg.body = ''; 
-					plus.messaging.sendMessage( msg );
-				},
-				list:function(){
-					var sef =this;
-					api.open('seachs.html','SeachS',{data: sef.itm},'slide-in-right')
-				},
-				share:function(name,iphone){
-					var names=name.split('-')[0];console.log(names)
-					var mes = names+'的手机号：'+iphone 
-					plus.share.sendWithSystem({content:mes}, function(){ 
-							console.log('分享成功');
-						}, function(e){
-							console.log('分享失败：'+JSON.stringify(e));
+				ready: function() {
+					mui.init({
+						swipeBack: true
+					});
+					mui.plusReady(function() {
+						this.obj = JSON.parse(plus.storage.getItem("loginData"));
+						plus.webview.currentWebview().setStyle({
+							scrollIndicator: 'none'
 						});
+						this.getdata()
+					}.bind(this))
+				},
+				methods: {
+					getdata: function() {
+						var data = {
+							"accountname": this.obj.accountname,
+						}
+						TB.get("GetCompanyBook/", JSON.stringify(data), function(res) {
+							console.log(JSON.stringify(res.data))
+							var list = [],
+								keys = []
+							res.data.map(function(res) {
+								var obj = JSON.parse(res)
+								obj.py && keys.push(obj.py)
+								list.push(obj)
+							})
+							this.list = list;
+							this.keys = keys;
+						}.bind(this))
+					},
+					to: function(i) {
+						mui.toast(i)
+						var targetOffset = document.getElementById(i).offsetTop ;
+						window.scrollTo(0, targetOffset)
+						document.getElementById(i + "1").style.color = 'red';
+						setTimeout(function() {
+							document.getElementById(i + "1").style.color = 'gray';
+						}, 1000)
+					},
+					phos: function(phone, name) {
+						var sre = this;
+						if(phone == "") {
+							return;
+						}
+						a = [{
+							title: "打电话"
+						}, {
+							title: "发短信"
+						}, {
+							title: "分享给好友"
+						}];
+						plus.nativeUI.actionSheet({
+							title: '-' + name,
+							cancel: "取消",
+							buttons: a
+						}, function(b) {
+							switch(b.index) {
+								case 0:
+									break;
+								case 1:
+									sre.phon(phone);
+									break;
+								case 2:
+									sre.sms(phone);
+									break;
+								case 3:
+									sre.share(name, phone);
+									break;
+								default:
+									break
+							}
+						})
+
+					},
+					//打电话
+					phon: function(i) {
+						console.log(i)
+						plus.device.dial(i, confirm)
+					},
+					//发短信
+					sms: function(i) {
+						var msg = plus.messaging.createMessage(plus.messaging.TYPE_SMS);
+						msg.to = [i];
+						msg.body = '';
+						plus.messaging.sendMessage(msg);
+					},
+					tolist: function() {
+						var sef = this; 
+						TB.open('/html/seachs.html', 'SeachS', {
+							data: sef.itm
+						}, 'slide-in-right')
+					},
+					share: function(name, iphone) {
+						var names = name.split('-')[0];
+						var mes = names + '的手机号：' + iphone
+						plus.share.sendWithSystem({
+							content: mes
+						}, function() {}, function(e) {});
+					}
+
 				}
-				
-			}
-			
-		})
-			
+
+			})
 		</script>
 	</body>
 
