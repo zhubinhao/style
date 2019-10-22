@@ -685,6 +685,13 @@
 					"saoyisao.html"
 				],
 				"priority": 0
+			},
+			"phoneBook.html": {
+				"resources": [],
+				"refer": [
+					"html/seachs.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {

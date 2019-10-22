@@ -465,5 +465,10 @@
 			"img/���.png",
 			"img/y�\u0006.png"
 		]
+	},
+	"phoneBook.html": {
+		"refer": [
+			"html/seachs.html"
+		]
 	}
 }

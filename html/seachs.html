@@ -9,29 +9,7 @@
 		 <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
 		<link href="../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
-		<style>
-			html,
-			body {
-				height: 100%;
-				overflow: hidden;
-			}
-			.mui-bar {
-				-webkit-box-shadow: none;
-				box-shadow: none;
-			}
-			.mui-table-view-cell>a:not(.mui-btn){
-				padding: 0;margin: 0;
-			}
-			.mui-table-view li a{
-				float: right;
-				z-index: 999;
-				font-size: 25px;
-				
-			}
-			.mui-table-view li .a1{
-				margin-left: 20px;
-			}
-		</style>
+		<link href="../css/phone.css" rel="stylesheet" />
 	</head>   
 	<body id='seach'>			
         <header class="mui-bar mui-bar-nav">
@@ -44,13 +22,12 @@
 		<div class="mui-content">
 			<div class="mui-scroll">
 				<ul class="mui-table-view" >
-								
-					<li v-if='name!=""'  class="mui-table-view-cell mui-indexed-list-item" v-for="i in itm  | filterBy name in 'name' " v-on:tap="phos(i.phone,i.name)">{{i.name}}{{i.phone}}			
-					     
-					</li>
-					
-					
-											
+					<li v-if='name!=""'  
+						class="mui-table-view-cell mui-indexed-list-item" 
+						v-for="i in itm  | filterBy name in 'name' " 
+						v-on:tap="phos(i.phone,i.name)">
+						{{i.name.split("-")[0]}}</li>
+									
 				</ul>
 			</div>
 		</div>
@@ -74,7 +51,7 @@
 				mui.plusReady(function() {		 	 	
 					var selfff = plus.webview.currentWebview();									
 					self.itm=selfff.data;
-//					console.log(self.itm)	
+					console.log(self.itm)	
 					
 				});
 				  
