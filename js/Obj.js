@@ -11,7 +11,7 @@
 					pid: "checking"
 				},
 				{
-					icon: "jg1 icon-weichayue",
+					icon: "jg1 icon-chayuerizhi",
 
 					name: "待查阅",
 					pid: "reading"
@@ -22,12 +22,12 @@
 			name: "已处理",
 			show: true,
 			list: [{
-					icon: "jg4 icon-shenpi",
+					icon: "jg2 icon-shenpi",
 					name: "已审批",
 					pid: "checked"
 				},
 				{
-					icon: "icon-cloud-date jg5",
+					icon: "icon-shu jg3",
 
 					name: "已查阅",
 					pid: "read"
@@ -38,17 +38,17 @@
 			name: "统计",
 			show: true,
 			list: [{
-					icon: "icon-zhengzaibanli jg2",
+					icon: "icon-banli jg4",
 					name: "我的在办",
 					pid: "mychecking"
 				},
 				{
-					icon: "icon-yibanjie jg6",
+					icon: "icon-banjie jg9",
 					name: "已办结文件",
 					pid: "checkover"
 				},
 				{
-					icon: "icon-weibiaoti9 jg7",
+					icon: "icon-icon_yiban jg8",
 
 					name: "我的已办",
 					pid: "mychecked"
