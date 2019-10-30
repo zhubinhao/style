@@ -47,7 +47,7 @@
 				<div class="tit">{{i.attach_name}}</div>
 				<div class="btn">{{i.filesize}}
 					<span style="float: right;">{{i.is}}</span>
-					<span style="float: right;margin-right: 10px;" @tap.stop="clcik(i)">重新下载</span>
+					<span v-if="i.is=='已下载'" style="float: right;margin-right: 10px;" @tap.stop="clcik(i)">重新下载</span>
 
 				</div>
 			</div>
@@ -90,7 +90,12 @@
 							setTimeout(function() {
 								this.itm = arr;
 							}.bind(this), 100)
-						}.bind(this))
+						}.bind(this),function(data){
+							mui.toast(data.msg, {
+								duration: 'long'
+							})
+								
+						})
 					},
 					//查询是否含有该文件
 					feach: function(name) {
@@ -159,21 +164,22 @@
 							return;
 						}
 
-						plus.nativeUI.confirm('是否下载：\r\n' + url.attach_name, function(e) {
+						plus.nativeUI.confirm('是否重新下载：\r\n' + url.attach_name, function(e) {
 							if(e.index == 0) {
 								var FileSystemURL = '_downloads/' + url.attach_name;
 								console.log(FileSystemURL)
 								plus.io.resolveLocalFileSystemURL(FileSystemURL, function(entry) {
-									entry.removeRecursively(function(entry) {
-
-										
+									console.log(entry)
+									entry.remove(function(entry) {
+								       that.dowload(url, url.attach_url)										
 									}, function(e) {
 									console.log(e)
+									 that.dowload(url, url.attach_url)
 										
 									});
 								});
 
-								that.dowload(url, url.attach_url)
+
 							}
 						});
 

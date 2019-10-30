@@ -4,8 +4,8 @@
 	//	owner.url = 'http://113.72.123.243:9090/Rest/TSvrMethods/'; 
 
 	owner.getURL = function(url, data) {
-		var port = "9986"  
-		var http =  "http://47.112.137.218"
+		var port = "9986"
+		var http = "http://47.112.137.218"
 		var path = http + ":" + port + '/Rest/TSvrMethods/' + url + data
 		return path
 	}
@@ -22,15 +22,15 @@
 
 				return call(data)
 			},
-			fail: function() {
-				plus.nativeUI.closeWaiting()	
-			    mui('#refreshContainer').pullRefresh()&&mui('#refreshContainer').pullRefresh().endPulldown();
-				return fail()			
+			fail: function(data) {
+				plus.nativeUI.closeWaiting()
+				mui('#refreshContainer').pullRefresh() && mui('#refreshContainer').pullRefresh().endPulldown();
+				return fail(data)
 			}
 		})
 	}
 	owner.post = function(obj, call, fail) {
-		var fail = fail ? fail : function() {}		
+		var fail = fail ? fail : function() {}
 		var path = 'http://47.112.137.218:9986/Rest/TSvrMethods/' + obj.url
 		console.log(path)
 		owner.ajax({
@@ -52,7 +52,7 @@
 		api.banben(function(data) {
 			var datas = JSON.parse(data).result[0];
 			var banben = datas.split(",")[1].split(":")[1];
-			var bbs = '"' +bb + '"';
+			var bbs = '"' + bb + '"';
 			var a = datas.split(",")[3].split(":")[1].split('"')[1];
 			console.log(banben)
 			console.log(bbs)
@@ -63,8 +63,7 @@
 				mui.confirm(a, "更新提示", ['确认', '取消'], function(e) {
 					if(e.index == 0) {
 						plus.runtime.openURL('http://jinyintian.vicp.cc:13856/金银田PMIS.apk');
-					} else {
-					}
+					} else {}
 				})
 			} else {
 				mui.toast('已是最新版本')
@@ -121,13 +120,12 @@
 			'popGesture': 'none'
 		});
 	}
-	owner.alert=function(url,cellback){
-		mui.prompt('<img src='+url+' alt="" style="width: 130px;height: 80px;"/>','请输入签章密码','签章密码',['取消','确认'],function (e) {
-		    cellback(e)
-		},'div')
-		document.querySelector('.mui-popup-input input').type='password';						
-        
-		
+	owner.alert = function(url, cellback) {
+		mui.prompt('<img src=' + url + ' alt="" style="width: 130px;height: 80px;"/>', '请输入签章密码', '签章密码', ['取消', '确认'], function(e) {
+			cellback(e)
+		}, 'div')
+		document.querySelector('.mui-popup-input input').type = 'password';
+
 	}
 	owner.ajax = function(options) {
 		options.type = options.type || "GET"
@@ -157,13 +155,17 @@
 					options.success(data);
 				} else {
 					console.log(JSON.stringify(data))
-					options.fail()
-					mui.toast(data.msg, {
-						duration: 'long'
-					})
+
+					if(data.code != 4) {
+						mui.toast(data.msg, {
+							duration: 'long'
+						})
+					}
+					options.fail(data)
+
 				}
 			} else if(xhr.readyState == 4 && xhr.status != 200) {
-				mui.alert("主机名或端口有误")
+				mui.alert("请检查网络")
 				options.fail()
 			}
 		}

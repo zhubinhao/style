@@ -62,9 +62,21 @@ span {
 .listBox{
 	padding-top: 5px;
 }
-.padding-span p{
+.padding-span >div{
 	font-size: 18px;
+	word-wrap:break-word;
+	display: flex; 
+	justify-content: flex-start;
+	align-items: center;
+    color: gray;
 
+}
+
+.padding-span span{
+	margin-right: 5px;
+}
+.padding-span div{
+	flex: 1;
 }
 .hisTit{
 	display: inline-block;

@@ -20,8 +20,8 @@
 				待审批
 			</div>
 			<p class="mui-ellipsis xqtitle">业务名称：{{cont.mod_name}}</p>
-			<p><span>业务说明：{{cont.bill_title}}</span></p>
-			<p><span>到达时间：{{cont.arrive_date}}</span></p>
+			<p><span>单据标题：{{cont.bill_title}}</span></p>
+			<p><span>送达时间：{{cont.arrive_date}}</span></p>
 
 			<p><span>发起人：{{cont.start_human}}</span></p>
 			<p><span>发起部门：{{cont.start_mbsdept_name}}</span></p>
@@ -32,7 +32,7 @@
 				<hr class="bar-div" />
 				<div v-for="i in itm" class="listBox">
 					<div class="padding-span">
-						<p><span style="color: black;">{{$key}} &nbsp;</span>{{i}}</p>
+						<div><span style="color: black;">{{$key}} &nbsp;</span><div>{{i}}</div></div>
 					</div>
 				</div>
 			</div>
@@ -131,51 +131,73 @@
 						}.bind(this))
 					},
 					read: function() {
-						console.log(this.check_type)
-						var buttons = [{
-							title: '同意'
-						}, {
-							title: '不同意'
-						}, {
-							title: '退回'
-
-						}, {
-
-							title: '终止'
-						}]
+						var serlf = this;
+                   console.log(this.check_type)
 						if(this.check_type == 1) {
-							buttons = [{
+							var buttons = [{
 								title: '同意'
 							}, {
 								title: '不同意'
 							}, {
 								title: '终止'
 							}]
+
+							plus.nativeUI.actionSheet({
+								title: '请选择',
+								cancel: '取消',
+								buttons: buttons
+							}, function(b) {
+								console.log(JSON.stringify(b))
+								switch(b.index) {
+									case 0:
+										break;
+									case 1:
+										serlf.to("ty.html", "ty")
+										break;
+									case 2: 
+										serlf.to("bty.html", "bty")
+										break;
+									case 3:
+										serlf.to("zz.html", "zz")
+										break;
+								}
+							})
+						} else {
+							var buttons = [{
+								title: '同意'
+							}, {
+								title: '不同意'
+							}, { 
+								title: '退回'
+
+							}, {
+								title: '终止'
+							}] 
+							plus.nativeUI.actionSheet({
+								title: '请选择',
+								cancel: '取消',
+								buttons: buttons
+							}, function(b) {
+								console.log(JSON.stringify(b))
+
+								switch(b.index) {
+									case 0:
+										break;
+									case 1:
+										serlf.to("ty.html", "ty")
+										break;
+									case 2:
+										serlf.to("bty.html", "bty")
+										break;
+									case 3:
+										serlf.to("th.html", "th")
+										break;
+									case 4:
+										serlf.to("zz.html", "zz")
+										break;								
+								}
+							})
 						}
-						var serlf = this;
-						plus.nativeUI.actionSheet({
-							title: '请选择',
-							cancel: '取消',
-							buttons: buttons
-						}, function(b) {
-							switch(b.index) {
-								case 0:
-									break;
-								case 1:
-									serlf.to("ty.html", "ty")
-									break;
-								case 2:
-									serlf.to("bty.html", "bty")
-									break;
-								case 4:
-									serlf.to("zz.html", "zz")
-									break;
-								default:
-									serlf.to("th.html", "th")
-
-							}
-						})
-
 					},
 					splc: function() {
 						var serf = this;

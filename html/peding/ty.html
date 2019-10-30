@@ -91,7 +91,10 @@
 									arr.push(JSON.parse(v))
 								})
 								this.itm = arr
-							}.bind(this))
+							}.bind(this),function(res){
+								console.log(res)
+								mui.toast(res.msg)
+							})
 						},
 						read: function() {
 							this.tpeople = []

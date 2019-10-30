@@ -20,9 +20,8 @@
 			</div>
 
 			<p class="mui-ellipsis xqtitle">业务名称：{{cont.mod_name}}</p>
-			<p><span>业务说明：{{cont.bill_title}}</span></p>
-			<p><span>到达时间：{{cont.arrive_date}}</span></p>
-
+			<p><span>单据标题：{{cont.bill_title}}</span></p>
+			<p><span>送达时间：{{cont.arrive_date}}</span></p>
 			<p><span>发起人：{{cont.start_human}}</span></p>
 			<p><span>发起部门：{{cont.start_mbsdept_name}}</span></p>
 			<p><span>发起时间：{{cont.start_date}}</span></p>
@@ -32,7 +31,7 @@
 					<hr class="bar-div" />
 					<div v-for="i in itm" class="listBox" >
 						<div class="padding-span">
-							<p><span style="color: black;">{{$key}} &nbsp;</span>{{i}}</p>
+							<div><span style="color: black;">{{$key}} &nbsp;</span><div>{{i}}</div></div>
 						</div>
 					</div>
 			</div>
