@@ -1,0 +1,112 @@
+p {
+	font-size: 18px;
+}
+
+span {
+	color: black;
+}
+
+.bar-p {
+	text-align: left;
+	padding-left: 20px;
+	color: black;
+	font-size: 18px; font-weight: 700;
+	margin: 50px 0 10px 0;
+}
+.show{
+	float: right;
+	margin-right: 10px;
+	font-weight: 500;
+}
+.bar-div {
+	border-top: 1px solid gray;
+}
+
+
+
+.splc {
+	border: 1px solid black;
+	width: 50%;
+	height: 40px;
+	text-align: center;
+	line-height: 40px;
+	display: block;
+	margin: 0 auto;
+	border-radius: 8px;
+	margin-top: 30px;
+	border-color: darkslategray;
+}
+
+.biaoqian {
+	position: absolute;
+	background-color: #F4F3F3;
+	top: 80px;
+	right: 20px;
+	font-size: 17px;
+	font-weight: 700;
+	z-index: 9;
+	background: none;
+	color: #3CCBA7;
+	border: 1px solid #3CCBA7;
+	transform: rotate(35deg);
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	text-align: center;
+    line-height: 100px;
+}
+.xqtitle{
+	margin-top: 10px;font-size: 18px;color: black;
+}
+
+.listBox{
+	padding-top: 5px;
+}
+.padding-span p{
+	font-size: 18px;
+
+}
+.hisTit{
+	display: inline-block;
+	width: 86px;
+	font-size: 16px;
+
+}
+.hisConetnt{
+	color: gray !important;
+	flex: 1;
+}
+.hisList{
+	border-bottom: 1px solid gainsboro;padding:5px ;
+}
+.hisList >div{
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	padding-top: 8px;
+}
+.buttonBox{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 60px;
+  background: white;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+.buttonBox button{
+
+	flex: 1;
+	margin: 0;
+	background: #409eff;
+	border: none;
+	border-radius: 0;
+	color: white;
+	font-size: 20px;
+}
+
+.buttonBox .fj{
+	background: #e6a23c;
+}

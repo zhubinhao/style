@@ -4,8 +4,8 @@
 	//	owner.url = 'http://113.72.123.243:9090/Rest/TSvrMethods/'; 
 
 	owner.getURL = function(url, data) {
-		var port = plus.storage.getItem('port1') || "9986"
-		var http = plus.storage.getItem('http1') || "http://47.112.137.218"
+		var port = "9986"  
+		var http =  "http://47.112.137.218"
 		var path = http + ":" + port + '/Rest/TSvrMethods/' + url + data
 		return path
 	}
@@ -23,16 +23,15 @@
 				return call(data)
 			},
 			fail: function() {
-				plus.nativeUI.closeWaiting()
-				return fail()
+				plus.nativeUI.closeWaiting()	
+			    mui('#refreshContainer').pullRefresh()&&mui('#refreshContainer').pullRefresh().endPulldown();
+				return fail()			
 			}
 		})
 	}
 	owner.post = function(obj, call, fail) {
-		var fail = fail ? fail : function() {}
-		var port = plus.storage.getItem('port') || "9090"
-		var http = plus.storage.getItem('http') || "http://es.zy16.com"
-		var path = http + ":" + port + '/Rest/TSvrMethods/' + obj.url
+		var fail = fail ? fail : function() {}		
+		var path = 'http://47.112.137.218:9986/Rest/TSvrMethods/' + obj.url
 		console.log(path)
 		owner.ajax({
 			url: path,
@@ -40,11 +39,9 @@
 			type: 'POST',
 			success: function(data) { //返回接受信息
 				plus.nativeUI.closeWaiting()
-
 				return call(data)
 			},
 			fail: function() {
-
 				plus.nativeUI.closeWaiting()
 				return fail()
 			}
@@ -123,6 +120,14 @@
 		wv.setStyle({
 			'popGesture': 'none'
 		});
+	}
+	owner.alert=function(url,cellback){
+		mui.prompt('<img src='+url+' alt="" style="width: 130px;height: 80px;"/>','请输入签章密码','签章密码',['取消','确认'],function (e) {
+		    cellback(e)
+		},'div')
+		document.querySelector('.mui-popup-input input').type='password';						
+        
+		
 	}
 	owner.ajax = function(options) {
 		options.type = options.type || "GET"

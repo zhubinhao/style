@@ -7,204 +7,164 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 	</head>
- 
-	<body id="th" >
+
+	<body id="th">
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-		     <a class="mui-btn  mui-pull-right   mui-btn-danger  mui-btn-outlined" v-on:tap="read()" >提交</a>	    
-		    <h1 class="mui-title">退回</h1>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-btn  mui-pull-right   mui-btn-danger  mui-btn-outlined" v-on:tap="read()">提交</a>
+			<h1 class="mui-title">退回</h1>
 		</header>
 		<div class="mui-content">
 			<p style="margin-top: 10px;padding-left: 10px;color: black;font-size: 16px;">审批意见：</p>
 			<textarea name="" rows="" cols="" placeholder="请输入审批意见" style="height: 130px;" v-model='text' maxlength="300"></textarea>
 			<p style="padding-left: 10px;color: black;font-size: 16px;">下一节点人员：</p>
 			<div>
-				
-			
-			<div class="mui-scroll" style="height: 250px;overflow-y:scroll;">
-				<ul class="mui-table-view mui-table-view-radio">
-					<li class="mui-table-view-cell" v-for='i in itm'>
-						<a class="mui-navigate-right" @click='thr(i.workflow_step_sid)'>
-							{{i.step_name}}--{{i.human_name_list}}
-						</a>
-					</li> 
-					
-				</ul>
+				<div class="mui-scroll" style="height: 250px;overflow-y:scroll;">
+					<ul class="mui-table-view mui-table-view-radio">
+						<li class="mui-table-view-cell" v-for='i in itm'>
+							<a class="mui-navigate-right" @click='thr(i.workflow_step_sid)'>
+								{{i.human_name_list}}--{{i.step_name}}
+							</a>
+						</li>
+					</ul>
+				</div>
+
 			</div>
-			
-		</div>
-		<script src="../../js/mui.min.js"></script>
-		
-		<script src="../../js/jquery-3.1.0.min .js"></script>
-		<script src="../../js/api.js"></script>
-		<script src="../../js/vue.js"></script>
+			<script src="../../js/mui.min.js"></script>
+			<script src="../../js/vue.js"></script>
+			<script src="../../js/serve.js"></script>
+			<script src="../../js/base64.js"></script>
 
-		<script type="text/javascript">
-			var th = new Vue({
-				el:"#th",
-				data:{
-					text:'',
-					people:'',
-					wfdata_sid:"",
-					itm:[],
-					name:'',
-					human_sign_sid:'',
-					SignActive:'',
-					list_sid:'',
-					qzpass:'',
-					img:'',
-				},
-				ready:function(){
-					mui.init({
-			          swipeBack:true //启用右滑关闭功能
-					});
-					var srlf=this;
-					
-					mui.plusReady(function(){
-						 plus.nativeUI.showWaiting()
-						 srlf.name = plus.storage.getItem("human_sid");
-						 srlf.human_sign_sid = plus.storage.getItem("human_sign_sid");
-						 srlf.SignActive = plus.storage.getItem("SignActive");
-						var con = plus.webview.currentWebview();
-						srlf.wfdata_sid=con.wfdata_sids;
-						 srlf.list_sid=con.list_sids;
-						console.log(srlf.wfdata_sid)
-						api.thpeople(srlf.wfdata_sid,function(data,tp){
-
-							if(tp=='err'){
-		                      	mui.toast("请检查您的网络")
-		                      	return;
-		                    } 		                    
-		                     var datas =JSON.parse(data).result[0];
-							  console.log(datas)
-							 srlf.itm=JSON.parse(datas).records;
-							      srlf.qz()
-						})
-					})
-				
-				},
-				methods:{
-					qz:function(){
-						var isthis = this;
-						 api.qztp(isthis.name,function(data,tp){
-						 	plus.nativeUI.closeWaiting()
-						 	if(tp=='err'){
-		                      	mui.toast("请检查您的网络")
-		                      	return;
-		                     } 
-//		                     console.log(JSON.parse(data).result[0].split("\r\n"))
-		                     var datas = JSON.parse(data).result[0].split("\r\n");
-//					         console.log(datas[1]);
-					         isthis.qzpass=datas[1];
-					         if(datas[0].split("=")[1]==''){
-					         	isthis.img='../../img/121.png';
-					         	return;
-					         }
-					         isthis.img=localStorage.getItem('wenjian')+'/Ec_server/'+datas[0].split("=")[1]+'.png';
-//					         isthis.img='';
-					         console.log(isthis.img)
-						 }) 
+			<script type="text/javascript">
+				var th = new Vue({
+					el: "#th",
+					data: {
+						text: '',
+						people: '',
+						wfdata_sid: "",
+						itm: [],
+						name: '',
+						human_sign_sid: '',
+						SignActive: '',
+						list_sid: '',
+						qzpass: '',
+						img: '',
 					},
-					thr:function(workflow_step_sid){
-						console.log(workflow_step_sid);
-						this.people=workflow_step_sid;
-					},
-					read:function(){
-						var isthis = this;
-						 if(this.text==''){
-						 	mui.toast("审批意见不能为空");
-						 	return;
-						 }
-						 if(this.people==''){
-						 	mui.toast("请勾选下一节点人员");
-						 	return;
-						 }
-						 if(isthis.SignActive != "True"){
-//							mui.toast("123");
-							api.thsubmit(isthis.list_sid,isthis.name,isthis.human_sign_sid,isthis.text,isthis.people,function(data,tp){									 	
-								 	if(tp=='err'){
-				                      	mui.toast("请检查您的网络")
-				                      	return;
-				                      }
-								 	console.log(JSON.parse(data).result[0])
-								 	if(JSON.parse(data).result[0]==true){ 
-								 		mui.toast("审批成功")　　												
-                                           var wvs = plus.webview.all(); 　　//所有窗口对象 								 
-										　　var launch = plus.webview.getWebviewById('index.html'); 　　//首页窗口对象 								 
-										　　            launch.evalJS("index.fn()");
-										   var self = plus.webview.currentWebview(); 　　//当前窗口对象
-										　var one = plus.webview.getWebviewById('checking'); 　　//首页窗口对象 								 
-												　　var two = plus.webview.getWebviewById('checked'); 　　//首页窗口对象 	
-												console.log(two)
-												　　one.close('slide-out-right');  
-												if(two!=null){
-												　　two.close('slide-out-right');                                                 			                                     
-													
-												}								 
-										　　// 此时，窗口对象只剩下首页以及当前窗口，直接关闭当前窗口即可； 								 
-										　　self.close('slide-out-right');
-                                          			                                     
-						          	}else{
-						          		mui.webview.toast("审批失败");
-						          	}
-							 	
-			                     } )
-					            return;
-						}
-				        setTimeout(function(){
-						 
-						api.alert(isthis.img,function(e){
-							 if (e.index == 0) {
-//							 	mui.toast("取消")
-							 }else{
+					ready: function() {
+						mui.init({
+							swipeBack: true //启用右滑关闭功能
+						});
+						var serf = this;
 
-							 	var inputs='sign_psw='+e.value;
-							 	console.log(e.value)
-							 	if(isthis.qzpass==inputs){
-							 	  plus.nativeUI.showWaiting()
-							 		
-							 		api.thsubmit(isthis.list_sid,isthis.name,isthis.human_sign_sid,isthis.text,isthis.people,function(data,tp){
-									 	plus.nativeUI.closeWaiting();
-										 	if(tp=='err'){
-						                      	mui.toast("请检查您的网络")
-						                      	return;
-						                      }
-										 	console.log(JSON.parse(data).result[0])
-										 	if(JSON.parse(data).result[0]==true){ 
-										 		mui.toast("审批成功")　　
-                                                   var wvs = plus.webview.all(); 　　//所有窗口对象 								 
-												　　var launch = plus.webview.getWebviewById('index.html'); 　　//首页窗口对象 								 
-												　　            launch.evalJS("index.fn()");
-												   var self = plus.webview.currentWebview(); 　　//当前窗口对象
-												　　var one = plus.webview.getWebviewById('checking'); 　　//首页窗口对象 								 
-												　　var two = plus.webview.getWebviewById('checked'); 　　//首页窗口对象 	
-												console.log(two)
-												　　one.close('slide-out-right');  
-												if(two!=null){
-												　　two.close('slide-out-right');                                                 			                                     
-													
-												} 								 
-												　　// 此时，窗口对象只剩下首页以及当前窗口，直接关闭当前窗口即可； 								 
-												　　self.close('slide-out-right');                                                 			                                     
-								          	}else{
-								          		mui.webview.toast("审批失败");
-								          	}									 	
-					                     } )
-							 		
-							 	}else{
-							 		mui.toast("签章密码错误")
-							 	}
-							 }
+						mui.plusReady(function() {
+							var cont = plus.webview.currentWebview()
+							serf.cont = cont
+							serf.obj = JSON.parse(plus.storage.getItem("loginData"))
+							plus.nativeUI.showWaiting()
+							serf.getPeople()
+							serf.getQz()
 						})
-						
-						 },200);
+
+					},
+					methods: {
+						getQz: function() {
+							var data = {
+								"accountname": this.obj.accountname,
+								"human_sid": this.obj.human_sid,
+							}
+							TB.get("NewGetPersonSignPicPwd/", JSON.stringify(data), function(res) {
+								this.img = 'http://47.112.137.218:8088/HCFile/' + res.human_sign_sid + '.png'
+								this.sign_psw = res.sign_psw
+							}.bind(this))
+						},
+						getPeople: function() {
+							var data = {
+								"accountname": this.obj.accountname,
+								"wfdata_sid": this.cont.wfdata_sid,
+
+							}
+							TB.get("GetBackHuman/", JSON.stringify(data), function(res) {
+								console.log(JSON.stringify(res.data))
+								var arr = []
+								res.data.forEach(function(v) {
+									arr.push(JSON.parse(v))
+								})
+								this.itm = arr
+							}.bind(this))
+						},
+						thr: function(workflow_step_sid) {
+							console.log(workflow_step_sid);
+							this.people = workflow_step_sid;
+						},
+						read: function() {
+							var isthis = this;
+							if(this.text == '') {
+								mui.toast("审批意见不能为空");
+								return;
+							}
+							if(this.people == '') {
+								mui.toast("请勾选下一节点人员");
+								return;
+							}
+							if(this.sign_psw != '') {
+								TB.alert(this.img, function(e) {
+									if(e.index == 0) {
+
+									} else {
+										var inputs = '"' + e.value + '"';
+										if(this.sign_psw == inputs) {
+											console.log(this.people)
+
+											this.submits()
+										} else {
+											mui.toast("签章密码错误")
+										}
+									}
+								}.bind(this))
+							} else {
+								this.submits()
+
+							}
+
+						},
+						submits: function() {
+							var isIOS = '【苹果端】';
+							if(!mui.os.ios) {
+								isIOS = '【安卓端】';
+							}
+							var val = isIOS + this.text
+							var serf = this;
+							var data = {
+								"accountname": serf.obj.accountname,
+								"wfdata_list_sid": serf.cont.wfdata_list_sid,
+								"human_sign_sid": serf.cont.human_sign_sid,
+								"check_value": "12",
+								"check_text": Base64.encode(val),
+								"human_sid": serf.obj.human_sid,
+								"to_step_sid": this.people,
+								"Allhuman": "",
+							}
+							console.log(JSON.stringify(data))
+							TB.get("ExeWorkflowGoNext/", JSON.stringify(data), function(res) {
+								var ii = plus.webview.getWebviewById("index.html");
+								ii.evalJS("index.getCount()");　　
+								var self = plus.webview.currentWebview();　　 //当前窗口对象							　
+								var two = plus.webview.getWebviewById('checked');
+								var three = plus.webview.getWebviewById('checking');
+								three.evalJS("checking.countlist()");　　
+								if(two != null) {　　
+									two.close('slide-out-right');
+								}　　
+								self.close('slide-out-right');
+								mui.toast("审批成功")
+								serf.istrue = false;
+							}.bind(this))
+
+						},
 					}
-				}
-				
-			})
-		</script>
+
+				})
+			</script>
 	</body>
 
 </html>
-
- 

@@ -210,7 +210,6 @@
 									root.getFile('head.png', {}, function(file) {
 										//文件已经存在
 										file.remove(function() {
-											console.log("文件移除成功");
 											entry.copyTo(root, 'head.png', function(e) {
 												var path = e.fullPath + '?version=' + new Date().getTime();
 												gall.uploadHeadImg(path);
@@ -227,15 +226,15 @@
 											gall.uploadHeadImg(path);
 										}, function(err) {
 
-											//			                            mui.alert("上传图片失败：（"+JSON.stringify(err)+")");
+
 										});
 									});
 								}, function(e) {
-									//			                    mui.alert("读取文件夹失败：（"+JSON.stringify(err)+")");
+
 								});
 							});
 						}, function(err) {
-							//			            mui.alert("读取拍照文件失败: ",err);
+
 						}, {
 							filter: 'image'
 						});
@@ -244,8 +243,7 @@
 					//上传图片
 					uploadHeadImg: function(imgPath) {
 						var upl = this;
-						//			     	 mui.alert(imgPath)
-						//选中图片之后，头像当前的照片变为选择的照片
+
 						var mainImg = document.getElementById('head-img');
 
 						mainImg.src = imgPath;
@@ -255,12 +253,28 @@
 						image.onload = function() {
 							var imgData = "data:image/png;base64," + upl.getBase64Image(image);
 							plus.storage.setItem("img", imgData);
+							upl.submitImg(upl.getBase64Image(image))
 							var i = plus.webview.getWebviewById("me.html");
 							i.evalJS("me.headimg()");
 							//				
 						}
 					},
+					submitImg:function(imgData){
+							console.log(imgData)
+							TB.post({
+								url:"esUpFile",
+								data:{
+									"accountname": this.obj.accountname,
+									"base64str": imgData,
+									"sfile":"1558877944547.png"																
+								}
+							}, function(res) {
 
+
+						}.bind(this))
+						
+					},
+					
 					//压缩图片转成base64
 					getBase64Image: function(img) {
 						var canvas = document.createElement("canvas");
@@ -268,14 +282,14 @@
 						var height = img.height;
 						//				     calculate the width and height, constraining the proportions
 						if(width > height) {
-							if(width > 300) {
-								height = Math.round(height *= 300 / width);
-								width = 300;
+							if(width > 500) {
+								height = Math.round(height *= 500 / width);
+								width = 500;
 							}
 						} else {
-							if(height > 300) {
-								width = Math.round(width *= 300 / height);
-								height = 300;
+							if(height > 500) {
+								width = Math.round(width *= 500 / height);
+								height = 500;
 							}
 						}
 						canvas.width = width; /*设置新的图片的宽度*/

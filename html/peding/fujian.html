@@ -7,188 +7,211 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=0.5,maximum-scale=2,user-scalable=yes" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<style>
-			.list{ 
+			.list {
 				position: relative;
 				height: 65px;
 				border-bottom: 1px solid gainsboro;
 				margin: 0 10px;
 			}
-			.list >span{
-				line-height:46px;
+			
+			.list>span {
+				line-height: 46px;
 			}
-			.btn{
+			
+			.btn {
 				font-size: 14px;
 				color: gray;
 				position: absolute;
 				bottom: 5px;
 				width: 100%;
-				
-			}	
-			.tit{
+			}
+			
+			.tit {
 				margin-top: 10px;
-				/*color: red;*/
 				display: -webkit-box;
 				-webkit-box-orient: vertical;
 				-webkit-line-clamp: 2;
 				overflow: hidden;
-				/*background-color: red;*/
-			}				
+			}
 		</style>
 	</head>
 
 	<body id="fujian">
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-		    <h1 class="mui-title">附件列表</h1>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">附件列表</h1>
 		</header>
-		<div  class="mui-content">
+		<div class="mui-content">
 			<div id="fu" style="text-align: center;line-height: 50px;"></div>
 			<div class="list" v-for='i in itm | orderBy "filesize" ' v-on:tap='open(i)'>
-				<div class="tit">{{i.attach_name}}</div><div class="btn" >{{i.filesize}}<span style="float: right;">{{i.is}}</span></div>
+				<div class="tit">{{i.attach_name}}</div>
+				<div class="btn">{{i.filesize}}
+					<span style="float: right;">{{i.is}}</span>
+					<span style="float: right;margin-right: 10px;" @tap.stop="clcik(i)">重新下载</span>
+
+				</div>
 			</div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery-1.11.0.js" ></script>
-		<script type="text/javascript" src="../../js/api.js" ></script>
-		<script type="text/javascript" src="../../js/vue.js" ></script>
-		<script type="text/javascript">
+		<script type="text/javascript" src="../../js/jquery-1.11.0.js"></script>
+		<script type="text/javascript" src="../../js/api.js"></script>
+		<script type="text/javascript" src="../../js/vue.js"></script>
+		<script src="../../js/serve.js"></script>
 
+		<script type="text/javascript">
 			var fujian = new Vue({
-				el:'#fujian',
-				data:{
-					itm:[]
+				el: '#fujian',
+				data: {
+					itm: [],
+					bill_sids: ""
 				},
-				ready:function(){
-					var that = this; 
+				ready: function() {
+					var that = this;
 					mui.init();
-					mui.plusReady(function(){
-						var con = plus.webview.currentWebview(); 
-//						console.log(con.bill_sids)
-						//con.bill_sids
-						//'019F0BA9-AFA9-4092-AFDE-F7D12D54345E'
-						api.GetBillFile(con.bill_sids,function(res){
-							var data = JSON.parse(res).result;  
-							console.log(data)								 						
-							if(data==''){
-								document.getElementById('fu').innerHTML='暂无附件';
-								return;
-							}
-							var dataJson = JSON.parse(data).records; 
-//							console.log(JSON.stringify(dataJson))							
-							var  data = dataJson.map(function(x){
-								x.attach_url=localStorage.getItem('wenjian')+x.attach_url;	
-								return x; 
-							})													
-							for(var i = 0 ; i <data.length ; i++){
-								that.feach(data[i])
-							}
-							setTimeout(function(){
-//							console.log(JSON.stringify(data))
-							   that.itm=data;
-								
-							},100)
-						})
-					}) 
-				}, 
-				methods:{ 
+					mui.plusReady(function() {
+						var con = plus.webview.currentWebview();
+						that.bill_sids = con.bill_sids
+						that.getData()
+					})
+				},
+				methods: {
+					getData: function() {
+						var data = {
+							"accountname": "hc",
+							"bill_sid": this.bill_sids,
+						}
+						TB.get("GetBillFile/", JSON.stringify(data), function(res) {
+							var arr = []
+							console.log(res.data[0])
+							res.data.forEach(function(v) {
+								var obj = JSON.parse(v)
+								obj.attach_url = 'http://47.112.137.218:8088' + obj.attach_url
+								this.feach(obj)
+								arr.push(obj)
+							}.bind(this))
+							setTimeout(function() {
+								this.itm = arr;
+							}.bind(this), 100)
+						}.bind(this))
+					},
 					//查询是否含有该文件
-				    feach:function(name){ 
-				    	var that=this;
-					    var FileSystemURL = '_downloads/'+name.attach_name;
-					    
-					    var IMG = name.FileExt.split('.')[1].toUpperCase();
-					   if(IMG=='JPG'||IMG=='JPEG'||IMG=='PNG'||IMG=='BMP'||IMG=='GIF'){
-							name.is='打开';	
+					feach: function(name) {
+						var that = this;
+
+						var FileSystemURL = '_downloads/' + name.attach_name;
+						var IMG = name.attach_name.split('.')[1].toUpperCase();
+						if(IMG == 'JPG' || IMG == 'JPEG' || IMG == 'PNG' || IMG == 'BMP' || IMG == 'GIF') {
+							name.is = '打开';
 							return;
 						}
-//					   console.log(FileSystemURL)
-						 plus.io.resolveLocalFileSystemURL(FileSystemURL, function(entry){
-							 //路径存在	
-							  console.log(entry.toLocalURL()) 
-                              name.is='已下载';
-//                            name.is='未下载';                            								 																		
-                              
-							}, function(e){
-								 //路径不存在
-                              name.is='未下载';                            								 																		
-							});		 					
+						plus.io.resolveLocalFileSystemURL(FileSystemURL, function(entry) {
+							//路径存在	
+							name.is = '已下载';
+						}, function(e) {
+							//路径不存在
+							name.is = '未下载';
+						});
 					},
+
 					/*
 					 * 打开附件
 					 * */
-					open:function(url){
-						var that = this; 
-//						console.log(JSON.stringify(url)) 
-//						console.log(url.is)
-						var IMG = url.FileExt.split('.')[1].toUpperCase();
+					open: function(url) {
+						console.log(url)
+
+						var that = this;
+						var IMG = url.attach_name.split('.')[1].toUpperCase();
 						console.log(IMG)
-						if(IMG=='JPG'||IMG=='JPEG'||IMG=='PNG'||IMG=='BMP'||IMG=='GIF'){
+						if(IMG == 'JPG' || IMG == 'JPEG' || IMG == 'PNG' || IMG == 'BMP' || IMG == 'GIF') {
 							mui.openWindow({
-								url:'IMGS.html',
-								id:'IMGS',
-								 extras:{
-							       data:url
-							    },
+								url: 'IMGS.html',
+								id: 'IMGS',
+								extras: {
+									data: url
+								},
 							})
 							return;
 						}
-						if(url.is=='已下载'){
-							var FileSystemURL = '_downloads/'+url.attach_name;
-				                    console.log(FileSystemURL) 	//绝对地址	
-							
-//							var FileSystemURL = '_downloads/cbd8034a427b42263f68.pdf';
-							plus.io.resolveLocalFileSystemURL(FileSystemURL, function(entry) { 
-				                    console.log(entry.toLocalURL()) 	//绝对地址	
-				                plus.runtime.openFile( FileSystemURL,{}, function(e){ 
-//	                             	mui.alert('请下载相关软件打开附件')
-                                              console.log(JSON.stringify(e))
-	                            } );
-				           });                         
-						}else{							
-						   plus.nativeUI.confirm( '是否下载：\r\n'+url.attach_name, function(e){
-								if(e.index==0){
-								  console.log(1)
-								  that.dowload(url,url.attach_url)
+						if(url.is == '已下载') {
+							var FileSystemURL = '_downloads/' + url.attach_name;
+							plus.io.resolveLocalFileSystemURL(FileSystemURL, function(entry) {
+								plus.runtime.openFile(FileSystemURL, {}, function(e) {});
+							});
+						} else {
+							plus.nativeUI.confirm('是否下载：\r\n' + url.attach_name, function(e) {
+								if(e.index == 0) {
+									url.attach_name = url.attach_name
+									that.dowload(url, url.attach_url)
 								}
-							});   
-						}					
+							});
+						}
 					},
-				   //下载文件
-				    dowload:function (name,url){
-                        var  strurl = url.replace(/\\/g,"/"); 
-                        console.log(strurl)
-                          var names ='_downloads/'+name.attach_name;
-					    var options = {method:"GET",filename:names};
-						dtask = plus.downloader.createDownload(strurl, options );						
-					    dtask.addEventListener( "statechanged", function(task,status){	
-//					        console.log(JSON.stringify(status))
-					    	switch(task.state) {
-					    		case 1: // 开始
-					    			console.log( "开始下载..." );
-					    		break;
-					    		case 2: // 已连接到服务器 
-					    			console.log( "链接到服务器..." );
-					    			name.is='下载中...'
-					    		break;
-					    		case 3:	// 已接收到数据
-					    			var a= Math.floor(task.downloadedSize/task.totalSize*100)+'%';
-					    			name.is='下载中: '+a
-					    		break;
-					    		case 4:	// 下载完成
-					    			console.log( "下载完成！" );		    		
-					    			console.log(task);
-					    			name.is='已下载'
-					    			api.PostSysLog(plus.storage.getItem('user_sid'),plus.storage.getItem('user_code'),plus.storage.getItem('human_name'),'DownLoad', plus.storage.getItem("dept_sid"),name.attach_name,function(res){
-										var data = JSON.parse(res).result;  
-										console.log(data)								 						
+					clcik: function(url) {
+						var that = this;
+						var IMG = url.attach_name.split('.')[1].toUpperCase();
+						console.log(IMG)
+						if(IMG == 'JPG' || IMG == 'JPEG' || IMG == 'PNG' || IMG == 'BMP' || IMG == 'GIF') {
+							mui.openWindow({
+								url: 'IMGS.html',
+								id: 'IMGS',
+								extras: {
+									data: url
+								},
+							})
+							return;
+						}
+
+						plus.nativeUI.confirm('是否下载：\r\n' + url.attach_name, function(e) {
+							if(e.index == 0) {
+								var FileSystemURL = '_downloads/' + url.attach_name;
+								console.log(FileSystemURL)
+								plus.io.resolveLocalFileSystemURL(FileSystemURL, function(entry) {
+									entry.removeRecursively(function(entry) {
+
 										
-									})
-					    			
-					    			 console.log(task.filename)
-					    		break;
-					    	}
-					    } );
-						dtask.start();		   
+									}, function(e) {
+									console.log(e)
+										
+									});
+								});
+
+								that.dowload(url, url.attach_url)
+							}
+						});
+
+					},
+					//下载文件
+					dowload: function(name, url) {
+						var strurl = url.replace(/\\/g, "/");
+						console.log(strurl)
+						var names = '_downloads/' + name.attach_name;
+						var options = {
+							method: "GET",
+							filename: names
+						};
+						dtask = plus.downloader.createDownload(strurl, options);
+						dtask.addEventListener("statechanged", function(task, status) {
+							switch(task.state) {
+								case 1: // 开始
+									console.log("开始下载...");
+									break;
+								case 2: // 已连接到服务器 
+									console.log("链接到服务器...");
+									name.is = '下载中...'
+									break;
+								case 3: // 已接收到数据
+									var a = Math.floor(task.downloadedSize / task.totalSize * 100) + '%';
+									name.is = '下载中: ' + a
+									break;
+								case 4: // 下载完成
+									console.log("下载完成！");
+									name.is = '已下载'
+									break;
+							}
+						}, function(err) {
+							console.log(err)
+						});
+						dtask.start();
 					}
 				}
 			})
@@ -196,11 +219,3 @@
 	</body>
 
 </html>
-
-
-
-
-
-
-
-

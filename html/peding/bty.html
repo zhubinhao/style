@@ -7,172 +7,128 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 	</head>
- 
-	<body id="bty" >
+
+	<body id="bty">
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-		     <a class="mui-btn  mui-pull-right   mui-btn-danger  mui-btn-outlined" v-on:tap="read()" >提交</a>	    
-		    <h1 class="mui-title">不同意</h1>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-btn  mui-pull-right   mui-btn-danger  mui-btn-outlined" v-if="istrue" v-on:tap="read()">提交</a>
+			<h1 class="mui-title">不同意</h1>
 		</header>
 		<div class="mui-content">
 			<p style="margin-top: 10px;padding-left: 10px;color: black;font-size: 16px;">审批意见：</p>
 			<textarea name="" rows="" cols="" placeholder="请输入审批意见" style="height: 130px;" v-model='text' maxlength="300"></textarea>
-			
-				
-			
-			
-			
 		</div>
-		<script src="../../js/vue.js"></script>
-		<script src="../../js/mui.min.js"></script>
-		
-		<script src="../../js/jquery-3.1.0.min .js"></script>
-		<script src="../../js/api.js"></script>
 
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/serve.js"></script>
+		<script src="../../js/base64.js"></script>
 
 		<script type="text/javascript">
 			var bty = new Vue({
-				el:"#bty",
-				data:{
-					text:"",
-					name:'',
-					img:'',
-					qzpass:'',
-					list_sid:'',
-					human_sign_sid:'',
-					SignActive:'',
+				el: "#bty",
+				data: {
+					text: "",
+					cont: "",
+					obj: "",
+					name: '',
+					img: '',
+					sign_psw: '',
+					list_sid: '',
+					human_sign_sid: '',
+					SignActive: '',
+					istrue: true,
 				},
-				ready:function(){
+				ready: function() {
 					mui.init({
-			          swipeBack:true //启用右滑关闭功能
+						swipeBack: true //启用右滑关闭功能
 					});
-					var isthis = this;
-					mui.plusReady(function(){
-
-						 plus.nativeUI.showWaiting()
-						 isthis.name = plus.storage.getItem("human_sid");
-						 isthis.human_sign_sid = plus.storage.getItem("human_sign_sid");
-						 isthis.SignActive = plus.storage.getItem("SignActive");	
-//						 mui.toast(isthis.SignActive )
-						 var cont = plus.webview.currentWebview()
-						 isthis.list_sid=cont.list_sids;
-						 console.log(isthis.list_sid)
-						 api.qztp(isthis.name,function(data,tp){
-						 	plus.nativeUI.closeWaiting()
-						 	if(tp=='err'){
-		                      	mui.toast("请检查您的网络")
-		                      	return;
-		                     } 
-//		                     console.log(JSON.parse(data).result[0].split("\r\n"))
-		                     var datas = JSON.parse(data).result[0].split("\r\n");
-//					         console.log(datas[1]);
-					         isthis.qzpass=datas[1];
-					         if(datas[0].split("=")[1]==''){
-					         	isthis.img='../../img/121.png';
-					         	return;
-					         }
-					         isthis.img=localStorage.getItem('wenjian')+'/Ec_server/'+datas[0].split("=")[1]+'.png';
-//					         isthis.img='';
-					         console.log(isthis.img)
-						 })
+					var serf = this;
+					mui.plusReady(function() {
+						var cont = plus.webview.currentWebview()
+						serf.cont = cont
+						serf.obj = JSON.parse(plus.storage.getItem("loginData"))
+						serf.getQz()
+						plus.nativeUI.showWaiting()
 					})
-					
+
 				},
-				methods:{
-					read:function(){
-						var isthis=this;
-						if(isthis.text==''){
+				methods: {
+					getQz: function() {
+						var data = {
+							"accountname": this.obj.accountname,
+							"human_sid": this.obj.human_sid,
+						}
+						TB.get("NewGetPersonSignPicPwd/", JSON.stringify(data), function(res) {
+							this.img = 'http://47.112.137.218:8088/HCFile/' + res.human_sign_sid + '.png'
+							this.sign_psw = res.sign_psw
+
+						}.bind(this))
+					},
+					read: function() {
+						var isthis = this;
+						if(this.text == '') {
 							mui.toast("审批意见不能为空");
 							return;
 						}
-						if(isthis.SignActive != "True"){
-//							mui.toast("123");
-							api.btysubmit(isthis.list_sid,isthis.name,isthis.human_sign_sid,isthis.text,function(data,tp){									 	
-										 	if(tp=='err'){
-						                      	mui.toast("请检查您的网络")
-						                      	return;
-						                      }
-										 	console.log(JSON.parse(data).result[0])
-										 	if(JSON.parse(data).result[0]==true){ 
-										 		mui.toast("审批成功")　　												
-                                                   var wvs = plus.webview.all(); 　　//所有窗口对象 								 
-												　　var launch = plus.webview.getWebviewById('index.html'); 　　//首页窗口对象 								 
-												　　            launch.evalJS("index.fn()");
-												   var self = plus.webview.currentWebview(); 　　//当前窗口对象
-												　var one = plus.webview.getWebviewById('checking'); 　　//首页窗口对象 								 
-												　　var two = plus.webview.getWebviewById('checked'); 　　//首页窗口对象 	
-												console.log(two)
-												　　one.close('slide-out-right');  
-												if(two!=null){
-												　　two.close('slide-out-right');                                                 			                                     
-													
-												}								 
-												　　// 此时，窗口对象只剩下首页以及当前窗口，直接关闭当前窗口即可； 								 
-												　　self.close('slide-out-right');
-                                                  			                                     
-								          	}else{
-								          		mui.webview.toast("审批失败");
-								          	}
-									 	
-					                     } )
-							            return;
-						}
-				        setTimeout(function(){
-						api.alert(isthis.img,function(e){
+						if(this.sign_psw != '') {
 
-							
-							 if (e.index == 0) {
-//							 	mui.toast("取消")
-							 }else{
-							 	var inputs='sign_psw='+e.value;
-							 	console.log(e.value)
-							 	if(isthis.qzpass==inputs){
-							 		plus.nativeUI.showWaiting()
-							 		api.btysubmit(isthis.list_sid,isthis.name,isthis.human_sign_sid,isthis.text,function(data,tp){
-									 	plus.nativeUI.closeWaiting()
-										 	if(tp=='err'){
-						                      	mui.toast("请检查您的网络")
-						                      	return;
-						                      }
-										 	console.log(JSON.parse(data).result[0])
-										 	if(JSON.parse(data).result[0]==true){ 
-										 		mui.toast("审批成功")　　
-//											
-                                                   var wvs = plus.webview.all(); 　　//所有窗口对象 								 
-												　　var launch = plus.webview.getWebviewById('index.html'); 　　//首页窗口对象 								 
-												　　            launch.evalJS("index.fn()");
-												   var self = plus.webview.currentWebview(); 　　//当前窗口对象
-												　var one = plus.webview.getWebviewById('checking'); 　　//首页窗口对象 								 
-												　　var two = plus.webview.getWebviewById('checked'); 　　//首页窗口对象 	
-												console.log(two)
-												　　one.close('slide-out-right');  
-												if(two!=null){
-												　　two.close('slide-out-right');                                                 			                                     
-													
-												}								 
-												　　// 此时，窗口对象只剩下首页以及当前窗口，直接关闭当前窗口即可； 								 
-												　　self.close('slide-out-right');
-                                                  			                                     
-								          	}else{
-								          		mui.webview.toast("审批失败");
-								          	}
-									 	
-					                     } )
-							 		
-							 	}else{
-							 		mui.toast("签章密码错误")
-							 	}
-							 }
-						})
-						 },200);
-						
-					}
+							TB.alert(this.img, function(e) {
+								if(e.index == 0) {
+
+								} else {
+									var inputs = '"' + e.value + '"';
+									if(this.sign_psw == inputs) {
+										this.submits()
+									} else {
+										mui.toast("签章密码错误")
+									}
+								}
+							}.bind(this))
+						} else {
+							this.submits()
+
+						}
+
+					},
+					submits: function() {
+						var isIOS = '【苹果端】';
+						if(!mui.os.ios) {
+							isIOS = '【安卓端】';
+						}
+						var serf = this;
+						var data = {
+							"accountname": serf.obj.accountname,
+							"wfdata_list_sid": serf.cont.wfdata_list_sid,
+							"human_sign_sid": serf.cont.human_sign_sid,
+							"check_value": "3",
+							"check_text": Base64.encode(isIOS + this.text),
+							"human_sid": serf.obj.human_sid,
+							"to_step_sid": "",
+							"Allhuman": "",
+						}
+						console.log(JSON.stringify(data))
+						TB.get("ExeWorkflowGoNext/", JSON.stringify(data), function(res) {
+							var ii = plus.webview.getWebviewById("index.html");
+							ii.evalJS("index.getCount()");　　
+							var self = plus.webview.currentWebview();　　 //当前窗口对象							　
+							var two = plus.webview.getWebviewById('checked');
+							var three = plus.webview.getWebviewById('checking');
+							three.evalJS("checking.countlist()");　　
+							if(two != null) {　　
+								two.close('slide-out-right');
+							}　　
+							self.close('slide-out-right');
+							mui.toast("审批成功")
+							serf.istrue = false;
+						}.bind(this))
+
+					},
+
 				}
-				
+
 			})
 		</script>
 	</body>
 
 </html>
-
- 

@@ -7,215 +7,178 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 	</head>
-	<body id="ty" >
+
+	<body id="ty">
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-		     <a class="mui-btn  mui-pull-right   mui-btn-danger  mui-btn-outlined" v-on:tap="read()" >提交</a>	    
-		    <h1 class="mui-title">同意</h1>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-btn  mui-pull-right   mui-btn-danger  mui-btn-outlined" v-if="istrue" v-on:tap="read()">提交</a>
+			<h1 class="mui-title">同意</h1>
 		</header>
 		<div class="mui-content">
 			<p style="margin-top: 10px;padding-left: 10px;color: black;font-size: 16px;">审批意见：</p>
-			<textarea name="" rows="" cols="" placeholder="请输入审批意见" style="height: 130px;" v-model='text'  maxlength="300"></textarea>
+			<textarea name="" rows="" cols="" placeholder="请输入审批意见" style="height: 130px;" v-model='text' maxlength="300"></textarea>
 			<p style="padding-left: 10px;color: black;font-size: 16px;">下一节点人员：</p>
-			<div>							
-			<div class="mui-scroll" style="height: 250px;overflow-y:scroll;">
-				<form class="mui-input-group" >
-					<div class="mui-input-row mui-checkbox" v-for='i in itm'>
-						<label>{{i.human_name}}({{i.step_stateName}}) </label>						
-						<input name="checkbox1" value="{{i.human_code}}*{{i.step_stateName}}*{{i.workflow_step_sid}}" type="checkbox" checked v-if='i.istrue=="True"'>
-						<input name="checkbox1" value="{{i.human_code}}*{{i.step_stateName}}*{{i.workflow_step_sid}}" type="checkbox"  v-if='i.istrue=="False"'>						
-					</div>															
-				</form>
-			</div>			
-		</div>
-		<script src="../../js/mui.min.js"></script>
-		
-		<script src="../../js/jquery-3.1.0.min .js"></script>
-		<script src="../../js/api.js"></script> 
-		<script src="../../js/vue.js"></script>
+			<div>
+				<div class="mui-scroll" style="height: 250px;overflow-y:scroll;">
+					<form class="mui-input-group">
+						<div class="mui-input-row mui-checkbox" v-for='i in itm'>
+							<label>{{i.human_name}}({{i.step_stateName}}) </label>
+							<input name="checkbox1" value="{{i.human_code}}*{{i.step_stateName}}*{{i.workflow_step_sid}}" type="checkbox" checked v-if='i.selected==1'>
+							<input name="checkbox1" value="{{i.human_code}}*{{i.step_stateName}}*{{i.workflow_step_sid}}" type="checkbox" v-else>
+						</div>
+					</form>
+				</div>
+			</div>
+			<script src="../../js/mui.min.js"></script>
+			<script src="../../js/vue.js"></script>
+			<script src="../../js/serve.js"></script>
+			<script src="../../js/base64.js"></script>
+			<script type="text/javascript">
+				var ty = new Vue({
+					el: "#ty",
+					data: {
+						text: '',
+						itm: [],
+						tpeople: [],
+						cont: "",
+						obj: "",
+						name: '',
+						img: '',
+						sign_psw: '',
+						list_sid: '',
+						human_sign_sid: '',
+						SignActive: '',
+						istrue: true,
+					},
+					ready: function() {
+						var serf = this
+						mui.init({
+							swipeBack: true //启用右滑关闭功能
+						});
+						mui.plusReady(function() {
+							var cont = plus.webview.currentWebview()
+							serf.cont = cont
+							serf.obj = JSON.parse(plus.storage.getItem("loginData"))
+							plus.nativeUI.showWaiting()
 
-		<script type="text/javascript">
-			var ty = new Vue({
-				el:"#ty",
-				data:{
-					text:'',
-					workflow_step_sid:'',
-					rec_sid:'',
-					bill_sid:'',
-					itm:[],
-					tpeople:[],
-					list_sid:'',
-					SignActive:'',
-					human_sign_sid:'',
-					name:'',
-					img:'',
-					qzpass:'',
-					wfdata_sid:'',
-				},
-				ready:function(){
-					var srlf =this
-					mui.init({
-			          swipeBack:true //启用右滑关闭功能
-					});
-					mui.plusReady(function(){
-						plus.nativeUI.showWaiting()
-						srlf.name = plus.storage.getItem("human_sid");
-						srlf.human_sign_sid = plus.storage.getItem("human_sign_sid");
-						srlf.SignActive = plus.storage.getItem("SignActive");
-						
-						var con = plus.webview.currentWebview();
-						srlf.rec_sid=con.rec_sids;
-						srlf.workflow_step_sid=con.workflow_step_sids;
-						srlf.wfdata_sid=con.wfdata_sids;
-						srlf.bill_sid=con.bill_sids;
-						srlf.list_sid=con.list_sids;												
-						console.log(srlf.rec_sid)
-						srlf.list();												
-					})				
-				},
-				methods:{
-					list:function(){
-						var srlf =this;
-						api.typeople(this.workflow_step_sid,this.rec_sid,this.bill_sid,function(data,tp){
-							 plus.nativeUI.closeWaiting();
-							if(tp=='err'){
-		                      	mui.toast("请检查您的网络")
-		                      	return;
-		                    } 
-							 var datas =JSON.parse(data).result[0];
-		                     console.log(datas)							 
-							 srlf.itm=JSON.parse(datas).records;							
-                            srlf.qz();
+							serf.getPeople()
+							serf.getQz()
+
 						})
 					},
-					qz:function(){
-						var isthis = this;
-						 api.qztp(isthis.name,function(data,tp){
-						 	plus.nativeUI.closeWaiting()
-						 	if(tp=='err'){
-		                      	mui.toast("请检查您的网络")
-		                      	return;
-		                    } 
-		                     var datas = JSON.parse(data).result[0].split("\r\n");
-//					         console.log(data);
-					         isthis.qzpass=datas[1];
+					methods: {
+						getQz: function() {
+							var data = {
+								"accountname": this.obj.accountname,
+								"human_sid": this.obj.human_sid,
+							}
+							TB.get("NewGetPersonSignPicPwd/", JSON.stringify(data), function(res) {
+								this.img = 'http://47.112.137.218:8088/HCFile/' + res.human_sign_sid + '.png'
+								this.sign_psw = res.sign_psw
+							}.bind(this))
+						},
+						getPeople: function() {
+							var data = {
+								"accountname": this.obj.accountname,
+								"work_step_sid": this.cont.work_step_sid,
+								"rec_sid": this.cont.rec_sid,
+								"bill_sid": this.cont.bill_sid,
+							}
+							TB.get("GetNextCheckhuman/", JSON.stringify(data), function(res) {
+								console.log(JSON.stringify(res.data))
+								var arr = []
+								res.data.forEach(function(v) {
+									arr.push(JSON.parse(v))
+								})
+								this.itm = arr
+							}.bind(this))
+						},
+						read: function() {
+							this.tpeople = []
+							var obj = document.getElementsByName('checkbox1');
+							for(var i = 0; i < obj.length; i++) {
+								if(obj[i].checked) {
+									console.log(obj[i].value)
+									this.tpeople.push(obj[i].value)
+								}
+							}
+							if(this.tpeople.length == 0) {
+								mui.toast("请勾选下一节点人员");
+								return;
+							}
+							if(this.sign_psw != '') {
 
-					         if(datas[0].split("=")[1]==''){
-					         	isthis.img='../../img/121.png';
-					         	return;
-					         }
-					         isthis.img=localStorage.getItem('wenjian')+'/Ec_server/'+datas[0].split("=")[1]+'.png';
-//					         console.log(isthis.img)
-						 })
-					},
-					//alert
-					read:function(){
-						var srlf = this;
-						srlf.tpeople=[]
-                        var obj=document.getElementsByName('checkbox1');
-                       for(var i=0; i<obj.length; i++){ 
-								if(obj[i].checked){
-									
-                                      srlf.tpeople.push(obj[i].value)	
-								} 							
-                       }
-						console.log(srlf.tpeople)
+								TB.alert(this.img, function(e) {
+									if(e.index == 0) {} else {
+										var inputs = '"' + e.value + '"';
+										if(this.sign_psw == inputs) {
+											console.log(this.tpeople.join(","))
+											this.sub()
+										} else {
+											mui.toast("签章密码错误")
+										}
+									}
+								}.bind(this))
+							} else {
+								this.sub()
 
-						
-						   if(srlf.tpeople.length==0){
-						   	mui.toast("请勾选下一节点人员");
-						   	return;
-						   }
-						   if(srlf.SignActive != "True"){					   	
-						   	srlf.people();
-						   	return;
-						   }
-					         
-						   iem = document.querySelector("input");
-				                setTimeout(function(){
-//				                    iem.focus();    
+							}
+						},
+						sub: function() {
+							var data = {
+								"accountname": this.obj.accountname,
+								"wfData_sid": this.cont.wfdata_sid,
+								"wfdata_list_sid": this.cont.wfdata_list_sid,
+								"Allhuman": this.tpeople.join(",")
 
-						api.alert(srlf.img,function(e){
-							
-							 if (e.index == 0) {
-							 	
-							 }else{
-							 	var inputs='sign_psw='+e.value;
-//							 	console.log(e.value)
-							 	if(srlf.qzpass==inputs){
-							 		
-							 		srlf.people();
-							 	}else{
-							 		mui.toast("签章密码错误")
-							 	}
-							 }
-						})
-				                },200);
-						
-					},
-//					提交人员
-					people:function(){
-						plus.nativeUI.showWaiting()
-						
-						var isthis = this;
-						var p = isthis.tpeople.join(",")
-						api.btypeople(isthis.wfdata_sid,isthis.list_sid,p,function(data,tp){
-									 	
-										 	if(tp=='err'){
-						                      	mui.toast("请检查您的网络")
-						                      	return;
-						                      }
-//										 	console.log(JSON.parse(data).result[0])
-										 	if(JSON.parse(data).result[0]==true){ 
-//										 		console.log("121")
-                                                   isthis.ssubmit()                                              			                                     
-								          	}else{
-									             plus.nativeUI.closeWaiting()	
-								          		
-								          		mui.webview.toast("审批失败");
-								          	}									 	
-					                     } )
-					},
-//					最后的提交
-					ssubmit:function(){
-						var isthis = this;
+							}
+							console.log(JSON.stringify(data))
+//							TB.get("PostWfDataList/", JSON.stringify(data), function(res) {
+								this.submits()
 
-						
-						api.tysubmit(isthis.list_sid,isthis.name,isthis.human_sign_sid,isthis.text,function(data,tp){
-									 plus.nativeUI.closeWaiting()	
-										 	if(tp=='err'){
-						                      	mui.toast("请检查您的网络")
-						                      	return;
-						                      }
-//										 	console.log(JSON.parse(data).result[0])
-										 	if(JSON.parse(data).result[0]==true){ 
-										 		mui.toast("审批成功")　　
-                                                   var wvs = plus.webview.all(); 　　//所有窗口对象 								 
-												　　var launch = plus.webview.getWebviewById('index.html'); 　　//首页窗口对象 								 
-												　　            launch.evalJS("index.fn()");
-												   var self = plus.webview.currentWebview(); 　　//当前窗口对象
-												　var one = plus.webview.getWebviewById('checking'); 　　//首页窗口对象 								 
-												　　var two = plus.webview.getWebviewById('checked'); 　　//首页窗口对象 	
-//												console.log(two)
-												　　one.close('slide-out-right');  
-												if(two!=null){
-												　　two.close('slide-out-right');                                                 			                                     
-													
-												} 								 
-												　　// 此时，窗口对象只剩下首页以及当前窗口，直接关闭当前窗口即可； 								 
-												　　self.close('slide-out-right');                                                 			                                     
-								          	}else{
-								          		mui.webview.toast("审批失败");
-								          	}									 	
-					                     } )
+//							}.bind(this))
+						},
+						submits: function() {
+							var isIOS = '【苹果端】';
+							if(!mui.os.ios) {
+								isIOS = '【安卓端】';
+							}
+							var val = isIOS + this.text
+							console.log(Base64.encode(val))
+
+							var serf = this;
+							var data = {
+								"accountname": serf.obj.accountname,
+								"wfdata_list_sid": serf.cont.wfdata_list_sid,
+								"human_sign_sid": serf.cont.human_sign_sid,
+								"check_value": "2",
+								"check_text": Base64.encode(val),
+								"human_sid": serf.obj.human_sid,
+								"to_step_sid": "",
+								"Allhuman": this.tpeople.join(","),
+							}
+							console.log(JSON.stringify(data))
+							TB.get("ExeWorkflowGoNext/", JSON.stringify(data), function(res) {
+								var ii = plus.webview.getWebviewById("index.html");
+								ii.evalJS("index.getCount()");　　
+								var self = plus.webview.currentWebview();　　 //当前窗口对象							　
+								var two = plus.webview.getWebviewById('checked');
+								var three = plus.webview.getWebviewById('checking');
+								three.evalJS("checking.countlist()");　　
+								if(two != null) {　　
+									two.close('slide-out-right');
+								}　　
+								self.close('slide-out-right');
+								mui.toast("审批成功")
+								serf.istrue = false;
+							}.bind(this))
+
+						},
+
 					}
-					
-				}
-				
-			})
-		</script>
+
+				})
+			</script>
 	</body>
 
 </html>
-
- 

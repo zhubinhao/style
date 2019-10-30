@@ -19,280 +19,130 @@
 			<h1 class="mui-title">待审批</h1>
 		</header>
 		<div class="mui-content mui-inner-wrap">
-			<div class="network" v-if='wxss'>网络不给力，请检查网络设置。</div>
+			<!--<div class="network" v-if='wxss'>网络不给力，请检查网络设置。</div>-->
 			<div class="mui-sc">
 
-				<p>待处理</p>
-				<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: white;">
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-						<a v-on:tap='deal("待审批","checking")'>
-							<span class="mui-icon iconfont icon-daishenpi  jg2">
-	                    	<span class="mui-badge mui-badge-danger">{{itm[0].icount}}</span>
-							</span>
-							<div class="mui-media-body">待审批</div>
-						</a>
-					</li>
+				<div class="box" v-for="item in table">
+					<p>{{item.name}} </p>
+					<div class="li">
+						<div v-for="v in item.list" @tap='deal(v.name,v.pid)' v-if="item.name=='待处理'">
+							<span class="mui-icon iconfont" :class="v.icon"></span>
+							<div class="mui-media-body" style="text-align: center;">{{v.name}}</br>({{numObj[v.pid]}})</div>
+						</div>
+						<div v-for="v in item.list" @tap='list(v.name,v.pid)' v-if="item.name!='待处理'">
+							<span class="mui-icon iconfont" :class="v.icon"></span>
+							<div class="mui-media-body" style="text-align: center;">{{v.name}}</br>({{numObj[v.pid]}})</div>
+						</div>
+					</div>
 
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-						<a v-on:tap='deal("待查阅","reading")'>
-							<span class="mui-icon iconfont icon-weichayue  jg1">
-	                    	<span class="mui-badge mui-badge-danger">{{itm[1].icount}}</span>
-							</span>
-							<div class="mui-media-body">待查阅</div>
-						</a>
-					</li>
-				</ul>
-
-				<p>已处理</p>
-
-				<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: white;">
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-						<a v-on:tap='list("已审批","checked")'>
-							<span class="mui-icon iconfont icon-shenpi jg4">
-									<span class="mui-badge mui-badge-success">{{itm[2].icount}}</span>
-							</span>
-							<div class="mui-media-body">已审批</div>
-						</a>
-					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-						<a v-on:tap='list("已查阅","read")'>
-							<span class="mui-icon iconfont icon-cloud-date jg5">
-									<span class="mui-badge mui-badge-success">{{itm[3].icount}}</span>
-							</span>
-							<div class="mui-media-body">已查阅</div>
-						</a>
-					</li>
-				</ul>
-
-				<p>统计</p>
-				<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: white;">
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-						<a v-on:tap='list("在办","InOffice")'>
-							<span class="mui-icon iconfont icon-zhengzaibanli jg2">
-									<span class="mui-badge mui-badge-warning">{{itm[7].icount}}</span>
-							</span>
-							<div class="mui-media-body">在办</div>
-						</a>
-					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-						<a v-on:tap='list("我的在办","mychecking")'>
-							<span class="mui-icon iconfont icon-zhengzaibanli jg3">
-									<span class="mui-badge mui-badge-warning">{{itm[5].icount}}</span>
-							</span>
-							<div class="mui-media-body">我的在办</div>
-						</a>
-					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-						<a v-on:tap='list("已办结","checkover")'>
-							<span class="mui-icon iconfont icon-yibanjie jg6">
-									<span class="mui-badge mui-badge-warning">{{itm[4].icount}}</span>
-							</span>
-							<div class="mui-media-body">已办结</div>
-						</a>
-					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-						<a v-on:tap='list("我的已办结","mychecked")'>
-							<span class="mui-icon iconfont icon-weibiaoti9 jg7">
-									<span class="mui-badge mui-badge-warning">{{itm[6].icount}}</span>
-							</span>
-							<div class="mui-media-body">我的已办结</div>
-						</a>
-					</li>
-				</ul>
-
+				</div>
 			</div>
-			<script src="js/jquery-3.1.0.min .js"></script>
-			<script src="js/mui.min.js"></script>
-			<script src="js/vue.js"></script>
-			<script src="js/api.js"></script>
-			<script src="js/serve.js"></script>
+		</div>
 
-			<script src="js/mui.pullToRefresh.js"></script>
-			<script src="js/mui.pullToRefresh.material.js"></script>
-			<script type="text/javascript" charset="utf-8">
-				var deceleration = mui.os.ios ? 44.003 : 0.0009;
-				var index = new Vue({
-					el: '#index',
-					data: {
-						human_sid: '',
 
-						itm: [],
-						img: '',
-						title: '',
-						bb: '',
-						wxss: false
-					},
-					ready: function() {
-						var _this = this;
-						mui.init({
-							swipeBack: false
+		<script src="js/mui.min.js"></script>
+		<script src="js/vue.js"></script>
+		<script src="js/serve.js"></script>
+		<script src="js/Obj.js"></script>
+		<script src="js/mui.pullToRefresh.js"></script>
+		<script src="js/mui.pullToRefresh.material.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			var deceleration = mui.os.ios ? 44.003 : 0.0009;
+			var index = new Vue({
+				el: '#index',
+				data: {
+					human_sid: '',
+					itm: [],
+					img: '',
+					title: '',
+					bb: '',
+					obj: "",
+					wxss: false,
+					table: objs.list,
+					numObj: {}
+				},
+				ready: function() {
+					var _this = this;
+					mui.init({
+						swipeBack: false
+					});
+					mui.plusReady(function() {
+						var obj = JSON.parse(plus.storage.getItem("loginData"))
+						_this.human_sid = obj.human_sid;
+						_this.obj = obj
+						plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+							_this.bb = inf.version;
 						});
+						_this.getCount()
+
+					})
+
+					mui.ready(function() {
+						mui.each(document.querySelectorAll('.mui-content .mui-sc'), function(index, pullRefreshEl) {
+							mui(pullRefreshEl).pullToRefresh({
+								down: {
+									callback: function() {
+										var self = this;
+										_this.getCount(self)
+
+									}
+								}
+
+							});
+						});
+					})
+					// 退出的逻辑
+					TB.back();
+					if (mui.os.plus && mui.os.ios) {
 						mui.plusReady(function() {
-							//							console.log(plus.storage.getItem("loginData"))
-							var obj = JSON.parse(plus.storage.getItem("loginData"))
-							_this.human_sid = obj.human_sid;
-
-							plus.runtime.getProperty(plus.runtime.appid, function(inf) {
-								_this.bb = inf.version;
+							plus.webview.currentWebview().setStyle({
+								'popGesture': 'none'
 							});
-							_this.onNetChange()
-							document.addEventListener("netchange", _this.onNetChange, false);
-
-							//				    if (!mui.os.ios){  
-							//				    	setTimeout(function(){
-							//				    		
-							//
-							//				    api.banben(function(data){
-							//				    	console.log(data) 
-							//				    	var datas=JSON.parse(data).result[0];
-							//				    	var banben=datas.split(",")[1].split(":")[1];
-							//				    	var bbs='"'+rel.bb+'"';
-							//				    	var a = datas.split(",")[3].split(":")[1].split('"')[1];   
-							//				    	console.log(banben) 
-							//				    	console.log(bbs)         
-							//				    	if(bbs!=banben){    			    		  
-							//				    		plus.nativeUI.confirm(a,function (e) {
-							// 
-							//								if(e.index==0){
-							//									rel.genxin('http://pmis.szstyle.cc:8088/ec_server/style2.0.wgt') 
-							//								}
-							//							},'发现新版本:')
-							//				    	}
-							//				    })
-							//				    	},600)
-							//				    
-							//				   }
-
-						})
-
-						mui.ready(function() {
-							mui.each(document.querySelectorAll('.mui-content .mui-sc'), function(index, pullRefreshEl) {
-								mui(pullRefreshEl).pullToRefresh({
-									down: {
-										callback: function() {
-											var self = this;
-											_this.getCount(self)
-
-										}
-									}
-
-								});
-							});
-						})
-						// 退出的逻辑
-						TB.back();
-
-						if(mui.os.plus && mui.os.ios) {
-							mui.plusReady(function() {
-								plus.webview.currentWebview().setStyle({
-									'popGesture': 'none'
-								});
-							});
-						}
-					},
-					methods: {
-						getCount: function(self) {
-					
-                            
-//							TB.get("GetWfDataCount/", '("'+this.human_sid+'")', function(res) {
-//								console.log(res)
-//								
-//							})
-
-							api.count(this.human_sid, function(data) {
-								var datas = JSON.parse(data).result[0];
-								var datajson = JSON.parse(datas).records;
-//								console.log(data)
-								for(var i = 0; i < datajson.length; i++) {
-									if(datajson[i].icount > 99999) {
-										datajson[i].icount = '99999+';
-									}
-								}
-								this.itm = datajson;
-								self && self.endPullDownToRefresh();
-							}.bind(this))
-						},
-						//获取当前网络类型
-						onNetChange: function() {　　　
-							var nt = plus.networkinfo.getCurrentType();　　
-							switch(nt) {　　　　　
-								case plus.networkinfo.CONNECTION_ETHERNET:
-									　　　　
-								case plus.networkinfo.CONNECTION_WIFI:
-									　　　　
-								case plus.networkinfo.CONNECTION_CELL2G:
-									　　　　
-								case plus.networkinfo.CONNECTION_CELL3G:
-									　　　　
-								case plus.networkinfo.CONNECTION_CELL4G:
-									this.wxss = false;
-									this.getCount();　　　　
-									break;　　　　
-								default:
-									this.wxss = true
-									break;　　
-							}
-						},
-						genxin: function(url) {
-							var w = plus.nativeUI.showWaiting("下载中...\n0%", {
-								back: "transmit"
-							});
-							var that = this;
-							var options = {
-								method: "GET"
-							};
-							dtask = plus.downloader.createDownload(url, options);
-							dtask.addEventListener("statechanged", function(task, status) {
-								switch(task.state) {
-									case 1: // 开始
-										console.log("开始下载...");
-										break;
-									case 2: // 已连接到服务器
-										console.log("链接到服务器...");
-										break;
-									case 3: // 已接收到数据 	 				    		 
-										var a = Math.floor(task.downloadedSize / task.totalSize * 100) + '%';
-										var b = Math.floor(task.downloadedSize / task.totalSize * 100)
-										if(b % 5 == 0) {
-											console.log(a)
-											w.setTitle("下载中...\n" + a);
-										}
-										break;
-									case 4: // 下载完成 
-										console.log("下载完成！");
-										w.close();
-										plus.runtime.install(task.filename, {
-											force: true
-										}, function() {
-											//完成更新向服务器进行通知										
-											plus.runtime.restart();
-										}, function(err) {
-											alert(JSON.stringify(err));
-											mui.toast("安装升级失败");
-										});
-										break;
-								}
-							});
-							dtask.start();
-						},
-
-						deal: function(titles, dat) {
-							TB.open('html/peding/' + dat + '.html', dat, {
-								ID: dat,
-								title: titles
-							}, 'slide-in-right')
-						},
-						list: function(titles, dat) {
-							TB.open('html/peding/list.html', 'list', {
-								ID: dat,
-								title: titles
-							}, 'slide-in-right')
-						},
-
+						});
 					}
+				},
+				methods: {
+					getCount: function(self) {
+						var data = {
+							"accountname": this.obj.accountname,
+							"human_sid": this.human_sid
+						}
+						TB.get("GetWfDataCount/", JSON.stringify(data), function(res) {
+							this.numObj = {}
+							var numObj = {}
+							res.data.forEach(function(v) {
+								var obj = JSON.parse(v)
+								numObj[obj.stype] = obj.icount
+							})
+							this.numObj = numObj
+							if (mui.os.ios) {
+								var GeTuiSdk = plus.ios.importClass('GeTuiSdk');
+								GeTuiSdk.setBadge(this.numObj.checking); //设置角标  
+							} else {
+								plus.runtime.setBadgeNumber(this.numObj.checking);
+							}
 
-				})
-			</script>
+							self && self.endPullDownToRefresh();
+						}.bind(this))
+
+					},
+					deal: function(titles, dat) {
+						TB.open('html/peding/' + dat + '.html', dat, {
+							ID: dat,
+							title: titles
+						}, 'slide-in-right')
+					},
+					list: function(titles, dat) {
+						TB.open('html/peding/list.html', 'list', {
+							ID: dat,
+							title: titles
+						}, 'slide-in-right')
+					},
+
+				}
+
+			})
+		</script>
 
 	</body>
 

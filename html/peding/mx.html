@@ -6,90 +6,85 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
-		
+
 	</head>
+
 	<body id="mx">
-	    <header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-		    <h1 class="mui-title">明细</h1>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">明细</h1>
 		</header>
-		
-		 
-		<div class="mui-content" >
+
+		<div class="mui-content">
 			<div class="mui-scroll">
 
-			<div class=" mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="min-height: 500px;margin-top: 10px;">
-				<div class="mui-scroll">
-					<div >	
-						
-			            <table border="1">
-				          	<tr >
-				          		 <th v-for="(key, value) in itm[0] " style="padding: 5px;">{{key}}</th>
-				          	</tr>
-				          	<tr  v-for="m in itm ">
-				          		 <td  v-for="(key, value) in m " style="padding: 5px;"><pre>{{value}}</pre></td>
-				          	</tr>
-			            
-			            </table>
-			        
-				    </div>
-				   
-				   
-				    <span>{{mxht}}</span>
+				<div class=" mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted"
+					 style=" overflow-y: auto;margin-top: 10px;padding-bottom: 10px;" :style="{height:itm.length*69+'px'}">
+					<div class="mui-scroll">
+						<div>
+
+							<table border="1">
+								<tr>
+									<th v-for="(key, value) in itm[0] " style="padding: 5px;">{{key}}</th>
+								</tr>
+								<tr  v-for="obj in  itm">
+									<td v-for="(key, value) in obj " style="padding: 5px;"><pre>{{value}}</pre></td>
+								</tr>
+
+							</table>
+
+						</div>
+
+						<span>{{mxht}}</span>
+					</div>
 				</div>
-			</div>
-		
-			
-			</div>
-		</div>	 
-			<script src="../../js/mui.min.js"></script>
-		
-			<script src="../../js/jquery-3.1.0.min .js"></script>
-			<script src="../../js/api.js"></script>
-			<script src="../../js/vue.js"></script>
 
-			<script type="text/javascript">
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/serve.js"></script>
+
+		<script type="text/javascript">
 			var mx = new Vue({
-				el:"#mx",
-				data:{
-					mxht:'',
-					itm:[]
+				el: "#mx",
+				data: {
+					mxht: '',
+					obj: "",
+					itm: []
 				},
-				ready:function(){
-				    mui.init({swipeBack:true });
-				    var srlf=this;
-				    mui.plusReady(function(){
-				    	var con = plus.webview.currentWebview();
-				    	var list=con.list_sid;
-				    	api.mxs(list,function(data,tp){
-							
-							if(tp=='err'){
-		                      	mui.toast("请检查您的网络")
-		                      	return;
-		                     } 
-							 var datas =JSON.parse(data).result[0];
-							 if(datas==""){
-        	 	                  srlf.mxht="无明细";
-							 }else{
-							 	 console.log(datas)
-								 
-								 var datajson =JSON.parse(datas).records;
-								 console.log(datajson)
-								 srlf.itm=datajson; 
-							 }
-							
-							
-
-						})
-				    })
-					
+				ready: function() {
+					mui.init({
+						swipeBack: true
+					});
+					var srlf = this;
+					mui.plusReady(function() {
+						var con = plus.webview.currentWebview();
+						var list = con.wfdata_list_sid;
+						srlf.obj = JSON.parse(plus.storage.getItem("loginData"))
+						srlf.getData(list)
+						
+					})
 				},
-				methods:{ 
-					
+				methods: {
+					getData: function(wfdata_list_sid) {
+						var data = {
+							"accountname": this.obj.accountname,
+							"wfdata_list_sid": wfdata_list_sid,
+						}
+						TB.get("GetAuditDetailDetail/", JSON.stringify(data), function(res) {
+							console.log(JSON.stringify(res.data))
+							var arr = []
+							
+							res.data.forEach(function(res){
+								arr.push(JSON.parse(res))
+							})
+							this.itm = arr;
+						}.bind(this))
+					}
 				}
 			})
-
-			</script>
+		</script>
 	</body>
 
 </html>

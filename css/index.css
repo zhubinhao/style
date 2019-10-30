@@ -35,3 +35,35 @@ p {
 	line-height: 30px;
 	text-align: center;
 }
+
+.box{
+	background: white;
+	margin: 0;
+	border-bottom: 20px solid #efeff4;
+  
+}
+.box p{
+	margin: 0;
+	padding: 20px;
+	font-size: 20px;
+	color: black;
+}
+.li{
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	background: white;
+	padding-bottom: 10px;
+}
+.li >div{
+	width: 25%;
+	height: 105px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+.li >div span{
+	margin-bottom: 10px;
+}

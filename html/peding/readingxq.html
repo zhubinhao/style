@@ -6,271 +6,217 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
-		<style>
-			p{
-				font-size: 16px;
-			}
-			span{
-				color: black;
-			}
-			.bar-p{
-                text-align:  center;
-				color: black;
-			}
-			.bar-div{
-				border-top: 1px solid gold;
-				
-			}
-			button{
-				float: right;
-				margin-right:5px;
-				margin-top: -8px;
-				border-radius: 5px;
-				background:none;
-				border-color:gold ;
-			}
-			.splc{
-				border: 1px solid black;
-				width: 50%;
-				height: 40px;
-				text-align: center;
-				line-height: 40px;
-				display: block;
-				margin: 0 auto;
-				border-radius: 8px;
-				margin-top: 30px;
-				border-color: darkslategray;
-				
-			}
-			.biaoqian{
-				position: absolute;
-				padding: 8px 20px;
-				background-color: #F4F3F3;
-				top: 80px;
-				right: 10px;
-				font-size:19px;
-				font-weight: 700;
-				z-index: 999;
-				background: none;
-				color: #3CCBA7;
-				border: 1px dotted #3CCBA7;
-				transform:rotate(35deg)
-			}
-		</style>
-	</head>     
+		<link href="../../css/listxq.css" rel="stylesheet" />
+
+	</head>
+
 	<body id="listxq">
 		<header class="mui-bar mui-bar-nav">
-	        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-	        <a class="mui-btn  mui-pull-right mui-btn-primary mui-btn-outlined" v-on:tap="read()" v-if="istrue">查阅</a>
-	        
-	        <h1 class="mui-title" style="margin-right: 30px;">{{title}}</h1>
-        </header>
-        <div  class="mui-content mui-content-padded"  >
-	                <div class="biaoqian" v-if="qianzhang">
-						待查阅
-					</div>
-			<!--<div class="mui-scroll" style="padding: 10px;" >-->
-					<p class="mui-ellipsis" style="margin-top: 10px;font-size: 18px;color: black;">业务名称：{{mod_name}}</p>
-					
-                    <p ><span>业务说明：{{title}}</span></p>	
-                    <p><span>到达时间：{{arrive_date}}</span></p>
-                    
-                    <p><span>发起人：{{start_human}}</span></p>
-                    <p><span>发起部门：{{start_mbsdept_name}}</span></p>				                    
-                    <p><span>发起时间：{{start_date}}</span></p>												
-						<!----------------------------------------业务详情--------->
-		<div class="item item-text-wrap" style="border: none;">
-		    <p class="bar-p" style="font-size: 18px; font-weight: 700;">业务详情   <button @click="mx()">明细</button> <button style="border-color: red;" @click="fujian()">附件</button></p>
-		    <hr class="bar-div"/>
-		    <div v-for="i in itm">		    		   
-				   <div class="padding-span"><p style="color: red;">{{$index+1}}:<span style="color: black;">{{i}}</span></p></div>					
-				    					
-            </div>
-		</div>
-		<!---------------------------------------审批历史-->
-		<div  style="border: none; margin-top: 20px;">
-		     <p class="bar-p" style="font-size: 18px; font-weight: 700;">审批历史</p>
-		     <hr class="bar-div"/>
-		     <div style="border-bottom: 1px solid gainsboro;padding:5px ;" v-for="i in itms" >
-			     	<div><span>操作：{{i.check_value}}</span></div>
-						<div><span>审批人：{{i.human_name}}</span></div>
-						<div><span>到达时间：{{i.arrive_date}}</span></div>
-						<div><span>审批时间：{{i.check_date}}</span></div>
-						<div><span>审批意见：{{i.check_text}} </span><span></span></div>
-					
-		     </div>
-		     
-		</div>
-		
-		  <div class="splc" v-if="isfalse" v-on:tap="splc()">查看审批流程图</div>
-			<!--</div>-->					    	
-	    </div>
-		<script src="../../js/mui.min.js"></script>
-               
-        <script src="../../js/jquery-3.1.0.min .js"></script>
-		<script src="../../js/api.js"></script>		
-		<script src="../../js/vue.js"></script>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-btn  mui-pull-right mui-btn-primary mui-btn-outlined" v-if="istrue" v-on:tap="read()">查阅</a>
+			<h1 class="mui-title" style="margin-right: 30px;">{{cont.mod_name}}</h1>
+		</header>
+		<div class="mui-content mui-content-padded">
+			<div class="biaoqian" v-if="qianzhang">
+				待查阅
+			</div>
 
+			<p class="mui-ellipsis xqtitle">业务名称：{{cont.mod_name}}</p>
+			<p><span>业务说明：{{cont.bill_title}}</span></p>
+			<p><span>到达时间：{{cont.arrive_date}}</span></p>
+
+			<p><span>发起人：{{cont.start_human}}</span></p>
+			<p><span>发起部门：{{cont.start_mbsdept_name}}</span></p>
+			<p><span>发起时间：{{cont.start_date}}</span></p>
+			<!----------------------------------------业务详情--------->
+			<div class="item item-text-wrap" style="border: none;">
+				<p class="bar-p">业务详情</p>
+				<hr class="bar-div" />
+				<div v-for="i in itm" class="listBox">
+					<div class="padding-span">
+						<p><span style="color: black;">{{$key}} &nbsp;</span>{{i}}</p>
+					</div>
+				</div>
+			</div>
+			<!---------------------------------------审批历史-->
+			<div style="border: none; margin-top: 20px;">
+				<p class="bar-p">审批历史 <span class="show" @click="show=!show">{{show?"隐藏":"展开"}}</span> </p>
+				<hr class="bar-div" />
+				<div class="hisList" v-for="i in his" v-if="show">
+					<div><span class="hisTit">操作：</span><span class="hisConetnt">{{i.check_value}}</span></div>
+					<div><span class="hisTit">审批人：</span><span class="hisConetnt">{{i.human_name}}</span></div>
+					<div><span class="hisTit">到达时间：</span><span class="hisConetnt">{{i.arrive_date}}</span></div>
+					<div><span class="hisTit">审批时间：</span><span class="hisConetnt">{{i.check_date}}</span></div>
+					<div><span class="hisTit">审批意见：</span><span class="hisConetnt">{{i.check_text}} </span><span></span></div>
+				</div>
+			</div>
+			<div style="height: 60px;"></div>
+			<div class="buttonBox">
+				<button @click="mxs()">明细</button>
+				<button class="fj" @click="fujian()">附件</button></p>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/serve.js"></script>
+		<script src="../../js/base64.js"></script>
 		<script type="text/javascript">
 			var list = new Vue({
-				el:"#listxq",
-				data:{					
-					title:'',					
-					mod_name:'',
-					list_sid:'',
-					bill_sid:'',
-					start_date:'',					
-					arrive_date:'',
-					start_human:'',
-					human_sid:'',
-					human_sign_sid:'',
-					start_mbsdept_name:'',
-					itm:[],
-					itms:[],
-					isfalse:false,
-					istrue:true,
-					isread:'',
-					qianzhang:false
+				el: "#listxq",
+				data: {
+					cont: {},
+					itm: [],
+					his: [],
+					isfalse: false,
+					qianzhang: false,
+					cha: '',
+					obj: "",
+					show: true,
+					img: "",
+					sign_psw: "",
+					istrue: true
 				},
-				ready:function(){
+				ready: function() {
 					var serf = this;
-					mui.init({swipeBack:true });
-					mui.plusReady(function(){
-						serf.human_sid=plus.storage.getItem("human_sid");
-						serf.human_sign_sid=plus.storage.getItem("human_sign_sid");
-						serf.isread=plus.storage.getItem("ECMobile_approve");
-						
+					mui.init({
+						swipeBack: true
+					});
+					mui.plusReady(function() {
 						var cont = plus.webview.currentWebview()
-						serf.list_sid=cont.list_sids;
-						serf.mod_name=cont.mod_names;
-						serf.title=cont.bill_titles;
-						serf.arrive_date=cont.arrive_dates;
-						serf.start_human=cont.start_humans;
-						serf.start_mbsdept_name=cont.start_mbsdept_names;
-						serf.start_date=cont.start_dates;
-						serf.bill_sid=cont.bill_sids;
-						api.ywxq(serf.list_sid,function(data,tp){
-							serf.qianzhang=true
-							if(tp=='err'){
-		                      	mui.toast("请检查您的网络")
-		                      	return;
-		                     } 
-							 var datas =JSON.parse(data).result[0].split("\r\n\r\n");
+						serf.cont = cont
 
-							 serf.itm=datas;	
-
-							 fn();
-						})
-						function fn(){
-							api.spli(serf.bill_sid,function(data,tp){
-							
-							if(tp=='err'){
-		                      	mui.toast("请检查您的网络")
-		                      	return;
-		                     } 
-							 var datas =JSON.parse(data).result[0];
-							 var datass =JSON.parse(datas).records;
-							 serf.itms=datass;
-//							 console.log(datass) 
-							 serf.isfalse=true;
-							
-//							console.log(datas)
-						})
-							
-						}
+						serf.obj = JSON.parse(plus.storage.getItem("loginData"))
+						serf.getData()
+						serf.getQz()
 					})
-					
+
 				},
-				methods:{
-					read:function(){
-						 if(this.isread==0){
-						 	mui.toast("抱歉，您没有查阅的权利");
-						 	return;
-						 }
-//						 mui.toast("123")
-                         var serf = this;
-						 mui.prompt('请输入查阅意见','请输入查阅意见','时代易控2.0',['取消','确认'],function (e) {
-						   if (e.index == 1) {
-		                        var val = e.value
-			                    api.readings(serf.list_sid,serf.human_sid,serf.human_sign_sid,val,function(data,tp){							
-				                      if(tp=='err'){
-				                      	mui.toast("请检查您的网络")
-				                      	return;
-				                      }
-						            var datas =JSON.parse(data).result[0];
-						           
-						           if(datas==true){
-						             	serf.istrue=false;
-								        var i = plus.webview.getWebviewById("reading");						        						         
-									    i.evalJS("read.cont()");
-				                        var ii = plus.webview.getWebviewById("index.html");						        						         
-									    ii.evalJS("index.fn()");
-	//		                    
-						          		mui.toast("操作成功")
-						          	}else{
-						          		mui.toast("操作失败")
-						          	}
-								})
-			                    
-		                    } else {
-		                        
-		                    }
-						},'div')
+				methods: {
+					getData: function() {
+						var data = {
+							"accountname": this.obj.accountname,
+							"wfdata_list_sid": this.cont.wfdata_list_sid,
+						}
+						TB.get("GetAuditDetail/", JSON.stringify(data), function(res) {
+							this.itm = JSON.parse(res.data);
+							this.qianzhang = true
+							this.getList();
+						}.bind(this))
 					},
-					splc:function(){
-						var serf=this;
-//						serf.bill_sid
-                        mui.openWindow({
-						 	url:'splc.html',
-						 	id:'splc',
-						 	extras: {
-									
-									bill_sids:serf.bill_sid
-								},
-						 	show: {
-										aniShow: 'slide-in-right'
-									},
-							waiting:{
-						      autoShow:false,//自动显示等待框，默认为true					      
-						      
-						            }
-						 })
-					},
-					mx:function(){
-						var serf = this;
-							mui.openWindow({
-								url:"mx.html",
-								id:"mx",
-								extras:{
-									list_sid:serf.list_sid,
-								},
-								show:{
-									aniShow:"slide-in-right"
-								},
-								waiting:{
-									 autoShow:false,
-								}
+					getList: function() {
+						var data = {
+							"accountname": this.obj.accountname,
+							"bill_sid": this.cont.bill_sid,
+						}
+						TB.get("GetCheckRecord/", JSON.stringify(data), function(res) {
+							var arr = []
+							res.data.forEach(function(v) {
+								arr.push(JSON.parse(v))
 							})
+
+							this.his = arr
+						}.bind(this))
 					},
-					fujian:function(){
-						var serf =this;
+					getQz: function() {
+						var data = {
+							"accountname": this.obj.accountname,
+							"human_sid": this.obj.human_sid,
+						}
+
+						TB.get("NewGetPersonSignPicPwd/", JSON.stringify(data), function(res) {
+							this.img = 'http://47.112.137.218:8088/HCFile/' + res.human_sign_sid + '.png'
+							console.log(JSON.stringify(res))
+							this.sign_psw = res.sign_psw
+
+						}.bind(this))
+						//						NewGetPersonSignPicPwd
+					},
+					read: function() {
+
+						if(this.sign_psw != '') {
+							TB.alert(this.img, function(e) {
+								if(e.index == 0) {
+								} else {
+									var inputs = '"' + e.value + '"';
+									if(this.sign_psw == inputs) {
+										this.submits()
+									} else {
+										mui.toast("签章密码错误")
+									}
+								}
+							}.bind(this))
+						} else {
+							this.submits()
+
+						}
+
+					},
+					submits: function() {
+						var serf = this;
+						mui.prompt('请输入查阅意见', '请输入查阅意见', '提示', ['取消', '确认'], function(e) {
+							if(e.index == 1) {
+								var val = e.value
+
+								var data = {
+									"accountname": serf.obj.accountname,
+									"wfdata_list_sid": serf.cont.wfdata_list_sid,
+									"human_sign_sid": serf.cont.human_sign_sid,
+									"check_value": "4",
+									"check_text": Base64.encode(val), 
+									"human_sid": serf.obj.human_sid,
+									"to_step_sid": "",
+									"Allhuman": "",
+								}
+
+								console.log(JSON.stringify(data))
+								TB.get("ExeWorkflowGoNext/", JSON.stringify(data), function(res) {
+
+									var i = plus.webview.getWebviewById("reading");
+									i.evalJS("read.countlist()");
+									var ii = plus.webview.getWebviewById("index.html");
+									ii.evalJS("index.getCount()");
+									mui.toast("操作成功")
+									serf.istrue = false;
+								}.bind(this))
+							} else {
+
+							}
+						}, 'div')
+					},
+					mxs: function() {
+						var serf = this;
 						mui.openWindow({
-							url:"fujian.html",
-							id:"fujian",
-						    extras: {									
-								bill_sids:serf.bill_sid
+							url: "mx.html",
+							id: "mx",
+							extras: {
+								wfdata_list_sid: serf.cont.wfdata_list_sid,
 							},
-							show:{
-								aniShow:"slide-in-right"
+							show: {
+								aniShow: "slide-in-right"
 							},
-							waiting:{
-								 autoShow:false,
+							waiting: {
+								autoShow: false,
+							}
+						})
+					},
+					fujian: function() {
+						mui.openWindow({
+							url: "fujian.html",
+							id: "fujian",
+							extras: {
+								bill_sids: this.cont.bill_sid
+							},
+							show: {
+								aniShow: "slide-in-right"
+							},
+							waiting: {
+								autoShow: false,
 							}
 						})
 					}
-						
+
 				}
-				
+
 			})
 		</script>
 	</body>
