@@ -40,12 +40,12 @@ p {
 	background: white;
 	margin: 0;
 	border-bottom: 20px solid #efeff4;
-  
+    font-size: 15px;
 }
 .box p{
 	margin: 0;
-	padding: 20px;
-	font-size: 20px;
+	padding: 10px;
+	font-size: 18px;
 	color: black;
 }
 .li{
@@ -66,4 +66,5 @@ p {
 }
 .li >div span{
 	margin-bottom: 10px;
+	padding: 10px 11px;
 }

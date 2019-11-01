@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
@@ -7,6 +8,7 @@
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/style.css" />
 	</head>
+
 	<body id="list">
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" href="#item1mobile"></a>
@@ -17,7 +19,7 @@
 				<li class="mui-table-view-cell" v-for='i in list' @tap="naveTo(i)">
 					<div class="mui-table">
 						<div class="mui-table-cell mui-col-xs-11 ">
-							<p class="mui-ellipsis" style="color: black;overflow: hidden;">业务名称：{{i.mod_name}}</p>							
+							<p class="mui-ellipsis" style="color: black;overflow: hidden;">业务名称：{{i.mod_name}}</p>
 							<h5><span style="color: black;">单据标题：</span>{{i.bill_title}}</h5>
 							<h5><span style="color: black;">送达时间：</span>{{i.arrive_date}}</h5>
 							<h5><span style="color: black;">发&nbsp;&nbsp;起&nbsp;&nbsp;人：</span>{{i.start_human}}</h5>
@@ -40,7 +42,8 @@
 					title: '',
 					type: '',
 					list: [],
-					obj: {}
+					obj: {},
+					i:1
 				},
 				ready: function() {
 					var serf = this;
@@ -56,7 +59,13 @@
 								offset: '44px', //可选 默认0px,下拉刷新控件的起始位置
 								auto: true, //可选,默认false.首次加载自动上拉刷新一次							      
 								callback: serf.countlist
-							},		
+							},
+							up: {
+								height: '50px',
+								contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+								contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；	
+								callback: serf.up //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+							}
 						}
 					});
 
@@ -70,23 +79,45 @@
 				},
 				methods: {
 					countlist: function(type) {
+						if(!type) {
+							this.i = 1
+						}
 						var data = {
 							"accountname": this.obj.accountname,
 							"human_sid": this.obj.human_sid,
-							"sType": this.type
+							"sType": this.type,
+							"pageindex": this.i
+							
 						}
 						TB.get("GetWfdataList/", JSON.stringify(data), function(res) {
 							var list = []
 							res.data.forEach(function(res) {
 								list.push(JSON.parse(res))
 							})
-							this.list = list
-							mui('#refreshContainer').pullRefresh().endPulldown();
-						}.bind(this))
-					},
+							if(type) {
+								this.list = this.list.concat(list)
+								var istrue = false;
+								if(list.length != 10) {
 
+									istrue = true;
+								}
+								mui('#refreshContainer').pullRefresh().endPullup(istrue);
+							} else {
+								this.list = list
+								mui('#refreshContainer').pullRefresh().endPulldown();
+							}
+						}.bind(this),function(){
+								mui('#refreshContainer').pullRefresh().endPullup(true);
+							
+						})
+					},
+					up: function() {
+						this.i++;
+						console.log(this.i)
+						this.countlist("dowm")
+					},
 					naveTo: function(item) {
-						item.tt=this.title
+						item.tt = this.title
 						mui.openWindow({
 							url: 'listxq.html',
 							id: 'listxq',

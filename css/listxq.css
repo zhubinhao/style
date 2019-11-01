@@ -65,6 +65,7 @@ span {
 .padding-span >div{
 	font-size: 18px;
 	word-wrap:break-word;
+	word-break:break-all;
 	display: flex; 
 	justify-content: flex-start;
 	align-items: center;
@@ -97,6 +98,12 @@ span {
 	align-items: flex-start;
 	padding-top: 8px;
 }
+.hisList span{
+	
+	word-break:break-all;
+	word-wrap:break-word;
+}
+
 .buttonBox{
   position: fixed;
   left: 0;

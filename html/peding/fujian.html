@@ -120,7 +120,11 @@
 					 * 打开附件
 					 * */
 					open: function(url) {
-						console.log(url)
+						if(url.filesize=='-1B'){
+							mui.toast("附件无法下载")
+							return
+						}
+
 
 						var that = this;
 						var IMG = url.attach_name.split('.')[1].toUpperCase();
@@ -150,6 +154,10 @@
 						}
 					},
 					clcik: function(url) {
+						if(url.filesize=='-1B'){
+							mui.toast("附件无法下载")
+							return
+						}
 						var that = this;
 						var IMG = url.attach_name.split('.')[1].toUpperCase();
 						console.log(IMG)
