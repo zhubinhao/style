@@ -16,16 +16,16 @@
 
 	<body id='index'>
 		<header class="mui-bar mui-bar-nav">
-			<h1 class="mui-title">待审批</h1>
+			<h1 class="mui-title">工作台</h1>
 		</header>
-		<div class="mui-content mui-inner-wrap">
+		<div class="mui-content mui-inner-wrap" v-cloak>
 			<!--<div class="network" v-if='wxss'>网络不给力，请检查网络设置。</div>-->
 			<div class="mui-sc">
 
 				<div class="box" v-for="item in table">
 					<p>{{item.name}} </p>
 					<div class="li">
-						<div v-for="v in item.list" @tap='deal(v.name,v.pid)' v-if="item.name=='待处理'">
+						<div v-for="v in item.list" @tap='deal(v.name,v.pid)' v-if="item.name=='工作台'">
 							<span class="mui-icon iconfont" :class="v.icon"></span>
 							<div class="mui-media-body" style="text-align: center;">{{v.name}}</br>({{numObj[v.pid]}})</div>
 						</div>

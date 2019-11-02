@@ -4,9 +4,10 @@
 	//	owner.url = 'http://113.72.123.243:9090/Rest/TSvrMethods/'; 
 
 	owner.getURL = function(url, data) {
-		var port = "9986"
-		var http = "http://47.112.137.218"
-		var path = http + ":" + port + '/Rest/TSvrMethods/' + url + data
+
+		var http =  localStorage.getItem('http')
+
+		var path = http + '/Rest/TSvrMethods/' + url + data
 		return path
 	}
 	//get 

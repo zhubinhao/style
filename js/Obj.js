@@ -2,7 +2,7 @@
 
 	owner.list = {
 		1: {
-			name: "待处理",
+			name: "工作台",
 			show: true,
 			list: [{
 

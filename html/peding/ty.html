@@ -49,6 +49,7 @@
 						human_sign_sid: '',
 						SignActive: '',
 						istrue: true,
+						to_step_sid: ""
 					},
 					ready: function() {
 						var serf = this
@@ -60,20 +61,42 @@
 							serf.cont = cont
 							serf.obj = JSON.parse(plus.storage.getItem("loginData"))
 							plus.nativeUI.showWaiting()
+							serf.getstep()
 
-							serf.getPeople()
 							serf.getQz()
 
 						})
 					},
 					methods: {
+						getstep: function() {
+							var data = {
+								"work_step_sid": this.cont.work_step_sid,
+								"rec_sid": this.cont.rec_sid,
+								"bill_sid": this.cont.bill_sid,
+								"accountname": this.obj.accountname,
+							}
+							TB.get("GetWorkFlowCheck/", JSON.stringify(data), function(res) {
+								this.to_step_sid = res.dest_step_sid
+								console.log(res.dest_step_sid)
+								this.getPeople()
+							}.bind(this), function(res) {  
+								this.getPeople()
+								this.istrue = false
+								if(res.code == 4) {
+									mui.toast("没有符合流转条件的节点，请检查流转条件！")
+								} else {
+									mui.toast(res.msg)
+								}
+
+							}.bind(this))
+						},
 						getQz: function() {
 							var data = {
 								"accountname": this.obj.accountname,
 								"human_sid": this.obj.human_sid,
 							}
 							TB.get("NewGetPersonSignPicPwd/", JSON.stringify(data), function(res) {
-								this.img = 'http://47.112.137.218:8088/HCFile/' + res.human_sign_sid + '.png'
+								this.img = localStorage.getItem('failPath') + '/HCFile/' + res.human_sign_sid + '.png'
 								this.sign_psw = res.sign_psw
 							}.bind(this))
 						},
@@ -91,7 +114,7 @@
 									arr.push(JSON.parse(v))
 								})
 								this.itm = arr
-							}.bind(this),function(res){
+							}.bind(this), function(res) {
 								console.log(res)
 								mui.toast(res.msg)
 							})
@@ -136,10 +159,10 @@
 
 							}
 							console.log(JSON.stringify(data))
-//							TB.get("PostWfDataList/", JSON.stringify(data), function(res) {
-								this.submits()
+							//							TB.get("PostWfDataList/", JSON.stringify(data), function(res) {
+							this.submits()
 
-//							}.bind(this))
+							//							}.bind(this))
 						},
 						submits: function() {
 							var isIOS = '【苹果端】';
@@ -157,7 +180,8 @@
 								"check_value": "2",
 								"check_text": Base64.encode(val),
 								"human_sid": serf.obj.human_sid,
-								"to_step_sid": "",
+								"to_step_sid": this.to_step_sid,
+
 								"Allhuman": this.tpeople.join(","),
 							}
 							console.log(JSON.stringify(data))

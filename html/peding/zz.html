@@ -56,7 +56,7 @@
 							"human_sid": this.obj.human_sid,
 						}
 						TB.get("NewGetPersonSignPicPwd/", JSON.stringify(data), function(res) {
-							this.img = 'http://47.112.137.218:8088/HCFile/' + res.human_sign_sid + '.png'
+							this.img = localStorage.getItem('failPath')+'/HCFile/' + res.human_sign_sid + '.png'
 							this.sign_psw = res.sign_psw
 
 						}.bind(this))

@@ -15,20 +15,14 @@
 			<h1 class="mui-title">{{title}}</h1>
 		</header>
 		<div class="mui-content" id="refreshContainer" v-cloak>
-			<ul class="mui-table-view">
-				<li class="mui-table-view-cell" v-for='i in list' @tap="naveTo(i)">
-					<div class="mui-table">
-						<div class="mui-table-cell mui-col-xs-11 ">
-							<p class="mui-ellipsis" style="color: black;overflow: hidden;">业务名称：{{i.mod_name}}</p>
-							<h5><span style="color: black;">单据标题：</span>{{i.bill_title}}</h5>
-							<h5><span style="color: black;">送达时间：</span>{{i.arrive_date}}</h5>
-							<h5><span style="color: black;">发&nbsp;&nbsp;起&nbsp;&nbsp;人：</span>{{i.start_human}}</h5>
-							<h5><span style="color: black;">发起部门：</span>{{i.start_mbsdept_name}}</h5>
-							<h5><span style="color: black;">发起时间：</span>{{i.start_date}}</h5>
-						</div>
-					</div>
-				</li>
-			</ul>
+			<div class="listcard" v-for='i in list' @tap="naveTo(i)">
+				<p class="mui-ellipsis" style="color: black;overflow: hidden;">业务名称：{{i.mod_name}}</p>
+				<h5><span style="color: black;">单据标题：</span>{{i.bill_title}}</h5>
+				<h5><span style="color: black;">送达时间：</span>{{i.arrive_date}}</h5>
+				<h5><span style="color: black;">发&nbsp;&nbsp;起&nbsp;&nbsp;人：</span>{{i.start_human}}</h5>
+				<h5><span style="color: black;">发起部门：</span>{{i.start_mbsdept_name}}</h5>
+				<h5><span style="color: black;">发起时间：</span>{{i.start_date}}</h5>
+			</div>
 		</div>
 		<script src="../../js/mui.min1.js"></script>
 		<script src="../../js/vue.js"></script>
@@ -119,6 +113,7 @@
 						this.countlist("dowm")
 					},
 					naveTo: function(item) {
+
 						var sef = this;
 						mui.openWindow({
 							url: 'readingxq.html',

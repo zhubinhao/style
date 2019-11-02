@@ -39,14 +39,19 @@ p {
 .box{
 	background: white;
 	margin: 0;
-	border-bottom: 20px solid #efeff4;
+	/*border-bottom: 20px solid #efeff4;*/
     font-size: 15px;
 }
 .box p{
 	margin: 0;
-	padding: 10px;
+
 	font-size: 18px;
 	color: black;
+	height: 50px;
+	line-height: 50px;
+	border-bottom: 1px solid gainsboro;
+	padding-left: 20px;
+
 }
 .li{
 	display: flex;
@@ -54,17 +59,32 @@ p {
 	align-items: flex-start;
 	flex-wrap: wrap;
 	background: white;
-	padding-bottom: 10px;
+	/*padding-bottom: 10px;*/
+
+
 }
 .li >div{
-	width: 25%;
-	height: 105px;
+	width: 50%;
+	/*height: 105px;*/
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
-	flex-direction: column;
+
+	border: 1px solid gainsboro;
+	padding: 10px 0;
+	box-sizing: border-box;
+	padding:  20px 15px;
+  border-top: none;
+	
 }
+.li >div:nth-child(2n+1){
+	border-left: none;
+}
+.li >div:nth-child(2n){
+	border-left: none;
+	border-right: none;
+}
+
 .li >div span{
-	margin-bottom: 10px;
-	padding: 10px 11px;
+	padding: 15px 16px;
 }

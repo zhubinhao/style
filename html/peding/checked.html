@@ -15,41 +15,56 @@
 			<a class="mui-btn  mui-pull-right   mui-btn-danger  mui-btn-outlined" v-on:tap="read()">审批</a>
 			<h1 class="mui-title" style="margin-right: 30px;">{{cont.mod_name}}</h1>
 		</header>
-		<div class="mui-content mui-content-padded">
-			<div class="biaoqian" v-if="qianzhang">
-				待审批
+		<div class="mui-content ">						
+			<div class="head">
+				<div class="biaoqian" v-if="qianzhang">
+					待审批
+				</div>
+				<div class="li1"><span>业务名称：</span>
+					<p>{{cont.mod_name}}</p>
+				</div>
+				<div class="li1"><span>单据标题：</span>
+					<p>{{cont.bill_title}}</p>
+				</div>
+				<div class="li1"><span>送达时间：</span>
+					<p>{{cont.arrive_date}}</p>
+				</div>
+				<div class="li1"><span>发起人：</span>
+					<p>{{cont.start_human}}</p>
+				</div>
+				<div class="li1"><span>发起部门：</span>
+					<p>{{cont.start_mbsdept_name}}</p>
+				</div>
+				<div class="li1"><span>发起时间：</span>
+					<p>{{cont.start_date}}</p>
+				</div>
 			</div>
-			<p class="mui-ellipsis xqtitle">业务名称：{{cont.mod_name}}</p>
-			<p><span>单据标题：{{cont.bill_title}}</span></p>
-			<p><span>送达时间：{{cont.arrive_date}}</span></p>
-
-			<p><span>发起人：{{cont.start_human}}</span></p>
-			<p><span>发起部门：{{cont.start_mbsdept_name}}</span></p>
-			<p><span>发起时间：{{cont.start_date}}</span></p>
+			
 			<!----------------------------------------业务详情--------->
-			<div class="item item-text-wrap" style="border: none;">
-				<p class="bar-p">业务详情</p>
-				<hr class="bar-div" />
-				<div v-for="i in itm" class="listBox">
-					<div class="padding-span">
-						<div><span style="color: black;">{{$key}} &nbsp;</span><div>{{i}}</div></div>
+			<div class="item " style="border: none;">
+				<p >业务详情</p>
+					<div v-for="i in itm" class="listBox" v-if="i">
+						<span style="color: gray;">{{$key}}</span>
+					<div style="color: black;">{{i}}</div>
 					</div>
+			</div>
+			<!------------------------------------ ---审批历史-->
+			<div class="hisListBox">
+				<div class="hisList" v-for="i in his">  
+					<div class="hisleft"> 
+						{{i.arrive_date}}
+					</div>
+					<div class="hiscontentBox">
+						<div class="hiscontent">
+							<div><span class=" black">{{i.human_name}}-{{i.check_value}}</span><span class="gray" style="font-size: 13px;">{{i.check_date}}</span></div>
+
+							<div><span class="hisTit">{{i.check_text}}</span></div>
+						</div>
+					</div>
+
 				</div>
 			</div>
-			<!---------------------------------------审批历史-->
-			<div style="border: none; margin-top: 20px;">
-				<p class="bar-p">审批历史 <span class="show" @click="show=!show">{{show?"隐藏":"展开"}}</span> </p>
-				<hr class="bar-div" />
-				<div class="hisList" v-for="i in his" v-if="show">
-					<div><span class="hisTit">操作：</span><span class="hisConetnt">{{i.check_value}}</span></div>
-					<div><span class="hisTit">审批人：</span><span class="hisConetnt">{{i.human_name}}</span></div>
-					<div><span class="hisTit">到达时间：</span><span class="hisConetnt">{{i.arrive_date}}</span></div>
-					<div><span class="hisTit">审批时间：</span><span class="hisConetnt">{{i.check_date}}</span></div>
-					<div><span class="hisTit">审批意见：</span><span class="hisConetnt">{{i.check_text}} </span><span></span></div>
-				</div>
-				<div v-if="his.length==0" style="text-align: center;">暂无审批历史</div>
-			</div>
-			<div style="height: 60px;"></div>
+			<div style="height: 80px;"></div>
 			<div class="buttonBox">
 				<button @click="mxs()">明细</button>
 				<button class="fj" @click="fujian()">附件</button></p>

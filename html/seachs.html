@@ -26,7 +26,7 @@
 						class="mui-table-view-cell mui-indexed-list-item" 
 						v-for="i in itm  | filterBy name in 'name' " 
 						v-on:tap="phos(i.phone,i.name)">
-						{{i.name.split("-")[0]}}</li>
+						{{i.name}}{{i.phone}}</li>
 									
 				</ul>
 			</div>

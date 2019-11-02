@@ -56,7 +56,9 @@ span {
     line-height: 100px;
 }
 .xqtitle{
-	margin-top: 10px;font-size: 18px;color: black;
+	margin-top: 10px;
+	font-size: 18px;
+	color: black;
 }
 
 .listBox{
@@ -79,27 +81,61 @@ span {
 .padding-span div{
 	flex: 1;
 }
-.hisTit{
-	display: inline-block;
-	width: 86px;
-	font-size: 16px;
 
-}
 .hisConetnt{
 	color: gray !important;
 	flex: 1;
 }
-.hisList{
-	border-bottom: 1px solid gainsboro;padding:5px ;
+.hisListBox{
+	margin: 0 25px;
 }
-.hisList >div{
+.hisList{
 	display: flex;
 	justify-content: flex-start;
-	align-items: flex-start;
-	padding-top: 8px;
+	align-items: stretch;
+
+	flex-direction: column;
 }
-.hisList span{
+
+.hisleft{
+  height: 50px;
+  line-height: 50px;
+  position: relative;
+  left: -6px;
+}
+.hiscontentBox{
+	padding-left: 10px;
+	border-left: 1px dashed gray;
+	font-size: 15px;
+}
+.hiscontent{
+	flex:1;
+	padding: 15px 10px 1px 10px;
+	background: white;
+	border-radius: 5px;
+	box-shadow: 1px 1px 3px lightgray;
+
+
+}
+.hisTit{
 	
+ flex: 1;
+ color: gray;
+}
+.hiscontent >div{
+	display: flex;
+	justify-content: space-between;
+	align-content: center;
+	margin-bottom: 10px;
+	color: gray;
+}
+.gray{
+	color: gray;
+}
+.black{
+	font-weight: 700;
+}
+.hisList span{	
 	word-break:break-all;
 	word-wrap:break-word;
 }
@@ -109,7 +145,7 @@ span {
   left: 0;
   bottom: 0;
   right: 0;
-  height: 60px;
+  height: 45px;
   background: white;
   display: flex;
   justify-content: flex-start;
@@ -128,4 +164,53 @@ span {
 
 .buttonBox .fj{
 	background: #e6a23c;
+}
+.head{
+	background: white;
+	padding: 20px 15px 15px 15px;
+	box-sizing: border-box;
+	box-shadow: 1px 1px 3px lightgray;
+}
+.head .li1{
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+.head .li1 span{
+	width: 100px;
+	color: gray;
+
+}
+.head p{
+	flex: 1;
+	color: black;
+}
+
+.item{
+	margin: 15px;
+	background: white;
+	padding: 15px;
+	border-radius: 5px;hiscontent
+	box-shadow: 1px 1px 3px lightgray;	
+}
+.item >p{
+	color: black;
+	height: 30px;
+	border-bottom: 1px solid lightgray;
+	font-weight: 700;
+}
+.item >div{
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	margin-bottom: 10px;
+}
+.item >div span{
+	width: 100px;
+	text-align: justify;
+	color: black;
+}
+.item >div div{
+	color: gray;
+	flex: 1;
 }

@@ -22,7 +22,7 @@
 					<ul class="mui-table-view">
 						<li v-for='i in list'>
 							<a id={{i.py}} v-if="i.py">{{i.py}}</a>
-							<div v-else @tap="phos(i.phone,i.name)">{{i.name.split("-")[0]}}</div>
+							<div v-else @tap="phos(i.phone,i.name)">{{i.name}}{{i.phone}}</div>
 						</li>
 					</ul>
 				</div>
