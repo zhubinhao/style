@@ -189,8 +189,8 @@ span {
 .item{
 	margin: 15px;
 	background: white;
-	padding: 15px;
-	border-radius: 5px;hiscontent
+	padding: 15px 15px 10px 15px;
+	border-radius: 5px;
 	box-shadow: 1px 1px 3px lightgray;	
 }
 .item >p{
@@ -207,7 +207,7 @@ span {
 }
 .item >div span{
 	width: 100px;
-	text-align: justify;
+
 	color: black;
 }
 .item >div div{
