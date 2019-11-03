@@ -1,11 +1,8 @@
 (function(owner) {
 
-	//	owner.url = 'http://150.109.105.140:9085/Rest/TSvrMethods/';
-	//	owner.url = 'http://113.72.123.243:9090/Rest/TSvrMethods/'; 
-
 	owner.getURL = function(url, data) {
 
-		var http =  localStorage.getItem('http')
+		var http = localStorage.getItem('http')
 
 		var path = http + '/Rest/TSvrMethods/' + url + data
 		return path
@@ -48,28 +45,35 @@
 			}
 		})
 	}
-	owner.udate = function(bb) {
+	owner.udate = function() {
+		var bb;
+		plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+			bb = inf.version;
+			api.banben(function(data) {
+				var datas = JSON.parse(data).result[0];
+				var banben = datas.split(",")[1].split(":")[1];
+				var bbs = '"' + bb + '"';
+				var a = datas.split(",")[3].split(":")[1].split('"')[1];
 
-		api.banben(function(data) {
-			var datas = JSON.parse(data).result[0];
-			var banben = datas.split(",")[1].split(":")[1];
-			var bbs = '"' + bb + '"';
-			var a = datas.split(",")[3].split(":")[1].split('"')[1];
-			console.log(banben)
-			console.log(bbs)
-			if(mui.os.ios) {
-				return;
-			}
-			if(bbs != banben) {
-				mui.confirm(a, "更新提示", ['确认', '取消'], function(e) {
-					if(e.index == 0) {
-						plus.runtime.openURL('http://jinyintian.vicp.cc:13856/金银田PMIS.apk');
-					} else {}
-				})
-			} else {
-				mui.toast('已是最新版本')
-			}
-		})
+				if(mui.os.ios) {
+					return;
+				}
+                 console.log(bb)
+                 console.log(banben)
+				
+//				if(bbs != banben) {
+//					
+//					mui.confirm(a, "更新提示", ['确认', '取消'], function(e) {
+//						if(e.index == 0) {
+//							plus.runtime.openURL('http://jinyintian.vicp.cc:13856/金银田PMIS.apk');
+//						} else {}
+//					})
+//				} else {
+//					mui.toast('已是最新版本')
+//				}
+			})
+		});
+
 	}
 	//去左右空格
 	owner.trim = function(str) {

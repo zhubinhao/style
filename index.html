@@ -70,10 +70,9 @@
 						var obj = JSON.parse(plus.storage.getItem("loginData"))
 						_this.human_sid = obj.human_sid;
 						_this.obj = obj
-						plus.runtime.getProperty(plus.runtime.appid, function(inf) {
-							_this.bb = inf.version;
-						});
+						
 						_this.getCount()
+						TB.udate()
 
 					})
 
