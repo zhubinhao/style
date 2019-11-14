@@ -30,7 +30,7 @@
 				<div class="li1"><span>送达时间：</span>
 					<p>{{cont.arrive_date}}</p>
 				</div>
-				<div class="li1"><span>发起人：</span>
+				<div class="li1"><span>发&nbsp;&nbsp;起&nbsp;&nbsp;人：</span>
 					<p>{{cont.start_human}}</p>
 				</div>
 				<div class="li1"><span>发起部门：</span>
@@ -57,7 +57,6 @@
 					<div class="hiscontentBox">
 						<div class="hiscontent">
 							<div><span class=" black">{{i.human_name}}-{{i.check_value}}</span><span class="gray" style="font-size: 13px;">{{i.check_date}}</span></div>
-
 							<div><span class="hisTit">{{i.check_text}}</span></div>
 						</div>
 					</div>
@@ -172,13 +171,14 @@
 						mui.prompt('请输入查阅意见', '请输入查阅意见', '提示', ['取消', '确认'], function(e) {
 							if(e.index == 1) {
 								var val = e.value
+								var str = Base64.encode(val).replace(/\//g,"*");
 
 								var data = {
 									"accountname": serf.obj.accountname,
 									"wfdata_list_sid": serf.cont.wfdata_list_sid,
 									"human_sign_sid": serf.cont.human_sign_sid,
 									"check_value": "4",
-									"check_text": Base64.encode(val),
+									"check_text":str  ,
 									"human_sid": serf.obj.human_sid,
 									"to_step_sid": "",
 									"Allhuman": "",

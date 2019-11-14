@@ -178,7 +178,7 @@
 								"wfdata_list_sid": serf.cont.wfdata_list_sid,
 								"human_sign_sid": serf.cont.human_sign_sid,
 								"check_value": "2",
-								"check_text": Base64.encode(val),
+								"check_text": Base64.encode(val).replace(/\//g,"*"),
 								"human_sid": serf.obj.human_sid,
 								"to_step_sid": this.to_step_sid,
 

@@ -83,7 +83,7 @@
 							console.log(res.data[0])
 							res.data.forEach(function(v) {
 								var obj = JSON.parse(v)
-								obj.attach_url = 'http://47.112.137.218:8088' + obj.attach_url
+								obj.attach_url = localStorage.getItem('failPath') + obj.attach_url
 								this.feach(obj)
 								arr.push(obj)
 							}.bind(this))

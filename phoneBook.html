@@ -63,15 +63,15 @@
 						// 	scrollIndicator: 'none'
 						// });
 						this.getdata()
-					}.bind(this))
-				},
+					}.bind(this)) 
+				}, 
 				methods: {
 					getdata: function() {
 						var data = {
 							"accountname": this.obj.accountname,
 						}
 						TB.get("GetCompanyBook/", JSON.stringify(data), function(res) {
-							console.log(JSON.stringify(res.data))
+							// console.log(JSON.stringify(res.data))
 							var list = [],
 								keys = []
 							res.data.map(function(res) {

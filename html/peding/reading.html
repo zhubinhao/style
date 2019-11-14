@@ -17,11 +17,11 @@
 		<div class="mui-content" id="refreshContainer" v-cloak>
 			<div class="listcard" v-for='i in list' @tap="naveTo(i)">
 				<p class="mui-ellipsis" style="color: black;overflow: hidden;">业务名称：{{i.mod_name}}</p>
-				<h5><span style="color: black;">单据标题：</span>{{i.bill_title}}</h5>
-				<h5><span style="color: black;">送达时间：</span>{{i.arrive_date}}</h5>
-				<h5><span style="color: black;">发&nbsp;&nbsp;起&nbsp;&nbsp;人：</span>{{i.start_human}}</h5>
-				<h5><span style="color: black;">发起部门：</span>{{i.start_mbsdept_name}}</h5>
-				<h5><span style="color: black;">发起时间：</span>{{i.start_date}}</h5>
+				<h5><span style="color: black;">单据标题：</span><div>{{i.bill_title}}</div></h5>
+				<h5><span style="color: black;">送达时间：</span><div>{{i.arrive_date}}</div></h5>
+				<h5><span style="color: black;">发&nbsp;&nbsp;起&nbsp;&nbsp;人：</span><div>{{i.start_human}}</div></h5>
+				<h5><span style="color: black;">发起部门：</span><div>{{i.start_mbsdept_name}}</div></h5>
+				<h5><span style="color: black;">发起时间：</span><div>{{i.start_date}}</div></h5>
 			</div>
 		</div>
 		<script src="../../js/mui.min1.js"></script>

@@ -29,7 +29,7 @@
 	}
 	owner.post = function(obj, call, fail) {
 		var fail = fail ? fail : function() {}
-		var path = 'http://47.112.137.218:9986/Rest/TSvrMethods/' + obj.url
+		var path = localStorage.getItem('http')+'/Rest/TSvrMethods/' + obj.url
 		console.log(path)
 		owner.ajax({
 			url: path,
@@ -49,28 +49,58 @@
 		var bb;
 		plus.runtime.getProperty(plus.runtime.appid, function(inf) {
 			bb = inf.version;
-			api.banben(function(data) {
-				var datas = JSON.parse(data).result[0];
-				var banben = datas.split(",")[1].split(":")[1];
-				var bbs = '"' + bb + '"';
-				var a = datas.split(",")[3].split(":")[1].split('"')[1];
+			// http://47.112.137.218:9986/Rest/TSvrMethods/GetLastVersionInfo/{}
+			var obj = {
+				"accountname":"hc"
+			}
+			owner.get("GetLastVersionInfo/",JSON.stringify(obj),function(data) {
+				var banben = data.Version_Number;
+				var a = '发现新版本';
 
 				if(mui.os.ios) {
 					return;
 				}
-                 console.log(bb)
-                 console.log(banben)
-				
-//				if(bbs != banben) {
-//					
-//					mui.confirm(a, "更新提示", ['确认', '取消'], function(e) {
-//						if(e.index == 0) {
-//							plus.runtime.openURL('http://jinyintian.vicp.cc:13856/金银田PMIS.apk');
-//						} else {}
-//					})
-//				} else {
-//					mui.toast('已是最新版本')
-//				}
+				if(bb.toString() != banben) {
+					mui.confirm(a, "更新提示", ['确认', '取消'], function(e) {
+						if(e.index == 0) {
+							// plus.runtime.openURL('http://47.112.137.218:8088//HCPMIS.apk');
+							//var url ="http://47.112.137.218:8088/HCFile/update/HCPMIS.wgt"
+							 var url =localStorage.getItem('failPath')+'/HCFile/update/HCPMIS.wgt'
+							 var options = {method:"GET"};
+							 var  dtask = plus.downloader.createDownload( url, options );
+							 dtask.addEventListener( "statechanged", function(task,status){             
+							    switch(task.state) {
+							            case 1: // 开始
+							                console.log( "开始下载..." );
+							            break;
+							            case 2: // 已连接到服务器
+							                console.log( "链接到服务器..." );
+							            break;
+							            case 3: // 已接收到数据                                
+							                // var a= Math.floor(task.downloadedSize/task.totalSize*100)+'%';
+							                // document.getElementById('two').style.width=a
+							                
+							            break; 
+							            case 4: // 下载完成
+							                console.log( "下载完成！" );                                                                     
+							                // install (task)
+											 plus.runtime.install(task.filename, {force:true}, function() {
+											        //完成更新向服务器进行通知
+											        mui.toast("更新完毕，将重启应用！");
+											        plus.runtime.restart();
+											     },function(err){
+											        // alert(JSON.stringify(err));
+											        mui.toast("安装升级失败");
+											   });
+							            break;
+							        }
+							 } );
+							dtask.start();
+						} else {}
+					})
+				} else {
+					mui.toast('已是最新版本')
+				}
 			})
 		});
 

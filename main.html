@@ -21,7 +21,7 @@
 		<nav class="mui-bar mui-bar-tab">
 			<a id="defaultTab" class="mui-tab-item mui-active" href="index.html">
 				<span class="mui-icon mui-icon-home"></span>
-				<span class="mui-tab-label">待审批</span>
+				<span class="mui-tab-label">工作台</span>
 			</a>
 			<a class="mui-tab-item" href="phoneBook.html">
 				<span class="mui-icon mui-icon-contact"></span>
@@ -39,7 +39,7 @@
 			mui.init({
 				swipeBack: false
 			});
-			var subpages = ['index.html', 'phoneBook.html', 'me.html'];
+			var subpages = [ 'index.html','phoneBook.html', 'me.html'];
 			var subpage_style = [{
 				top: '0px',
 				bottom: '51px'
@@ -58,7 +58,6 @@
 				setTimeout(function() {
 					plus.navigator.closeSplashscreen()
 				}, 500)
-
 				// 关闭侧滑返回功能
 				TB.closeRight()
 				var self = plus.webview.currentWebview();
@@ -83,7 +82,7 @@
 					return;
 				}
 				//显示目标选项卡
-				//				title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;			
+				//title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;			
 				//若为iOS平台或非首次显示，则直接显示
 				if(mui.os.ios || aniShow[targetTab]) {
 					plus.webview.show(targetTab);

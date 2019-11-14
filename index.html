@@ -25,11 +25,11 @@
 				<div class="box" v-for="item in table">
 					<p>{{item.name}} </p>
 					<div class="li">
-						<div v-for="v in item.list" @tap='deal(v.name,v.pid)' v-if="item.name=='工作台'">
+						<div v-for="v in item.list" @tap='deal(v.name,v.pid)' v-if="item.name=='待处理'">
 							<span class="mui-icon iconfont" :class="v.icon"></span>
 							<div class="mui-media-body" style="text-align: center;">{{v.name}}</br>({{numObj[v.pid]}})</div>
 						</div>
-						<div v-for="v in item.list" @tap='list(v.name,v.pid)' v-if="item.name!='工作台'">
+						<div v-for="v in item.list" @tap='list(v.name,v.pid)' v-if="item.name!='待处理'">
 							<span class="mui-icon iconfont" :class="v.icon"></span>
 							<div class="mui-media-body" style="text-align: center;">{{v.name}}</br>({{numObj[v.pid]}})</div>
 						</div>
@@ -110,16 +110,18 @@
 							this.numObj = {}
 							var numObj = {}
 							res.data.forEach(function(v) {
-								var obj = JSON.parse(v)
+								var obj = JSON.parse(v) 
 								numObj[obj.stype] = obj.icount
 							})
 							this.numObj = numObj
 							if (mui.os.ios) {
+								
 								var GeTuiSdk = plus.ios.importClass('GeTuiSdk');
-								GeTuiSdk.setBadge(this.numObj.checking); //设置角标  
+								GeTuiSdk.setBadge(parseInt(this.numObj.checking)); //设置角标  
 							} else {
-								plus.runtime.setBadgeNumber(this.numObj.checking);
+								plus.runtime.setBadgeNumber(parseInt(this.numObj.checking));
 							}
+							
 
 							self && self.endPullDownToRefresh();
 						}.bind(this))

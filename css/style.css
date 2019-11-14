@@ -594,15 +594,18 @@ p img {
 	margin-bottom: 10px;
 	font-size: 15px;
 	color: black;
-	
+	word-break:break-all;
+	word-wrap:break-word;
 }
 
 .listcard h5 span {
-	width: 80px;
+	width: 80px ;
 	color: gray !important;
 	font-size: 15px !important;
 }
-
+.listcard h5 div{
+	flex: 1;
+}
 .login {
 	padding: 30px 20px 20px 20px;
 	color: black;
