@@ -18,11 +18,21 @@
 
 			<div class="listcard" v-for='i in list' @tap="naveTo(i)">
 				<p class="mui-ellipsis" style="color: black;overflow: hidden;">业务名称：{{i.mod_name}}</p>
-				<h5><span style="color: black;">单据标题：</span><div>{{i.bill_title}}</div></h5>
-				<h5><span style="color: black;">送达时间：</span><div>{{i.arrive_date}}</div></h5>
-				<h5><span style="color: black;">发&nbsp;&nbsp;起&nbsp;&nbsp;人：</span><div>{{i.start_human}}</div></h5>
-				<h5><span style="color: black;">发起部门：</span><div>{{i.start_mbsdept_name}}</div></h5>
-				<h5><span style="color: black;">发起时间：</span><div>{{i.start_date}}</div></h5>
+				<h5><span style="color: black;">单据标题：</span>
+					<div>{{i.bill_title}}</div>
+				</h5>
+				<h5><span style="color: black;">送达时间：</span>
+					<div>{{i.arrive_date}}</div>
+				</h5>
+				<h5><span style="color: black;">发&nbsp;&nbsp;起&nbsp;&nbsp;人：</span>
+					<div>{{i.start_human}}</div>
+				</h5>
+				<h5><span style="color: black;">发起部门：</span>
+					<div>{{i.start_mbsdept_name}}</div>
+				</h5>
+				<h5><span style="color: black;">发起时间：</span>
+					<div>{{i.start_date}}</div>
+				</h5>
 			</div>
 
 
@@ -39,7 +49,7 @@
 					type: '',
 					list: [],
 					obj: {},
-					i:1
+					i: 1
 				},
 				ready: function() {
 					var serf = this;
@@ -75,7 +85,7 @@
 				},
 				methods: {
 					countlist: function(type) {
-						if(!type) {
+						if (!type) {
 							this.i = 1
 						}
 						var data = {
@@ -83,18 +93,17 @@
 							"human_sid": this.obj.human_sid,
 							"sType": this.type,
 							"pageindex": this.i
-							
+
 						}
 						TB.get("GetWfdataList/", JSON.stringify(data), function(res) {
 							var list = []
 							res.data.forEach(function(res) {
 								list.push(JSON.parse(res))
 							})
-							if(type) {
+							if (type) {
 								this.list = this.list.concat(list)
 								var istrue = false;
-								if(list.length != 10) {
-
+								if (list.length != 10) {
 									istrue = true;
 								}
 								mui('#refreshContainer').pullRefresh().endPullup(istrue);
@@ -102,21 +111,34 @@
 								this.list = list
 								mui('#refreshContainer').pullRefresh().endPulldown();
 							}
-						}.bind(this),function(){
-								mui('#refreshContainer').pullRefresh().endPullup(true);
-							
-						})
+						}.bind(this), function() {
+							this.list = []
+							mui('#refreshContainer').pullRefresh().endPullup(true);
+						}.bind(this))
 					},
 					up: function() {
+						if(this.list.length<10){
+							mui('#refreshContainer').pullRefresh().endPullup(true);
+							return
+						}
 						this.i++;
-						console.log(this.i)
 						this.countlist("dowm")
 					},
 					naveTo: function(item) {
 						item.tt = this.title
+						var url = 'listxq.html';
+						var id = 'listxq';
+						if (this.type == "checking") {
+							url = 'checked.html';
+							id = 'checked';
+						}
+						if (this.type == "reading") {
+							url = 'readingxq.html';
+							id = 'readingxq';
+						}
 						mui.openWindow({
-							url: 'listxq.html',
-							id: 'listxq',
+							url: url,
+							id: id,
 							extras: item,
 							show: {
 								aniShow: 'slide-in-right'

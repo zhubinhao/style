@@ -145,7 +145,6 @@
 							this.sign_psw = res.sign_psw
 
 						}.bind(this))
-						//						NewGetPersonSignPicPwd
 					},
 					read: function() {
 
@@ -187,8 +186,8 @@
 								console.log(JSON.stringify(data))
 								TB.get("ExeWorkflowGoNext/", JSON.stringify(data), function(res) {
 
-									var i = plus.webview.getWebviewById("reading");
-									i.evalJS("read.countlist()");
+									var i = plus.webview.getWebviewById("list");
+									i.evalJS("list.countlist()");
 									var ii = plus.webview.getWebviewById("index.html");
 									ii.evalJS("index.getCount()");
 									mui.toast("操作成功")							
