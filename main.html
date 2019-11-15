@@ -17,7 +17,7 @@
 		</style>
 	</head>
 
-	<body>
+	<body> 
 		<nav class="mui-bar mui-bar-tab">
 			<a id="defaultTab" class="mui-tab-item mui-active" href="index.html">
 				<span class="mui-icon mui-icon-home"></span>
@@ -39,7 +39,7 @@
 			mui.init({
 				swipeBack: false
 			});
-			var subpages = [ 'index.html','phoneBook.html', 'me.html'];
+			var subpages = ['index.html','phoneBook.html', 'me.html'];
 			var subpage_style = [{
 				top: '0px',
 				bottom: '51px'
@@ -58,6 +58,7 @@
 				setTimeout(function() {
 					plus.navigator.closeSplashscreen()
 				}, 500)
+
 				// 关闭侧滑返回功能
 				TB.closeRight()
 				var self = plus.webview.currentWebview();
@@ -66,7 +67,8 @@
 					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style[i], {});
 					if(i > 0) {
 						sub.hide();
-					} else {
+					} 
+					else {
 						temp[subpages[i]] = "true";
 						mui.extend(aniShow, temp);
 					}
