@@ -5,7 +5,7 @@
 		<meta charset="UTF-8">
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../css/style.css" />
 		<style>
 			.head-img {
@@ -15,17 +15,14 @@
 				top: 17px;
 				right: 38px;
 			}
-			
 			input {
 				border: none;
 				text-align: end;
-				/*border-bottom: 1px solid gainsboro;*/
 			}
-			
 			.input1 {
 				position: absolute;
 				right: 0;
-				z-index: 0;
+				z-index: 1;
 				width: 60% !important;
 				border: none !important;
 				top: 0px;
@@ -41,8 +38,6 @@
 			<h1 class="mui-title">个人中心</h1>
 		</header>
 		<div class="mui-content">
-
-			<div class="mui-scroll">
 				<ul class="mui-table-view" style="margin-top: 15px;">
 					<li class="mui-table-view-cell" v-on:tap="head()">
 						<a class="mui-navigate-right" style="line-height: 50px;">头像
@@ -70,19 +65,17 @@
 						分机号<input type="text" class="mui-pull-right input1" v-model="people.phone_2"></input>
 					</li>
 				</ul>
-			</div>
 
 		</div>
 
-		<script src="../js/mui.min.js"></script>
-		<script src="../js/vue.js"></script>
-		<script src="../js/jquery-3.1.0.min .js"></script>
-		<script src="../js/api.js"></script>
-		<script src="../js/serve.js"></script>
-		<script src="../js/mui.previewimage.js"></script>
-		<script src="../js/mui.zoom.js"></script>
+		
+	</body>
+       <script src="../../js/mui.min.js" type="text/javascript"></script>
+		<script src="../../js/vue.js" type="text/javascript"></script>
+		<script src="../../js/serve.js" type="text/javascript"></script>
+		<script src="../../js/base.js" type="text/javascript"></script>
 		<script type="text/javascript">
-			mui.previewImage();
+			// mui.previewImage();
 			var WD = new Vue({
 				el: '#me',
 				data: {
@@ -98,8 +91,7 @@
 					var serf = this;
 					mui.plusReady(function() {
 						this.obj = JSON.parse(plus.storage.getItem("loginData"));
-						this.img = plus.storage.getItem("img") || "../img/1.jpg";
-
+						this.img = plus.storage.getItem("img") || "../../img/1.jpg";
 						this.getData()
 
 					}.bind(this))
@@ -111,9 +103,8 @@
 							"human_sid": this.obj.human_sid,
 						}
 						TB.get("GetHumanInfo/", JSON.stringify(data), function(res) {
-
 							this.people = res
-
+							console.log(JSON.stringify(res))
 						}.bind(this))
 
 					},
@@ -243,21 +234,21 @@
 					//上传图片
 					uploadHeadImg: function(imgPath) {
 						var upl = this;
-
 						var mainImg = document.getElementById('head-img');
-
-						mainImg.src = imgPath;
-
-						var image = new Image();
-						image.src = imgPath;
-						image.onload = function() {
-							var imgData = "data:image/png;base64," + upl.getBase64Image(image);
-							plus.storage.setItem("img", imgData);
-							upl.submitImg(upl.getBase64Image(image))
-							var i = plus.webview.getWebviewById("me.html");
-							i.evalJS("me.headimg()");
-							//				
-						}
+						pathToBase64("file://"+imgPath).then(base64 => {
+							var image = base64;
+								mainImg.src =image
+								console.log(image)
+									plus.storage.setItem("img", image);
+									// upl.submitImg(upl.getBase64Image(image))
+									var i = plus.webview.getWebviewById("me.html");
+									i.evalJS("me.headimg()");
+							})
+							.catch(error => {
+								console.error(error)
+							})
+						
+						
 					},
 					submitImg:function(imgData){
 							console.log(imgData)
@@ -294,17 +285,14 @@
 						}
 						canvas.width = width; /*设置新的图片的宽度*/
 						canvas.height = height; /*设置新的图片的长度*/
-						//				   alert(canvas.width)
 						var ctx = canvas.getContext("2d");
+						console.log(12)
 						ctx.drawImage(img, 0, 0, width, height); /*绘图*/
+						console.log(123)
 						var dataURL = canvas.toDataURL("image/png", 0.8);
-						//				    alert(dataURL)
 						return dataURL.replace("data:image/png;base64,", "");
 					}
 				}
 			})
-			//
 		</script>
-	</body>
-
 </html>

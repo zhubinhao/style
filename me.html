@@ -20,7 +20,7 @@
 		<div class="mui-content">
 			<div class="mui-scroll">
 				<ul class="mui-table-view mui-table-view-chevron" >
-					<li class="mui-table-view-cell mui-media headDiv" v-on:tap="Tab('html/people.html','me')">
+					<li class="mui-table-view-cell mui-media headDiv" v-on:tap="Tab('html/mine/people.html','me')">
 						<a class="mui-navigate-right" href="#account">
 							<img class="mui-media-object mui-pull-left img" v-bind:src="img" >
 							<div class="mui-media-body" style="line-height: 40px;">
@@ -31,17 +31,17 @@
 				</ul>
 				
 				<ul class="mui-table-view mui-table-view-chevron mt15" >
-					<li class="mui-table-view-cell" v-on:tap="Tab('html/aqset.html',aqset)">
+					<li class="mui-table-view-cell" v-on:tap="Tab('html/mine/aqset.html',aqset)">
 						<a href="#account" class="mui-navigate-right">账号与安全</a>
 					</li>
 				</ul> 
 
 				<ul class="mui-table-view mui-table-view-chevron mt15">
 
-					<li class="mui-table-view-cell" v-on:tap="Tab('html/feed.html','feed')">
+					<li class="mui-table-view-cell" v-on:tap="Tab('html/mine/feed.html','feed')">
 						<a href="#privacy" class="mui-navigate-right">问题反馈</a>
 					</li>
-					<li class="mui-table-view-cell" v-on:tap="Tab('html/about.html',about)">
+					<li class="mui-table-view-cell" v-on:tap="Tab('html/mine/about.html',about)">
 						<a href="#privacy" class="mui-navigate-right">关于软件</a>
 					</li>
 					<li class="mui-table-view-cell" style="position: relative;" v-on:tap='ban()'>
