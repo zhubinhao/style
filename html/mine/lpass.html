@@ -8,99 +8,74 @@
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 	</head>
 
-	<body id='index'>
+	<body id='lpass'>
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-		    <a class="  mui-pull-right" style="font-size: 18px;margin-top: 14px;" @click='submits()'>提交</a>
-		    <h1 class="mui-title">修改登录密码</h1>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="  mui-pull-right" style="font-size: 18px;margin-top: 14px;" @click='submits()'>提交</a>
+			<h1 class="mui-title">修改登录密码</h1>
 		</header>
 		<div class="mui-content">
-			<form class="mui-input-group"  style="margin-top: 14px;" >
-			   
-			    <div class="mui-input-row">
-			        <label>旧密码</label>
-			        <input type="password" class="mui-input-password" placeholder="请输入旧密码" id='jmm'>
-			    </div>
-			    <div class="mui-input-row">
-			        <label>新密码</label>
-			        <input type="password" class="mui-input-password" placeholder="请输入新密码" id='xmm' >
-			    </div>
-			    <div class="mui-input-row">
-			        <label>新密码</label>
-			        <input type="password" class="mui-input-password" placeholder="请再次输入新密码" id='xxmm'>
-			    </div>
+			<form class="mui-input-group" style="margin-top: 14px;">
+
+				<div class="mui-input-row">
+					<label>旧密码</label>
+					<input type="password" class="mui-input-password" placeholder="请输入旧密码" v-model='jmm'>
+				</div>
+				<div class="mui-input-row">
+					<label>新密码</label>
+					<input type="password" class="mui-input-password" placeholder="请输入新密码" v-model='xmm'>
+				</div>
+				<div class="mui-input-row">
+					<label>新密码</label>
+					<input type="password" class="mui-input-password" placeholder="请再次输入新密码" v-model='xxmm'>
+				</div>
 			</form>
-			
 		</div>
-	  <script src="../../js/jquery-3.1.0.min .js"></script>
-	  
-	    <script src="../../js/mui.min.js"></script>
-	    <script src="../../js/vue.js"></script>
-	    <script src="../../js/api.js"></script>
-	    <script src="../../js/app.js"></script>
-			<script>
-		var index = new Vue({
-			el:'#index',
-			data:{	
-				userkey:''
-			},
-			ready:function(){
-				var rel = this;
-      	        mui.init({swipeBack:true});
-      	         mui.plusReady(function(){
-					rel.userkey = plus.storage.getItem("userkey");
-      	             
-					
-				})
-			},
-			methods:{
-               submits:function(){
-               	var rel = this;
-               var a=	mui("#jmm")[0].value;
-               var b=	mui("#xmm")[0].value;
-               var c=	mui("#xxmm")[0].value;
-               
-	               if(b==''||c==''){
-	               	mui.toast("密码输入不能为空")
-	               	
-	               }else if(b!=c){
-	               	mui.toast("两次输入的新密码不一致")
-	               	
-	               }else{
-		               	api.dlpass(rel.userkey,a,b,function(data,tp){
-						
-	                      if(tp=='err'){
-	                      	mui.toast("请检查您的网络")
-	                      	return;
-	                      }
-	                      
-	                      var aa = JSON.parse(data).result[0];
-	                 
-			           if(aa==""){   				
-		    				mui.toast("修改成功！");
-		    				 var storage = window.localStorage;							      
-					         for(var i in storage){
-							        if(i=='zhanghao'||i=='wenjian'||i=='fuwu'||i=='xiang'){
-							        	console.log(i)
-							        }else{
-							        	console.log(i)
-							        	localStorage.removeItem(i);
-							        }									           									         
-							    }
-                             plus.runtime.restart();
-		    				
-		    			}else{
-		    				mui.toast(aa)
-		    			}
-			           
-	
-					})
-	               }
-               }
-				
-			}
-			
-		})
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/serve.js"></script>
+		<script>
+			var lpass = new Vue({
+				el: '#lpass',
+				data: {
+					obj: '',
+					jmm: "",
+					xmm: "",
+					xxmm: ""
+				},
+				ready: function() {
+					mui.init({
+						swipeBack: true
+					});
+					mui.plusReady(function() {
+						this.obj = JSON.parse(plus.storage.getItem("loginData"));
+						// console.log(JSON.stringify(this.obj))
+					}.bind(this))
+				},
+				methods: {
+					submits: function() {
+						if (this.xmm != this.xxmm) {
+							mui.toast("两次输入的新密码不一致")
+							return
+						}
+						var obj = {
+							accountname: this.obj.accountname,
+							user_code: this.obj.uc,
+							OldPass: this.jmm,
+							NewPass: this.xmm,
+						}
+						TB.get("ChangePassword/", JSON.stringify(obj), function(res) {
+							mui.toast("修改成功！");
+							for (var i in storage) {
+								if (i == 'http' || i == 'failPath' || i == 'zhanghao') {} else {
+									localStorage.removeItem(i);
+								}
+							}
+							plus.runtime.restart();
+						}.bind(this))
+					}
+				}
+			})
 		</script>
 	</body>
 

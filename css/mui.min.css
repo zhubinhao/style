@@ -6,3 +6,6 @@
  .mui-bar{
  	background: white;
  }
+ [v-cloak]{
+	 display: none;
+ }

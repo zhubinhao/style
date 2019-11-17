@@ -6,155 +6,90 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<link href="./css/mui.min.css" rel="stylesheet" />
-		<link href="./css/mui.indexedlist.css" rel="stylesheet" />
-		<link rel="stylesheet" type="text/css" href="./css/iconfont.css" />
-		<link href="./css/phone.css" rel="stylesheet" />
+		<style>
+			.mui-content{
+				background: white;
+			}
+			.mui-scroll{
+				background: white;
+			}
+			.fli{
+				margin: 0 0 0 10px;
+				padding: 10px 0;
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				border-bottom: 1px solid lightgray;
+			}
+			.fli .fliImg{
+				width: 40px;
+				height: 40px;
+				background: lightgray;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				border-radius: 3px;
+				margin-right: 10px;
+			}
+			.fli img{
+				width: 30px;
+				height: 30px;
+			}
+			.fli span{
+				font-size: 18px;
+			}
+		</style>
 	</head>
 
-	<body id='HYID'>
+	<body id='phone'>
 		<header class="mui-bar mui-bar-nav">
-			<a class=" mui-icon mui-icon-search mui-pull-right" @tap='tolist()'></a>
 			<h1 class="mui-title">通讯录</h1>
 		</header>
-		<div class="mui-content" style="">
-			<div class="mui-scroll-wrapper" style="margin-top: 45px;">
-				<div class="mui-scroll">
-					<ul class="mui-table-view">
-						<li v-for='i in list'>
-							<a id={{i.py}} v-if="i.py">{{i.py}}</a>
-							<div v-else @tap="phos(i.phone,i.name)">{{i.name}}{{i.phone}}</div>
-						</li>
-					</ul>
+		<div class="mui-content" v-cloak >
+				<div class="fli" v-for='i in list' v-on:tap="tolist(i)">
+					<div class="fliImg">
+						<img src="img/file.png" alt="">
+					</div>
+					<span>{{i.dept_name}}</span>
 				</div>
-				
-			</div>
-			<div class="mui-indexed-list-bar" style="position: fixed;right: 0;z-index: 99;top: 44px;">
-				<a v-on:tap='to(item)' id="item+'1'" v-for="item in keys">{{item}}</a>
-			</div>
 		</div>
-
 		<script src="./js/mui.min1.js"></script>
 		<script src="./js/vue.js"></script>
 		<script src="./js/serve.js"></script>
-
 		<script type="text/javascript" charset="utf-8">
 			var HY = new Vue({
-				el: '#HYID',
+				el: '#phone',
 				data: {
 					isfalse: true,
 					list: [],
-					keys: [],
 					obj: {},
 				},
 				ready: function() {
-					mui.init({
-						// swipeBack: true,
-						pullRefresh: {
-							container: "#refreshContainer", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
-
-						}
-					});
-					mui('.mui-scroll-wrapper').scroll({
-						deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006 
-					});
+					mui.init({});
 					mui.plusReady(function() {
 						this.obj = JSON.parse(plus.storage.getItem("loginData"));
-						// plus.webview.currentWebview().setStyle({
-						// 	scrollIndicator: 'none'
-						// });
 						this.getdata()
 					}.bind(this)) 
 				}, 
 				methods: {
 					getdata: function() {
-						var data = {
+						var data = {  
 							"accountname": this.obj.accountname,
 						}
-						TB.get("GetCompanyBook/", JSON.stringify(data), function(res) {
-							// console.log(JSON.stringify(res.data))
-							var list = [],
-								keys = []
-							res.data.map(function(res) {
-								var obj = JSON.parse(res)
-								obj.py && keys.push(obj.py)
-								list.push(obj)
+						TB.get("Getcompanydept/", JSON.stringify(data), function(res) {
+							var arr = [];
+							res.data.forEach(function(r){
+								arr.push(JSON.parse(r))
 							})
-							this.list = list;
-							this.keys = keys;
+							this.list = arr
 						}.bind(this))
 					},
-					to: function(i) {
-						mui.toast(i)
-						var targetOffset = document.getElementById(i).offsetTop;
-						mui('.mui-scroll-wrapper').scroll().scrollTo(0,-targetOffset,100)
-						document.getElementById(i + "1").style.color = 'red';
-						setTimeout(function() {
-							document.getElementById(i + "1").style.color = 'gray';
-						}, 1000)
-					},
-					phos: function(phone, name) {
-						var sre = this;
-						if (phone == "") {
-							return;
-						}
-						a = [{
-							title: "打电话"
-						}, {
-							title: "发短信"
-						}, {
-							title: "分享给好友"
-						}];
-						plus.nativeUI.actionSheet({
-							title: '-' + name,
-							cancel: "取消",
-							buttons: a
-						}, function(b) {
-							switch (b.index) {
-								case 0:
-									break;
-								case 1:
-									sre.phon(phone);
-									break;
-								case 2:
-									sre.sms(phone);
-									break;
-								case 3:
-									sre.share(name, phone);
-									break;
-								default:
-									break
-							}
-						})
-
-					},
-					//打电话
-					phon: function(i) {
-						console.log(i)
-						plus.device.dial(i, confirm)
-					},
-					//发短信
-					sms: function(i) {
-						var msg = plus.messaging.createMessage(plus.messaging.TYPE_SMS);
-						msg.to = [i];
-						msg.body = '';
-						plus.messaging.sendMessage(msg);
-					},
-					tolist: function() {
-						var sef = this;
-						TB.open('/html/seachs.html', 'SeachS', {
-							data: sef.list
+					tolist: function(obj) {
+						TB.open('/html/mobile/mobileList.html', 'mobileList', {
+							data:obj
 						}, 'slide-in-right')
 					},
-					share: function(name, iphone) {
-						var names = name.split('-')[0];
-						var mes = names + '的手机号：' + iphone
-						plus.share.sendWithSystem({
-							content: mes
-						}, function() {}, function(e) {});
-					}
-
 				}
-
 			})
 		</script>
 	</body>

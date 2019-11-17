@@ -13,7 +13,9 @@
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" href="#item1mobile"></a>
 			<h1 class="mui-title">{{title}}</h1>
+			<a class=" mui-icon mui-icon-search mui-pull-right" @tap='filre()'></a>
 		</header>
+		
 		<div class="mui-content" id="refreshContainer" v-cloak>
 
 			<div class="listcard" v-for='i in list' @tap="naveTo(i)">
@@ -86,7 +88,8 @@
 				methods: {
 					countlist: function(type) {
 						if (!type) {
-							this.i = 1
+							this.i = 1;				
+							mui('#refreshContainer').pullRefresh().refresh(true);
 						}
 						var data = {
 							"accountname": this.obj.accountname,
@@ -123,6 +126,11 @@
 						}
 						this.i++;
 						this.countlist("dowm")
+					},
+					filre:function(){
+				        TB.open('./flire.html', 'flire', {
+				        	data: {}
+				        }, 'slide-in-right')
 					},
 					naveTo: function(item) {
 						item.tt = this.title

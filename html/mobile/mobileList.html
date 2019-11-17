@@ -5,16 +5,17 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
-		<link href="./css/mui.min.css" rel="stylesheet" />
-		<link href="./css/mui.indexedlist.css" rel="stylesheet" />
-		<link rel="stylesheet" type="text/css" href="./css/iconfont.css" />
-		<link href="./css/phone.css" rel="stylesheet" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/mui.indexedlist.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+		<link href="../../css/phone.css" rel="stylesheet" />
 	</head>
 
-	<body id='HYID'>
+	<body id='mobileList' v-cloak >
 		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" ></a>
 			<a class=" mui-icon mui-icon-search mui-pull-right" @tap='tolist()'></a>
-			<h1 class="mui-title">通讯录</h1>
+			<h1 class="mui-title">{{curr.dept_name}}</h1>
 		</header>
 		<div class="mui-content" style="">
 			<div class="mui-scroll-wrapper" style="margin-top: 45px;">
@@ -33,25 +34,24 @@
 			</div>
 		</div>
 
-		<script src="./js/mui.min1.js"></script>
-		<script src="./js/vue.js"></script>
-		<script src="./js/serve.js"></script>
+		<script src="../../js/mui.min1.js"></script>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/serve.js"></script>
 
 		<script type="text/javascript" charset="utf-8">
 			var HY = new Vue({
-				el: '#HYID',
+				el: '#mobileList',
 				data: {
 					isfalse: true,
 					list: [],
 					keys: [],
 					obj: {},
+					curr:{}
 				},
 				ready: function() {
 					mui.init({
-						// swipeBack: true,
 						pullRefresh: {
 							container: "#refreshContainer", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
-
 						}
 					});
 					mui('.mui-scroll-wrapper').scroll({
@@ -59,9 +59,8 @@
 					});
 					mui.plusReady(function() {
 						this.obj = JSON.parse(plus.storage.getItem("loginData"));
-						// plus.webview.currentWebview().setStyle({
-						// 	scrollIndicator: 'none'
-						// });
+						var curr = plus.webview.currentWebview().data;
+						this.curr = curr
 						this.getdata()
 					}.bind(this)) 
 				}, 
@@ -69,9 +68,10 @@
 					getdata: function() {
 						var data = {
 							"accountname": this.obj.accountname,
+							"dept_sid":this.curr.dept_sid
 						}
-						TB.get("GetCompanyBook/", JSON.stringify(data), function(res) {
-							// console.log(JSON.stringify(res.data))
+						TB.get("Getcompanydepthuman/", JSON.stringify(data), function(res) {
+							console.log(JSON.stringify(res.data))
 							var list = [],
 								keys = []
 							res.data.map(function(res) {

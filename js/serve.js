@@ -1,9 +1,7 @@
 (function(owner) {
-
 	owner.getURL = function(url, data) {
-
+		var data =data||""
 		var http = localStorage.getItem('http')
-
 		var path = http + '/Rest/TSvrMethods/' + url + data
 		return path
 	}
@@ -26,24 +24,31 @@
 				return fail(data)
 			}
 		})
+		
 	}
 	owner.post = function(obj, call, fail) {
-		var fail = fail ? fail : function() {}
-		var path = localStorage.getItem('http')+'/Rest/TSvrMethods/' + obj.url
+		var path = owner.getURL(obj.url)
 		console.log(path)
-		owner.ajax({
-			url: path,
-			data: obj.data,
-			type: 'POST',
-			success: function(data) { //返回接受信息
-				plus.nativeUI.closeWaiting()
-				return call(data)
+		mui.ajax(path,{
+			data:obj.data,
+			dataType:'text',//服务器返回json格式数据
+			type:'post',//HTTP请求类型
+			headers:{'Content-Type': 'application/json'},	              
+			success:function(data){
+				var d = JSON.parse(data).result[0]
+				var res = JSON.parse(d)
+				if(res.code=='1'){
+					call&&call(res)
+				}else{
+					// mui.toast(res.msg)
+					fail&&fail(res.ms)
+				}
 			},
-			fail: function() {
-				plus.nativeUI.closeWaiting()
-				return fail()
+			error:function(xhr,type,errorThrown){
+				console.log(type);
+				fail&&fail()
 			}
-		})
+		});
 	}
 	owner.udate = function() {
 		var bb;

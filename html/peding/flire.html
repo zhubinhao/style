@@ -77,95 +77,99 @@
 				background-color: #DCF7F0;
 				color: #3CCBA7;
 			}
-			[v-cloak] {
-			display: none;
-			} 
+			
 		</style>
-	</head>       
-	<body  id='seachs' style="background-color: white;">
-		<div class="mui-content" style="background-color: white;" v-if="show"  v-cloak>
-       	 
-       	   <p class="title"><span class="span2">●</span>类型</p>
-       	   <div class="content">
-       	   	  <div class="content-btn1 {{j==itms.mod_name?'active2':''}}" v-on:tap='type(itms.mod_name,itms.mod_name)' v-for=" itms in types" >
-       	   	  	  {{itms.mod_name}}
-       	   	  </div>       	   	       	   	  
-       	   </div>
-       	  <div style="height:65px;">
-       	  	
-       	  </div>
-       	 <div class="footer" v-on:tap='submits()'>
-       	 	确定
-       	 </div>
-       </div>
+	</head>
+	<body id='seachs' style="background-color: white;">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" ></a>
+			<h1 class="mui-title">筛选</h1>
+		</header>
+		<div class="mui-content" style="background-color: white;" v-cloak >
+
+			<p class="title"><span class="span2">●</span>类型</p>
+			<div class="content">
+				<div class="content-btn1 {{j==itms.mod_name?'active2':''}}" v-on:tap='type(itms.mod_name,itms.mod_name)' v-for=" itms in types">
+					{{itms.mod_name}}
+				</div>
+			</div>
+			
+			<div class="footer" v-on:tap='submits()'>
+				确定
+			</div>
+		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/vue.js"></script>
+		<script src="../../js/serve.js"></script>
 		<script type="text/javascript">
-			var thisView,thistype=null;
-			var seachs=new Vue({
-				el:'#seachs',
-				data:{					
-					types:[],
-					j:"",
-					show:false,
-					code:'',				
+			var thisView, thistype = null;
+			var seachs = new Vue({
+				el: '#seachs',
+				data: {
+					types: [],
+					j: "",
+					show: false,
+					code: '',
+					obj: {}
 				},
-				ready:function(){
-					var that=this;					
+				ready: function() {
+					var that = this;
 					mui.init();
-					mui.plusReady(function(){
-						thisView=plus.webview.currentWebview()
-						var arr = [{mod_name:"全部",mod_code:""}];
+					mui.plusReady(function() {
+						thisView = plus.webview.currentWebview()
+						var arr = [{
+							mod_name: "全部",
+							mod_code: "" 
+						}];
+						this.obj = JSON.parse(plus.storage.getItem("loginData"))
+						this.getData()
 
-						that.j=plus.storage.getItem('mWhere');
-						thistype=plus.storage.getItem('mWhere');
-						console.log(that.j)
-						
-						if(that.j==null||that.j==""){
-							that.j='全部';
-							thistype='全部'
-						}
-						var c = arr.concat(thisView.types);
-						that.types=c;													
-						that.show=true;
-						console.log(1)
-					})
+					}.bind(this))
 				},
-				methods:{
-					submits:function(){
-
+				methods: {
+					getData:function(){
+						var data = {
+							"accountname": this.obj.accountname,
+							"human_sid": this.obj.human_sid,
+						}
+						TB.get("Getworkflowmodname/", JSON.stringify(data), function(res) {
+							console.log(JSON.stringify(res.data))
+							console.log(res.data.mod_code)
+						}.bind(this))
+					},
+					submits: function() {
 						console.log(this.j);
 						console.log(thistype)
 
-						if(this.j==thistype){
-								thisView.close('none')
-						}else{
-							if(this.code=='全部'){
-								this.code="";
+						if (this.j == thistype) {
+							thisView.close('none')
+						} else {
+							if (this.code == '全部') {
+								this.code = "";
 							}
-							plus.storage.setItem('mWhere',this.code)
-						
-						    var ii  = plus.webview.getWebviewById(thisView.ids);
-					
-						     ii.reload(true); 
+							plus.storage.setItem('mWhere', this.code)
+
+							var ii = plus.webview.getWebviewById(thisView.ids);
+
+							ii.reload(true);
 							thisView.close('none')
 						}
-						
-						
+
+
 					},
-				
-					type:function(number,codes){
-						
-						this.j=number;
-						this.code=codes
+
+					type: function(number, codes) {
+
+						this.j = number;
+						this.code = codes
 
 					}
-					
+
 				}
-				
-				
-				
-				
+
+
+
+
 			})
 			mui.init()
 		</script>
