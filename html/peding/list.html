@@ -96,7 +96,6 @@
 							"human_sid": this.obj.human_sid,
 							"sType": this.type,
 							"pageindex": this.i
-
 						}
 						TB.get("GetWfdataList/", JSON.stringify(data), function(res) {
 							var list = []
@@ -116,6 +115,7 @@
 							}
 						}.bind(this), function() {
 							this.list = []
+							mui.toast("没有找到相关的数据")
 							mui('#refreshContainer').pullRefresh().endPullup(true);
 						}.bind(this))
 					},
@@ -134,27 +134,9 @@
 					},
 					naveTo: function(item) {
 						item.tt = this.title
-						var url = 'listxq.html';
-						var id = 'listxq';
-						if (this.type == "checking") {
-							url = 'checked.html';
-							id = 'checked';
-						}
-						if (this.type == "reading") {
-							url = 'readingxq.html';
-							id = 'readingxq';
-						}
-						mui.openWindow({
-							url: url,
-							id: id,
-							extras: item,
-							show: {
-								aniShow: 'slide-in-right'
-							},
-							waiting: {
-								autoShow: false, //自动显示等待框，默认为true					      
-							}
-						})
+						item.type = this.type
+						
+						TB.open('listxq.html', 'listxq', item)
 
 					}
 				}

@@ -13,6 +13,8 @@
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">{{cont.mod_name}}</h1>
+			<a class="mui-btn mui-pull-right mui-btn-danger mui-btn-outlined" v-if="cont.type=='checking'" v-on:tap="check()">审批</a>
+		   <a class="mui-btn  mui-pull-right mui-btn-primary mui-btn-outlined" v-if="cont.type=='reading'" v-on:tap="read()">查阅</a>
 		</header>
 		<div class="mui-content ">
 			<div class="head">
@@ -75,6 +77,7 @@
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/vue.js"></script>
 		<script src="../../js/serve.js"></script>
+		<script src="../../js/base64.js"></script>
 		<script type="text/javascript">
 			var list = new Vue({
 				el: "#listxq",
@@ -86,7 +89,11 @@
 					qianzhang: false,
 					cha: '',
 					obj: "",
-					show: true
+					obj1: "",
+					check_type: "",
+					show: true,
+					img: "",
+					sign_psw: "",
 				},
 				ready: function() {
 					var serf = this;
@@ -98,6 +105,13 @@
 						serf.cont = cont
 						serf.obj = JSON.parse(plus.storage.getItem("loginData"))
 						serf.getData()
+						console.log(cont.type)
+						if (cont.type == "checking") {
+							serf.getwfdata_list_sid()
+						}
+						if (cont.type == "reading") {
+							serf.getQz()
+						}
 					})
 				},
 				methods: {
@@ -122,62 +136,175 @@
 							res.data.forEach(function(v) {
 								arr.push(JSON.parse(v))
 							})
-
 							this.his = arr
 						}.bind(this))
 					},
+					// 审批需要获取 check_type
+					getwfdata_list_sid: function() {
+						var data = {
+							"accountname": this.obj.accountname,
+							"wfdata_list_sid": this.cont.wfdata_list_sid,
+						}
+						TB.get("GetWfModInfo/", JSON.stringify(data), function(res) {
+							this.obj1 = res
+							this.check_type = res.check_type
+						}.bind(this))
 
+					},
+					// 审批
+					check: function() {
+						var serlf = this;
+						var buttons = [{
+							title: '同意'
+						}, {
+							title: '不同意'
+						}, {
+							title: '退回'
+						}, {
+							title: '中止'
+						}]
+						if (this.check_type == 1) {
+							buttons = [{
+								title: '同意'
+							}, {
+								title: '不同意'
+							}, {
+								title: '中止'
+							}]
+						}
+						plus.nativeUI.actionSheet({
+							title: '请选择',
+							cancel: '取消',
+							buttons: buttons
+						}, function(b) {
+							if (this.check_type == 1) {
+								switch (b.index) {
+									case 0:
+										break;
+									case 1:
+										serlf.to("ty.html", "ty")
+										break;
+									case 2:
+										serlf.to("bty.html", "bty")
+										break;
+									case 3:
+										serlf.to("zz.html", "zz")
+										break;
+								}
+							} else {
+								switch (b.index) {
+									case 0:
+										break;
+									case 1:
+										serlf.to("ty.html", "ty")
+										break;
+									case 2:
+										serlf.to("bty.html", "bty")
+										break;
+									case 3:
+										serlf.to("th.html", "th")
+										break;
+									case 4:
+										serlf.to("zz.html", "zz")
+										break;
+								}
+							}
+						})
+					},
+					// 审批去向
+					to: function(url, id) {
+						var obj = {
+							"wfdata_list_sid": this.cont.wfdata_list_sid,
+							"human_sign_sid": this.cont.human_sign_sid,
+							"wfdata_sid": this.cont.wfdata_sid,
+							"rec_sid": this.cont.rec_sid,
+							"bill_sid": this.cont.bill_sid,
+							"work_step_sid": this.obj1.workflow_step_sid,
+						}
+						TB.open(url, id, obj)
+					},
+					getQz: function() {
+						var data = {
+							"accountname": this.obj.accountname,
+							"human_sid": this.obj.human_sid,
+						}
+					
+						TB.get("NewGetPersonSignPicPwd/", JSON.stringify(data), function(res) {
+					
+								this.img = localStorage.getItem('failPath')+'/HCFile/' + res.human_sign_sid + '.png'
+								console.log(this.img)
+							console.log(JSON.stringify(res))
+							this.sign_psw = res.sign_psw
+					
+						}.bind(this))
+					},
+					read: function() {
+					
+						if(this.sign_psw != '') {
+							TB.alert(this.img, function(e) {
+								if(e.index == 0) {} else {
+									var inputs = '"' + e.value + '"';
+									if(this.sign_psw == inputs) {
+										this.submits()
+									} else {
+										mui.toast("签章密码错误")
+									}
+								}
+							}.bind(this))
+						} else {
+							this.submits()
+					
+						}
+					
+					},
+					submits: function() {
+						var serf = this;
+						mui.prompt('请输入查阅意见', '请输入查阅意见', '提示', ['取消', '确认'], function(e) {
+							if(e.index == 1) {
+								var val = e.value
+								var str = Base64.encode(val).replace(/\//g,"*");
+								var data = {
+									"accountname": serf.obj.accountname,
+									"wfdata_list_sid": serf.cont.wfdata_list_sid,
+									"human_sign_sid": serf.cont.human_sign_sid,
+									"check_value": "4",
+									"check_text":str  ,
+									"human_sid": serf.obj.human_sid,
+									"to_step_sid": "",
+									"Allhuman": "",
+								}
+					
+								console.log(JSON.stringify(data))
+								TB.get("ExeWorkflowGoNext/", JSON.stringify(data), function(res) {
+					
+									var i = plus.webview.getWebviewById("list");
+									i.evalJS("list.countlist()");
+									var ii = plus.webview.getWebviewById("index.html");
+									ii.evalJS("index.getCount()");
+									mui.toast("操作成功")							
+									var self1 = plus.webview.currentWebview();　　 //当前窗口对象							　
+								    self1.close('slide-out-right');
+									
+									serf.istrue = false;
+								}.bind(this))
+							} else {
+					
+							}
+						}, 'div')
+					},
+					// 明细
 					mxs: function() {
-						var serf = this;
-						console.log(serf.cont.wfdata_list_sid)
-						mui.openWindow({
-							url: "mx.html",
-							id: "mx",
-							extras: {
-								wfdata_list_sid: serf.cont.wfdata_list_sid,
-							},
-							show: {
-								aniShow: "slide-in-right"
-							},
-							waiting: {
-								autoShow: false,
-							}
+						TB.open('mx.html', 'mx', {
+							wfdata_list_sid: this.cont.wfdata_list_sid,
 						})
 					},
+					// 附件
 					fujian: function() {
-						var serf = this;
-
-						mui.openWindow({
-							url: "fujian.html",
-							id: "fujian",
-							extras: {
-								bill_sids: this.cont.bill_sid
-							},
-							show: {
-								aniShow: "slide-in-right"
-							},
-							waiting: {
-								autoShow: false,
-							}
+						TB.open('fujian.html', 'fujian', {
+							bill_sids: this.cont.bill_sid
 						})
 					},
-					//					splc: function() {
-					//						var serf = this;
-					//						mui.openWindow({
-					//							url: 'splc.html',
-					//							id: 'splc',
-					//							extras: {
-					//								bill_sids: serf.bill_sid
-					//							},
-					//							show: {
-					//								aniShow: 'slide-in-right'
-					//							},
-					//							waiting: {
-					//								autoShow: false, //自动显示等待框，默认为true					      
-					//
-					//							}
-					//						})
-					//					},
+
 				}
 
 			})

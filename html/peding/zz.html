@@ -81,8 +81,7 @@
 							}
 						}.bind(this))
 						}else{
-									this.submits()
-							
+							this.submits()							
 						}
 					},
 					submits: function() {
@@ -106,7 +105,7 @@
 							var ii = plus.webview.getWebviewById("index.html");
 							ii.evalJS("index.getCount()");　　
 							var self = plus.webview.currentWebview();　　 //当前窗口对象							　
-							var two = plus.webview.getWebviewById('checked');
+							var two = plus.webview.getWebviewById('listxq');
 							var three = plus.webview.getWebviewById('list');
 							three.evalJS("list.countlist()");　　
 							if(two != null) {　　

@@ -135,22 +135,16 @@
 	 * 打开新页面
 	 * */
 	owner.open = function(url1, ids, obj, type) {
-		if(type == undefined) {
-			type = 'pop-in'
-		}
-		if(obj == undefined) {
-			obj = {}
-		}
 		mui.openWindow({
 			url: url1,
 			id: ids,
 			show: {
-				aniShow: type,
+				aniShow: type||'slide-in-right',
 			},
 			waiting: {
-				autoShow: false, //自动显示等待框，默认为true						    
+				autoShow: false, 					    
 			},
-			extras: obj
+			extras: obj||{}
 		})
 	}
 	//关闭右滑
