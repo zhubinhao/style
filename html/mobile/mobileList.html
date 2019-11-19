@@ -14,30 +14,19 @@
 	<body id='mobileList' v-cloak >
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" ></a>
-			<a class=" mui-icon mui-icon-search mui-pull-right" @tap='tolist()'></a>
 			<h1 class="mui-title">{{curr.dept_name}}</h1>
 		</header>
-		<div class="mui-content" style="">
-			<div class="mui-scroll-wrapper" style="margin-top: 45px;">
-				<div class="mui-scroll">
-					<ul class="mui-table-view">
-						<li v-for='i in list'>
-							<a id={{i.py}} v-if="i.py">{{i.py}}</a>
-							<div v-else @tap="phos(i.phone,i.name)">{{i.name}}{{i.phone}}</div>
-						</li>
-					</ul>
-				</div>
-				
-			</div>
-			<div class="mui-indexed-list-bar" style="position: fixed;right: 0;z-index: 99;top: 44px;">
-				<a v-on:tap='to(item)' id="item+'1'" v-for="item in keys">{{item}}</a>
-			</div>
+		<div class="mui-content" >
+			<ul class="mui-table-view">
+				<li v-for='i in list'>
+					<div @tap="phos(i.phone,i.name)">{{i.human_name}}</div>
+				</li>
+			</ul>
 		</div>
 
 		<script src="../../js/mui.min1.js"></script>
 		<script src="../../js/vue.js"></script>
 		<script src="../../js/serve.js"></script>
-
 		<script type="text/javascript" charset="utf-8">
 			var HY = new Vue({
 				el: '#mobileList',
@@ -72,26 +61,15 @@
 						}
 						TB.get("Getcompanydepthuman/", JSON.stringify(data), function(res) {
 							console.log(JSON.stringify(res.data))
-							var list = [],
-								keys = []
+							var list = [];
 							res.data.map(function(res) {
 								var obj = JSON.parse(res)
-								obj.py && keys.push(obj.py)
 								list.push(obj)
 							})
 							this.list = list;
-							this.keys = keys;
 						}.bind(this))
 					},
-					to: function(i) {
-						mui.toast(i)
-						var targetOffset = document.getElementById(i).offsetTop;
-						mui('.mui-scroll-wrapper').scroll().scrollTo(0,-targetOffset,100)
-						document.getElementById(i + "1").style.color = 'red';
-						setTimeout(function() {
-							document.getElementById(i + "1").style.color = 'gray';
-						}, 1000)
-					},
+					
 					phos: function(phone, name) {
 						var sre = this;
 						if (phone == "") {
