@@ -1,61 +1,78 @@
 html,
 body {
-	height: 100%;
+	background: white;
 }
-
-.mui-indexed-list-bar a {
-	color: gray;
-	padding: 3px 0;
+.mui-content{
+	background: white;
 }
-
-.mui-indexed-list-bar a:hover {
-	color: red;
+.ul{
+	background: white;
+	padding: 0 15px;
 }
-
-.mui-table-view .a1 {
-	position: absolute;
-	margin-left: 20px;
-	top: 10PX;
-	right: 40px;
-	color: black;
+.list{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center; 
+	padding: 10px 0;
+	border-bottom: 1px solid lightgray;
 }
-
-.mui-table-view .a2 {
-	position: absolute;
-	margin-left: 20px;
-	top: 10PX;
-	right: 80px;
-	color: black;
-}
-
-a {
-	color: black;
-}
-
-.bgg {
-	background-color: #F0F0F0;
-}
-
-.po {
-	position: absolute;
-	left: 48%;
-
-	margin-top: 10px;
-}
-.mui-table-view li div{
-	min-height: 50px;
-	border-bottom: 1px solid #F0F0F0;
+.list .img{
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	background: #4379FE;
+	color: white;
+	text-align: center;
 	line-height: 50px;
-	padding-left: 15px;
+	font-size: 15px;
+	margin-right: 10px;
 }
-.mui-table-view li a{
-	display: block;
-	height: 30px;
-	background: #F0F0F0;
-	line-height: 30px;
-	padding-left: 15px;
-	border-bottom: none;
-	
+.list .content{
+	height: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	flex-direction: column;
 }
-
-
+.list .content p{
+	margin: 0;
+	font-size: 16px;
+	color: #000000;
+}
+.list .content span{
+	font-size: 13px;
+	color: gray;
+}
+.detList{
+	background: white;
+	margin: 0 15px;
+	padding: 10px 0;
+	border-bottom: 1px solid lightgray;
+}
+.detList p{
+	font-size: 13px;
+	margin-bottom: 5px;
+}
+.detList span{
+	font-size: 16px;
+}
+.btn{
+	height: 40px;
+	margin: 15px;
+	border-radius: 5px;
+	text-align: center;
+	line-height: 40px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+}
+.btn:active{
+	background:#ccc ;
+}
+.btn-blue{
+	color: 007aff;
+	border: 1px solid #007aff;
+	margin-top: 50px;
+}
+.btn-blue:active{
+	background:#007aff ;
+}

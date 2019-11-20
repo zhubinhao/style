@@ -35,9 +35,9 @@
 					</li>
 				</ul>
 				<ul class="mui-table-view mui-table-view-chevron mt15">
-					<li class="mui-table-view-cell" v-on:tap="Tab('html/mine/feed.html','feed')">
+					<!-- <li class="mui-table-view-cell" v-on:tap="Tab('html/mine/feed.html','feed')">
 						<a href="#privacy" class="mui-navigate-right">问题反馈</a>
-					</li>
+					</li> -->
 					<li class="mui-table-view-cell" v-on:tap="Tab('html/mine/about.html',about)">
 						<a href="#privacy" class="mui-navigate-right">关于软件</a>
 					</li>
@@ -99,10 +99,12 @@
 								"sfile": this.obj.User_sid+".png",
 							},   
 						},function(res){  
+							console.log(res)
 							this.img = 'data:image/png;base64,'+res.file||"../../img/1.jpg"
 							 plus.storage.setItem("img",this.img) 
 						}.bind(this),function(){
 							this.img ="./img/1.jpg"
+							plus.storage.setItem("img","../../img/1.jpg")
 						}.bind(this))
 					},
 					Tab: function(url1, id) {

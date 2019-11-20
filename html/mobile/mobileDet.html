@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/phone.css" rel="stylesheet" />
+	</head>
+	<body id='mobileDet'>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="width: 10%;"></a>
+			<h1 class="mui-title">{{obj.human_name}}</h1>
+		</header>
+		<div class="mui-content">
+			<!-- <div>
+				<p>企业/组织</p> 
+				<span></span>
+			</div> -->
+			<div class="detList">
+				<p>姓名</p>
+				<span>{{obj.human_name}}</span>
+			</div>
+			<div class="detList">
+				<p>部门</p>
+				<span>{{obj.dept_name}}</span>
+			</div>
+			<div class="detList">
+				<p>职位</p>
+				<span>{{obj.role_name}}</span>
+			</div>
+			<div class="detList">
+				<p>电话号码</p>
+				<span>{{obj.mobile||"无"}}</span>
+			</div>
+			<div class="detList">
+				<p>邮箱</p>
+				<span>{{obj.email||"无"}}</span>
+			</div>
+			<div class="btn btn-blue" @tap="phon">打电话</div>
+			<div class="btn" @tap="sms">发消息</div>
+			
+		</div>
+	<script src="../../js/mui.min1.js"></script>
+	<script src="../../js/vue.js"></script>
+	<script src="../../js/serve.js"></script>
+		<script type="text/javascript">
+			var mobileDet = new Vue({
+				el: '#mobileDet',
+				data: {
+					name: '',
+					obj: []
+				},
+				ready: function() {
+					mui.init();
+					mui.plusReady(function() {
+						this.obj = plus.webview.currentWebview().data;
+						console.log(JSON.stringify(this.obj))
+					}.bind(this));
+
+				},
+				methods: {
+					phon: function() {
+						plus.device.dial(this.obj.mobile, confirm)
+
+					},
+					sms: function() {
+						console.log(this.obj.mobile)
+						var msg = plus.messaging.createMessage(plus.messaging.TYPE_SMS);
+						msg.to = [this.obj.mobile];
+						msg.body = '';
+						plus.messaging.sendMessage(msg);
+
+					},
+					share: function(name, iphone) {
+						var names = name.split('-')[0];
+						var mes = names + '的手机号：' + iphone
+						plus.share.sendWithSystem({
+							content: mes
+						}, function() {}, function(e) {});
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>
