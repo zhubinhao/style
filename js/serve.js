@@ -19,7 +19,6 @@
 				return call(data)
 			},
 			fail: function(data) {
-				plus.nativeUI.closeWaiting()
 				mui('#refreshContainer').pullRefresh() && mui('#refreshContainer').pullRefresh().endPulldown();
 				return fail(data)
 			}
@@ -82,12 +81,13 @@
 							                console.log( "链接到服务器..." );
 							            break;
 							            case 3: // 已接收到数据                                
-							                // var a= Math.floor(task.downloadedSize/task.totalSize*100)+'%';
+							                var a= Math.floor(task.downloadedSize/task.totalSize*100)+'%';
 							                // document.getElementById('two').style.width=a
-							                
+							                plus.nativeUI.showWaiting("下载中...\n"+a)
 							            break; 
-							            case 4: // 下载完成
-							                console.log( "下载完成！" );                                                                     
+							            case 4: // 下载完成 
+							                console.log( "下载完成！" ); 
+											plus.nativeUI.closeWaiting()
 							                // install (task)
 											 plus.runtime.install(task.filename, {force:true}, function() {
 											        //完成更新向服务器进行通知

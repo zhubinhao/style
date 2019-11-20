@@ -8,7 +8,6 @@
 		<style>
 
 			.footer{
-				/*position: absolute;*/
 				position: fixed;
 				bottom: 0px;
 				left: 0px;
@@ -24,9 +23,8 @@
 				padding: 0px 10px;
 				color: black;
 				margin: 20px 0;
-				font-size: 17px;
+				font-size: 16px;
 				font-weight: 700;
-				/*background-color: chartreuse;*/
 			}
 			.span1{
 				color: #4BA8EB;
@@ -41,9 +39,6 @@
 				display: flex;
 				flex-wrap: wrap;
 				justify-content:space-between ;
-				
-				/*background-color: red;*/
-				
 			}
 			.content-btn{
 				width: 30%;
@@ -66,12 +61,13 @@
 				background-color: #F4F3F3; 
 				text-align: center;
 				line-height: 51px;
-				 margin-bottom: 15px;
-				 overflow: hidden;
+				margin-bottom: 15px;
+				overflow: hidden;
 				text-overflow:ellipsis;
 				white-space: nowrap;
-				font-size: 15px;
-				/*float: left;*/
+				font-size: 14px;
+				box-sizing: border-box;
+				padding: 0 10px;
 			}
 			.active2{
 				background-color: #DCF7F0;
@@ -89,7 +85,10 @@
 
 			<p class="title"><span class="span2">●</span>类型</p>
 			<div class="content">
-				<div class="content-btn1 {{j==itms.mod_name?'active2':''}}" v-on:tap='type(itms.mod_name,itms.mod_name)' v-for=" itms in types">
+				<div class="content-btn1 {{j==''?'active2':''}}" v-on:tap='type("","")' >
+					全部
+				</div>
+				<div class="content-btn1 {{j==itms.mod_name?'active2':''}}" v-on:tap='type(itms.mod_name)' v-for=" itms in types">
 					{{itms.mod_name}}
 				</div>
 			</div>
@@ -116,14 +115,9 @@
 					var that = this;
 					mui.init();
 					mui.plusReady(function() {
-						thisView = plus.webview.currentWebview()
-						var arr = [{
-							mod_name: "全部",
-							mod_code: "" 
-						}];
+						this.j = plus.webview.currentWebview().data.codeName
 						this.obj = JSON.parse(plus.storage.getItem("loginData"))
 						this.getData()
-
 					}.bind(this))
 				},
 				methods: {
@@ -133,38 +127,27 @@
 							"human_sid": this.obj.human_sid,
 						}
 						TB.get("Getworkflowmodname/", JSON.stringify(data), function(res) {
-							console.log(JSON.stringify(res.data))
-							console.log(res.data.mod_code)
+							console.log(res.data[0])
+							var arr = []
+							res.data.forEach(function(r){
+								arr.push(JSON.parse(r))
+							})
+							this.types = arr
 						}.bind(this))
 					},
 					submits: function() {
-						console.log(this.j);
-						console.log(thistype)
-
-						if (this.j == thistype) {
-							thisView.close('none')
-						} else {
-							if (this.code == '全部') {
-								this.code = "";
-							}
-							plus.storage.setItem('mWhere', this.code)
-
-							var ii = plus.webview.getWebviewById(thisView.ids);
-
-							ii.reload(true);
-							thisView.close('none')
-						}
-
-
+						var self = plus.webview.currentWebview();　　 //当前窗口对象
+						var two = plus.webview.getWebviewById('list');
+						two.evalJS('list.fliter("'+this.code+'","'+this.j+'")');　　
+						self.close('slide-out-right'); 
 					},
-
-					type: function(number, codes) {
-
-						this.j = number;
-						this.code = codes
-
+					type: function(codes) {
+						this.code="";
+						this.j = codes
+						if(codes){
+							this.code = "mod_name=''"+codes+"''"
+						}
 					}
-
 				}
 
 

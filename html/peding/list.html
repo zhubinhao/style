@@ -51,7 +51,8 @@
 					type: '',
 					list: [],
 					obj: {},
-					i: 1
+					i: 1,
+					code:""
 				},
 				ready: function() {
 					var serf = this;
@@ -86,6 +87,12 @@
 					})
 				},
 				methods: {
+					fliter:function(code,name){
+						this.code =code
+						this.codeName = name
+						console.log(name)
+						this.countlist()
+					},
 					countlist: function(type) {
 						if (!type) {
 							this.i = 1;				
@@ -95,7 +102,8 @@
 							"accountname": this.obj.accountname,
 							"human_sid": this.obj.human_sid,
 							"sType": this.type,
-							"pageindex": this.i
+							"pageindex": this.i,
+							"where":this.code
 						}
 						TB.get("GetWfdataList/", JSON.stringify(data), function(res) {
 							var list = []
@@ -129,7 +137,7 @@
 					},
 					filre:function(){
 				        TB.open('./flire.html', 'flire', {
-				        	data: {}
+				        	data: {codeName:this.codeName||""}
 				        }, 'slide-in-right')
 					},
 					naveTo: function(item) {
