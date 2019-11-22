@@ -15,7 +15,7 @@
 			<h1 class="mui-title">{{title}}</h1>
 			<a class=" mui-icon mui-icon-search mui-pull-right" @tap='filre()'></a>
 		</header>
-		
+
 		<div class="mui-content" id="refreshContainer" v-cloak>
 
 			<div class="listcard" v-for='i in list' @tap="naveTo(i)">
@@ -52,6 +52,7 @@
 					list: [],
 					obj: {},
 					i: 1,
+					count: 1,
 					code:""
 				},
 				ready: function() {
@@ -87,15 +88,14 @@
 					})
 				},
 				methods: {
-					fliter:function(code,name){
-						this.code =code
+					fliter: function(code, name) {
+						this.code = code
 						this.codeName = name
-						console.log(name)
 						this.countlist()
 					},
 					countlist: function(type) {
 						if (!type) {
-							this.i = 1;				
+							this.i = 1;
 							mui('#refreshContainer').pullRefresh().refresh(true);
 						}
 						var data = {
@@ -107,16 +107,21 @@
 						}
 						TB.get("GetWfdataList/", JSON.stringify(data), function(res) {
 							var list = []
-							res.data.forEach(function(res) {
-								list.push(JSON.parse(res))
-							})
+							var data = res.data
+							if(data){
+								data.forEach(function(res) {
+									list.push(JSON.parse(res))
+								})
+								if (list[0].recordcount) {
+									this.count = list[0].recordcount
+								}
+							}else{
+								this.codeName&&mui.toast("没有找到"+this.codeName+"的数据")
+								mui('#refreshContainer').pullRefresh().disablePullupToRefresh();
+							}
 							if (type) {
 								this.list = this.list.concat(list)
-								var istrue = false;
-								if (list.length != 10) {
-									istrue = true;
-								}
-								mui('#refreshContainer').pullRefresh().endPullup(istrue);
+								mui('#refreshContainer').pullRefresh().endPullup();
 							} else {
 								this.list = list
 								mui('#refreshContainer').pullRefresh().endPulldown();
@@ -128,22 +133,25 @@
 						}.bind(this))
 					},
 					up: function() {
-						if(this.list.length<10){
+						console.log(this.list.length)
+						console.log(this.count)
+						if (this.list.length >= this.count) {
 							mui('#refreshContainer').pullRefresh().endPullup(true);
 							return
 						}
 						this.i++;
+						console.log(this.i)
 						this.countlist("dowm")
 					},
-					filre:function(){
-				        TB.open('./flire.html', 'flire', {
-				        	data: {codeName:this.codeName||""}
-				        }, 'slide-in-right')
+					filre: function() {
+						TB.open('./flire.html', 'flire', {
+							data: {codeName:this.codeName||""}
+						}, 'slide-in-right')
 					},
 					naveTo: function(item) {
 						item.tt = this.title
 						item.type = this.type
-						
+
 						TB.open('listxq.html', 'listxq', item)
 
 					}

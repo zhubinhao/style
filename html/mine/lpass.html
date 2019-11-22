@@ -66,6 +66,7 @@
 						}
 						TB.get("ChangePassword/", JSON.stringify(obj), function(res) {
 							mui.toast("修改成功！");
+							var storage = window.localStorage;
 							for (var i in storage) {
 								if (i == 'http' || i == 'failPath' || i == 'zhanghao') {} else {
 									localStorage.removeItem(i);
