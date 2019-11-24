@@ -67,8 +67,7 @@
 				if(bb.toString() != banben) {
 					mui.confirm(a, "更新提示", ['确认', '取消'], function(e) {
 						if(e.index == 0) {
-							// plus.runtime.openURL('http://47.112.137.218:8088//HCPMIS.apk');
-							//var url ="http://47.112.137.218:8088/HCFile/update/HCPMIS.wgt"
+							var b=1
 							 var url =localStorage.getItem('failPath')+'/HCFile/update/HCPMIS.wgt'
 							 var options = {method:"GET"};
 							 var  dtask = plus.downloader.createDownload( url, options );
@@ -78,12 +77,13 @@
 							                console.log( "开始下载..." );
 							            break;
 							            case 2: // 已连接到服务器
-							                console.log( "链接到服务器..." );
+							                console.log( "链接到服务器..." ); 
 							            break;
 							            case 3: // 已接收到数据                                
-							                var a= Math.floor(task.downloadedSize/task.totalSize*100)+'%';
-							                // document.getElementById('two').style.width=a
-							                plus.nativeUI.showWaiting("下载中...\n"+a)
+							                var a= Math.floor(task.downloadedSize/task.totalSize*100);
+											if(a%5==0){
+											   plus.nativeUI.showWaiting("下载中...\n"+a+"%")
+											}
 							            break; 
 							            case 4: // 下载完成 
 							                console.log( "下载完成！" ); 

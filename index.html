@@ -111,8 +111,7 @@
 								numObj[obj.stype] = obj.icount
 							})
 							this.numObj = numObj
-							if (mui.os.ios) {
-								
+							if (mui.os.ios) {								
 								var GeTuiSdk = plus.ios.importClass('GeTuiSdk');
 								GeTuiSdk.setBadge(parseInt(this.numObj.checking)); //设置角标  
 							} else {
