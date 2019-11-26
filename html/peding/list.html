@@ -127,8 +127,10 @@
 								mui('#refreshContainer').pullRefresh().endPulldown();
 							}
 						}.bind(this), function() {
-							this.list = []
-							mui.toast("没有找到相关的数据")
+							if(this.list.length==1){
+								this.list = []
+								mui.toast("没有找到相关的数据")
+							}
 							mui('#refreshContainer').pullRefresh().endPullup(true);
 						}.bind(this))
 					},

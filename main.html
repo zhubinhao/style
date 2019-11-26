@@ -95,6 +95,10 @@
 					mui.extend(aniShow, temp);
 					plus.webview.show(targetTab, "fade-in", 300);
 				}
+				if(targetTab=="index.html"){
+					var two = plus.webview.getWebviewById('index.html');
+					two.evalJS('index.getCount()');　　
+				}
 				//隐藏当前;
 				plus.webview.hide(activeTab);
 				//更改当前活跃的选项卡
