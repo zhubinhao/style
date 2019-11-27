@@ -106,6 +106,7 @@
 							"where":this.code
 						}
 						TB.get("GetWfdataListNew/", JSON.stringify(data), function(res) {
+							console.log("cs")
 							var list = []
 							var data = res.data
 							this.count = res.recordcount
