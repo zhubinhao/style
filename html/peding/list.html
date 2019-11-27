@@ -105,16 +105,15 @@
 							"pageindex": this.i,
 							"where":this.code
 						}
-						TB.get("GetWfdataList/", JSON.stringify(data), function(res) {
+						TB.get("GetWfdataListNew/", JSON.stringify(data), function(res) {
+							console.log("cs")
 							var list = []
 							var data = res.data
+							this.count = res.recordcount
 							if(data){
 								data.forEach(function(res) {
 									list.push(JSON.parse(res))
 								})
-								if (list[0].recordcount) {
-									this.count = list[0].recordcount
-								}
 							}else{
 								this.codeName&&mui.toast("没有找到"+this.codeName+"的数据")
 								mui('#refreshContainer').pullRefresh().disablePullupToRefresh();
@@ -127,14 +126,11 @@
 								mui('#refreshContainer').pullRefresh().endPulldown();
 							}
 						}.bind(this), function() {
-							this.list = []
 							mui.toast("没有找到相关的数据")
 							mui('#refreshContainer').pullRefresh().endPullup(true);
 						}.bind(this))
 					},
 					up: function() {
-						console.log(this.list.length)
-						console.log(this.count)
 						if (this.list.length >= this.count) {
 							mui('#refreshContainer').pullRefresh().endPullup(true);
 							return
